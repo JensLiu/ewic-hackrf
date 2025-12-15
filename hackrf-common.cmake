@@ -114,6 +114,7 @@ set(BUILD_SHARED_LIBS OFF)
 
 include_directories("${LIBOPENCM3}/include/")
 include_directories("${PATH_HACKRF_FIRMWARE_COMMON}")
+include_directories("${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb")
 
 macro(DeclareTarget project_name variant_suffix cflags ldflags)
 	# Generate M0 bin from elf

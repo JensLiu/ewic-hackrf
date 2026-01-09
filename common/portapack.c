@@ -90,12 +90,12 @@ static void portapack_data_write_high(const uint32_t value)
 static void portapack_dir_read()
 {
 	portapack_if.gpio_port_data->dir &= ~gpio_data_mask;
-	gpio_set(portapack_if.gpio_dir);
+	hackrf_gpio_set(portapack_if.gpio_dir);
 }
 
 static void portapack_dir_write()
 {
-	gpio_clear(portapack_if.gpio_dir);
+	hackrf_gpio_clear(portapack_if.gpio_dir);
 	portapack_if.gpio_port_data->dir |= gpio_data_mask;
 	/* TODO: Manipulating DIR[3] makes me queasy. The RFFC5072 DATA pin
 	 * is also on port 3, and switches direction periodically...
@@ -107,37 +107,37 @@ static void portapack_dir_write()
 
 __attribute__((unused)) static void portapack_lcd_rd_assert()
 {
-	gpio_clear(portapack_if.gpio_lcd_rdx);
+	hackrf_gpio_clear(portapack_if.gpio_lcd_rdx);
 }
 
 static void portapack_lcd_rd_deassert()
 {
-	gpio_set(portapack_if.gpio_lcd_rdx);
+	hackrf_gpio_set(portapack_if.gpio_lcd_rdx);
 }
 
 static void portapack_lcd_wr_assert()
 {
-	gpio_clear(portapack_if.gpio_lcd_wrx);
+	hackrf_gpio_clear(portapack_if.gpio_lcd_wrx);
 }
 
 static void portapack_lcd_wr_deassert()
 {
-	gpio_set(portapack_if.gpio_lcd_wrx);
+	hackrf_gpio_set(portapack_if.gpio_lcd_wrx);
 }
 
 static void portapack_io_stb_assert()
 {
-	gpio_clear(portapack_if.gpio_io_stbx);
+	hackrf_gpio_clear(portapack_if.gpio_io_stbx);
 }
 
 static void portapack_io_stb_deassert()
 {
-	gpio_set(portapack_if.gpio_io_stbx);
+	hackrf_gpio_set(portapack_if.gpio_io_stbx);
 }
 
 static void portapack_addr(const bool value)
 {
-	gpio_write(portapack_if.gpio_addr, value);
+	hackrf_gpio_write(portapack_if.gpio_addr, value);
 }
 
 static void portapack_lcd_command(const uint32_t value)
@@ -199,13 +199,13 @@ static void portapack_if_init()
 	portapack_io_stb_deassert();
 	portapack_addr(0);
 
-	gpio_output(portapack_if.gpio_dir);
-	gpio_output(portapack_if.gpio_lcd_rdx);
-	gpio_output(portapack_if.gpio_lcd_wrx);
-	gpio_output(portapack_if.gpio_io_stbx);
-	gpio_output(portapack_if.gpio_addr);
-	/* gpio_input(portapack_if.gpio_rot_a); */
-	/* gpio_input(portapack_if.gpio_rot_b); */
+	hackrf_gpio_output(portapack_if.gpio_dir);
+	hackrf_gpio_output(portapack_if.gpio_lcd_rdx);
+	hackrf_gpio_output(portapack_if.gpio_lcd_wrx);
+	hackrf_gpio_output(portapack_if.gpio_io_stbx);
+	hackrf_gpio_output(portapack_if.gpio_addr);
+	/* hackrf_gpio_input(portapack_if.gpio_rot_a); */
+	/* hackrf_gpio_input(portapack_if.gpio_rot_b); */
 
 	scu_pinmux(SCU_PINMUX_PP_D0, SCU_CONF_FUNCTION0 | SCU_GPIO_PDN);
 	scu_pinmux(SCU_PINMUX_PP_D1, SCU_CONF_FUNCTION0 | SCU_GPIO_PDN);
@@ -543,14 +543,14 @@ ui_bitmap_t portapack_font_glyph(const ui_font_t* const font, const char c)
 
 static bool jtag_pp_tck(const bool tms_value)
 {
-	gpio_write(jtag_cpld.gpio->gpio_pp_tms, tms_value);
+	hackrf_gpio_write(jtag_cpld.gpio->gpio_pp_tms, tms_value);
 
 	// 8 ns TMS/TDI to TCK setup
 	__asm__("nop");
 	__asm__("nop");
 	__asm__("nop");
 
-	gpio_set(jtag_cpld.gpio->gpio_tck);
+	hackrf_gpio_set(jtag_cpld.gpio->gpio_tck);
 
 	// 15 ns TCK to TMS/TDI hold time
 	// 20 ns TCK high time
@@ -560,7 +560,7 @@ static bool jtag_pp_tck(const bool tms_value)
 	__asm__("nop");
 	__asm__("nop");
 
-	gpio_clear(jtag_cpld.gpio->gpio_tck);
+	hackrf_gpio_clear(jtag_cpld.gpio->gpio_tck);
 
 	// 20 ns TCK low time
 	// 25 ns TCK falling edge to TDO valid
@@ -572,7 +572,7 @@ static bool jtag_pp_tck(const bool tms_value)
 	__asm__("nop");
 	__asm__("nop");
 
-	return gpio_read(jtag_cpld.gpio->gpio_pp_tdo);
+	return hackrf_gpio_read(jtag_cpld.gpio->gpio_pp_tdo);
 }
 
 static uint32_t jtag_pp_shift(const uint32_t tms_bits, const size_t count)
@@ -596,7 +596,7 @@ static uint32_t jtag_pp_idcode(void)
 	cpld_jtag_take(&jtag_cpld);
 
 	/* TODO: Check if PortaPack TMS is floating or driven by an external device. */
-	gpio_output(jtag_cpld.gpio->gpio_pp_tms);
+	hackrf_gpio_output(jtag_cpld.gpio->gpio_pp_tms);
 
 	/* Test-Logic/Reset -> Run-Test/Idle -> Select-DR/Scan -> Capture-DR */
 	jtag_pp_shift(0b11111010, 8);

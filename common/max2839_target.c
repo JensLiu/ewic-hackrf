@@ -46,8 +46,8 @@ void max2839_target_init(max2839_driver_t* const drv)
 	scu_pinmux(SCU_XCVR_RXENABLE, SCU_GPIO_FAST);
 
 	/* Set GPIO pins as outputs. */
-	gpio_output(drv->gpio_enable);
-	gpio_output(drv->gpio_rxtx);
+	hackrf_gpio_output(drv->gpio_enable);
+	hackrf_gpio_output(drv->gpio_rxtx);
 }
 
 void max2839_target_set_mode(max2839_driver_t* const drv, const max2839_mode_t new_mode)
@@ -78,20 +78,20 @@ void max2839_target_set_mode(max2839_driver_t* const drv, const max2839_mode_t n
 	switch (new_mode) {
 	default:
 	case MAX2839_MODE_SHUTDOWN:
-		gpio_clear(drv->gpio_enable);
-		gpio_clear(drv->gpio_rxtx);
+		hackrf_gpio_clear(drv->gpio_enable);
+		hackrf_gpio_clear(drv->gpio_rxtx);
 		break;
 	case MAX2839_MODE_STANDBY:
-		gpio_clear(drv->gpio_enable);
-		gpio_set(drv->gpio_rxtx);
+		hackrf_gpio_clear(drv->gpio_enable);
+		hackrf_gpio_set(drv->gpio_rxtx);
 		break;
 	case MAX2839_MODE_TX:
-		gpio_set(drv->gpio_enable);
-		gpio_clear(drv->gpio_rxtx);
+		hackrf_gpio_set(drv->gpio_enable);
+		hackrf_gpio_clear(drv->gpio_rxtx);
 		break;
 	case MAX2839_MODE_RX:
-		gpio_set(drv->gpio_enable);
-		gpio_set(drv->gpio_rxtx);
+		hackrf_gpio_set(drv->gpio_enable);
+		hackrf_gpio_set(drv->gpio_rxtx);
 		break;
 	}
 	drv->mode = new_mode;

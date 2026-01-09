@@ -539,7 +539,7 @@ Configure PLL1 (Main MCU Clock) to max speed (204MHz).
 Note: PLL1 clock is used by M4/M0 core, Peripheral, APB1.
 This function shall be called after cpu_clock_init().
 */
-static void cpu_clock_pll1_max_speed(void)
+void cpu_clock_pll1_max_speed(void)
 {
 	uint32_t reg_val;
 
@@ -863,7 +863,7 @@ void ssp1_set_mode_max5864(void)
 void pin_setup(void)
 {
 	/* Configure all GPIO as Input (safe state) */
-	gpio_init();
+	hackrf_gpio_init();
 
 	/* TDI and TMS pull-ups are required in all JTAG-compliant devices.
 	 *
@@ -902,21 +902,21 @@ void pin_setup(void)
 	scu_pinmux(SCU_PINMUX_USB_LED1, SCU_CONF_FUNCTION3);
 #endif
 
-	gpio_output(&gpio_led[0]);
-	gpio_output(&gpio_led[1]);
-	gpio_output(&gpio_led[2]);
+	hackrf_gpio_output(&gpio_led[0]);
+	hackrf_gpio_output(&gpio_led[1]);
+	hackrf_gpio_output(&gpio_led[2]);
 #ifdef RAD1O
-	gpio_output(&gpio_led[3]);
+	hackrf_gpio_output(&gpio_led[3]);
 #endif
 
 	disable_1v8_power();
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
 #ifdef HACKRF_ONE
-		gpio_output(&gpio_h1r9_1v8_enable);
+		hackrf_gpio_output(&gpio_h1r9_1v8_enable);
 		scu_pinmux(SCU_H1R9_EN1V8, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
 #endif
 	} else {
-		gpio_output(&gpio_1v8_enable);
+		hackrf_gpio_output(&gpio_1v8_enable);
 		scu_pinmux(SCU_PINMUX_EN1V8, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
 	}
 
@@ -926,9 +926,9 @@ void pin_setup(void)
 
 	/* Configure RF power supply (VAA) switch control signal as output */
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
-		gpio_output(&gpio_h1r9_vaa_disable);
+		hackrf_gpio_output(&gpio_h1r9_vaa_disable);
 	} else {
-		gpio_output(&gpio_vaa_disable);
+		hackrf_gpio_output(&gpio_vaa_disable);
 	}
 #endif
 
@@ -937,7 +937,7 @@ void pin_setup(void)
 	disable_rf_power();
 
 	/* Configure RF power supply (VAA) switch control signal as output */
-	gpio_output(&gpio_vaa_enable);
+	hackrf_gpio_output(&gpio_vaa_enable);
 
 	/* Disable unused clock outputs. They generate noise. */
 	scu_pinmux(CLK0, SCU_CLK_IN | SCU_CONF_FUNCTION7);
@@ -973,10 +973,10 @@ void enable_1v8_power(void)
 {
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
 #ifdef HACKRF_ONE
-		gpio_set(&gpio_h1r9_1v8_enable);
+		hackrf_gpio_set(&gpio_h1r9_1v8_enable);
 #endif
 	} else {
-		gpio_set(&gpio_1v8_enable);
+		hackrf_gpio_set(&gpio_1v8_enable);
 	}
 }
 
@@ -984,10 +984,10 @@ void disable_1v8_power(void)
 {
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
 #ifdef HACKRF_ONE
-		gpio_clear(&gpio_h1r9_1v8_enable);
+		hackrf_gpio_clear(&gpio_h1r9_1v8_enable);
 #endif
 	} else {
-		gpio_clear(&gpio_1v8_enable);
+		hackrf_gpio_clear(&gpio_1v8_enable);
 	}
 }
 
@@ -999,11 +999,11 @@ void enable_rf_power(void)
 	/* many short pulses to avoid one big voltage glitch */
 	for (i = 0; i < 1000; i++) {
 		if (detected_platform() == BOARD_ID_HACKRF1_R9) {
-			gpio_set(&gpio_h1r9_vaa_disable);
-			gpio_clear(&gpio_h1r9_vaa_disable);
+			hackrf_gpio_set(&gpio_h1r9_vaa_disable);
+			hackrf_gpio_clear(&gpio_h1r9_vaa_disable);
 		} else {
-			gpio_set(&gpio_vaa_disable);
-			gpio_clear(&gpio_vaa_disable);
+			hackrf_gpio_set(&gpio_vaa_disable);
+			hackrf_gpio_clear(&gpio_vaa_disable);
 		}
 	}
 }
@@ -1011,9 +1011,9 @@ void enable_rf_power(void)
 void disable_rf_power(void)
 {
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
-		gpio_set(&gpio_h1r9_vaa_disable);
+		hackrf_gpio_set(&gpio_h1r9_vaa_disable);
 	} else {
-		gpio_set(&gpio_vaa_disable);
+		hackrf_gpio_set(&gpio_vaa_disable);
 	}
 }
 #endif
@@ -1021,7 +1021,7 @@ void disable_rf_power(void)
 #ifdef RAD1O
 void enable_rf_power(void)
 {
-	gpio_set(&gpio_vaa_enable);
+	hackrf_gpio_set(&gpio_vaa_enable);
 
 	/* Let the voltage stabilize */
 	delay(1000000);
@@ -1029,23 +1029,23 @@ void enable_rf_power(void)
 
 void disable_rf_power(void)
 {
-	gpio_clear(&gpio_vaa_enable);
+	hackrf_gpio_clear(&gpio_vaa_enable);
 }
 #endif
 
 void led_on(const led_t led)
 {
-	gpio_set(&gpio_led[led]);
+	hackrf_gpio_set(&gpio_led[led]);
 }
 
 void led_off(const led_t led)
 {
-	gpio_clear(&gpio_led[led]);
+	hackrf_gpio_clear(&gpio_led[led]);
 }
 
 void led_toggle(const led_t led)
 {
-	gpio_toggle(&gpio_led[led]);
+	hackrf_gpio_toggle(&gpio_led[led]);
 }
 
 void set_leds(const uint8_t state)
@@ -1055,13 +1055,13 @@ void set_leds(const uint8_t state)
 	num_leds = 4;
 #endif
 	for (int i = 0; i < num_leds; i++) {
-		gpio_write(&gpio_led[i], ((state >> i) & 1) == 1);
+		hackrf_gpio_write(&gpio_led[i], ((state >> i) & 1) == 1);
 	}
 }
 
 void hw_sync_enable(const hw_sync_mode_t hw_sync_mode)
 {
-	gpio_write(sgpio_config.gpio_hw_sync_enable, hw_sync_mode == 1);
+	hackrf_gpio_write(sgpio_config.gpio_hw_sync_enable, hw_sync_mode == 1);
 }
 
 void halt_and_flash(const uint32_t duration)

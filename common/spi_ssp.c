@@ -34,8 +34,8 @@ void spi_ssp_start(spi_bus_t* const bus, const void* const _config)
 		RESET_CTRL1 = RESET_CTRL1_SPIFI_RST;
 	}
 
-	gpio_set(config->gpio_select);
-	gpio_output(config->gpio_select);
+	hackrf_gpio_set(config->gpio_select);
+	hackrf_gpio_output(config->gpio_select);
 
 	SSP_CR1(bus->obj) = 0;
 	SSP_CPSR(bus->obj) = config->clock_prescale_rate;
@@ -85,7 +85,7 @@ void spi_ssp_transfer_gather(
 
 	const bool word_size_u16 = (SSP_CR0(bus->obj) & 0xf) > SSP_DATA_8BITS;
 
-	gpio_clear(config->gpio_select);
+	hackrf_gpio_clear(config->gpio_select);
 	for (size_t i = 0; i < count; i++) {
 		const size_t data_count = transfers[i].count;
 
@@ -101,7 +101,7 @@ void spi_ssp_transfer_gather(
 			}
 		}
 	}
-	gpio_set(config->gpio_select);
+	hackrf_gpio_set(config->gpio_select);
 }
 
 void spi_ssp_transfer(spi_bus_t* const bus, void* const data, const size_t count)

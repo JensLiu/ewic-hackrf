@@ -281,6 +281,7 @@ extern jtag_t jtag_cpld;
 extern i2c_bus_t i2c0;
 
 void cpu_clock_init(void);
+void cpu_clock_pll1_max_speed(void);
 void ssp1_set_mode_max283x(void);
 void ssp1_set_mode_max5864(void);
 

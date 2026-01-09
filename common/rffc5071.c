@@ -89,8 +89,8 @@ void rffc5071_init(rffc5071_driver_t* const drv)
  */
 void rffc5071_setup(rffc5071_driver_t* const drv)
 {
-	gpio_set(drv->gpio_reset);
-	gpio_output(drv->gpio_reset);
+	hackrf_gpio_set(drv->gpio_reset);
+	hackrf_gpio_output(drv->gpio_reset);
 
 	rffc5071_init(drv);
 

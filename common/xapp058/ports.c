@@ -43,19 +43,19 @@ void setPort(jtag_gpio_t* const gpio, short p, short val)
 {
 	if (p==TMS) {
 		if (val)
-			gpio_set(gpio->gpio_tms);
+			hackrf_gpio_set(gpio->gpio_tms);
 		else
-			gpio_clear(gpio->gpio_tms);
+			hackrf_gpio_clear(gpio->gpio_tms);
 	} if (p==TDI) {
 		if (val)
-			gpio_set(gpio->gpio_tdi);
+			hackrf_gpio_set(gpio->gpio_tdi);
 		else
-			gpio_clear(gpio->gpio_tdi);
+			hackrf_gpio_clear(gpio->gpio_tdi);
 	} if (p==TCK) {
 		if (val)
-			gpio_set(gpio->gpio_tck);
+			hackrf_gpio_set(gpio->gpio_tck);
 		else
-			gpio_clear(gpio->gpio_tck);
+			hackrf_gpio_clear(gpio->gpio_tck);
 	}
 
 	/* conservative delay */
@@ -85,7 +85,7 @@ void readByte(unsigned char *data)
 unsigned char readTDOBit(jtag_gpio_t* const gpio)
 {
 	delay_jtag(2000);
-	return gpio_read(gpio->gpio_tdo);;
+	return hackrf_gpio_read(gpio->gpio_tdo);;
 }
 
 /* waitTime:  Implement as follows: */

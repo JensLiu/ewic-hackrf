@@ -63,8 +63,8 @@ void sgpio_configure_pin_functions(sgpio_config_t* const config)
 	sgpio_cpld_set_mixer_invert(config, 0);
 	hw_sync_enable(0);
 
-	gpio_output(config->gpio_q_invert);
-	gpio_output(config->gpio_hw_sync_enable);
+	hackrf_gpio_output(config->gpio_q_invert);
+	hackrf_gpio_output(config->gpio_hw_sync_enable);
 }
 
 void sgpio_set_slice_mode(sgpio_config_t* const config, const bool multi_slice)
@@ -326,7 +326,7 @@ static void update_q_invert(sgpio_config_t* const config)
 		baseband_invert = false;
 	}
 
-	gpio_write(config->gpio_q_invert, mixer_invert ^ baseband_invert);
+	hackrf_gpio_write(config->gpio_q_invert, mixer_invert ^ baseband_invert);
 }
 
 void sgpio_cpld_set_mixer_invert(sgpio_config_t* const config, const uint_fast8_t invert)

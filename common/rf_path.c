@@ -105,59 +105,59 @@ static void switchctrl_set_hackrf_one(rf_path_t* const rf_path, uint8_t ctrl)
 {
 	if (ctrl & SWITCHCTRL_TX) {
 		if (detected_platform() != BOARD_ID_HACKRF1_R9) {
-			gpio_set(rf_path->gpio_tx);
+			hackrf_gpio_set(rf_path->gpio_tx);
 		}
-		gpio_clear(rf_path->gpio_rx);
+		hackrf_gpio_clear(rf_path->gpio_rx);
 	} else {
 		if (detected_platform() != BOARD_ID_HACKRF1_R9) {
-			gpio_clear(rf_path->gpio_tx);
+			hackrf_gpio_clear(rf_path->gpio_tx);
 		}
-		gpio_set(rf_path->gpio_rx);
+		hackrf_gpio_set(rf_path->gpio_rx);
 	}
 
 	if (ctrl & SWITCHCTRL_MIX_BYPASS) {
-		gpio_set(rf_path->gpio_mix_bypass);
-		gpio_clear(rf_path->gpio_no_mix_bypass);
+		hackrf_gpio_set(rf_path->gpio_mix_bypass);
+		hackrf_gpio_clear(rf_path->gpio_no_mix_bypass);
 		if (ctrl & SWITCHCTRL_TX) {
-			gpio_set(rf_path->gpio_tx_mix_bp);
-			gpio_clear(rf_path->gpio_rx_mix_bp);
+			hackrf_gpio_set(rf_path->gpio_tx_mix_bp);
+			hackrf_gpio_clear(rf_path->gpio_rx_mix_bp);
 		} else {
-			gpio_clear(rf_path->gpio_tx_mix_bp);
-			gpio_set(rf_path->gpio_rx_mix_bp);
+			hackrf_gpio_clear(rf_path->gpio_tx_mix_bp);
+			hackrf_gpio_set(rf_path->gpio_rx_mix_bp);
 		}
 	} else {
-		gpio_clear(rf_path->gpio_mix_bypass);
-		gpio_set(rf_path->gpio_no_mix_bypass);
-		gpio_clear(rf_path->gpio_tx_mix_bp);
-		gpio_clear(rf_path->gpio_rx_mix_bp);
+		hackrf_gpio_clear(rf_path->gpio_mix_bypass);
+		hackrf_gpio_set(rf_path->gpio_no_mix_bypass);
+		hackrf_gpio_clear(rf_path->gpio_tx_mix_bp);
+		hackrf_gpio_clear(rf_path->gpio_rx_mix_bp);
 	}
 
 	if (ctrl & SWITCHCTRL_HP) {
-		gpio_set(rf_path->gpio_hp);
-		gpio_clear(rf_path->gpio_lp);
+		hackrf_gpio_set(rf_path->gpio_hp);
+		hackrf_gpio_clear(rf_path->gpio_lp);
 	} else {
-		gpio_clear(rf_path->gpio_hp);
-		gpio_set(rf_path->gpio_lp);
+		hackrf_gpio_clear(rf_path->gpio_hp);
+		hackrf_gpio_set(rf_path->gpio_lp);
 	}
 
 	if (ctrl & SWITCHCTRL_AMP_BYPASS) {
-		gpio_set(rf_path->gpio_amp_bypass);
-		gpio_clear(rf_path->gpio_tx_amp);
-		gpio_set(rf_path->gpio_no_tx_amp_pwr);
-		gpio_clear(rf_path->gpio_rx_amp);
-		gpio_set(rf_path->gpio_no_rx_amp_pwr);
+		hackrf_gpio_set(rf_path->gpio_amp_bypass);
+		hackrf_gpio_clear(rf_path->gpio_tx_amp);
+		hackrf_gpio_set(rf_path->gpio_no_tx_amp_pwr);
+		hackrf_gpio_clear(rf_path->gpio_rx_amp);
+		hackrf_gpio_set(rf_path->gpio_no_rx_amp_pwr);
 	} else if (ctrl & SWITCHCTRL_TX) {
-		gpio_clear(rf_path->gpio_amp_bypass);
-		gpio_set(rf_path->gpio_tx_amp);
-		gpio_clear(rf_path->gpio_no_tx_amp_pwr);
-		gpio_clear(rf_path->gpio_rx_amp);
-		gpio_set(rf_path->gpio_no_rx_amp_pwr);
+		hackrf_gpio_clear(rf_path->gpio_amp_bypass);
+		hackrf_gpio_set(rf_path->gpio_tx_amp);
+		hackrf_gpio_clear(rf_path->gpio_no_tx_amp_pwr);
+		hackrf_gpio_clear(rf_path->gpio_rx_amp);
+		hackrf_gpio_set(rf_path->gpio_no_rx_amp_pwr);
 	} else {
-		gpio_clear(rf_path->gpio_amp_bypass);
-		gpio_clear(rf_path->gpio_tx_amp);
-		gpio_set(rf_path->gpio_no_tx_amp_pwr);
-		gpio_set(rf_path->gpio_rx_amp);
-		gpio_clear(rf_path->gpio_no_rx_amp_pwr);
+		hackrf_gpio_clear(rf_path->gpio_amp_bypass);
+		hackrf_gpio_clear(rf_path->gpio_tx_amp);
+		hackrf_gpio_set(rf_path->gpio_no_tx_amp_pwr);
+		hackrf_gpio_set(rf_path->gpio_rx_amp);
+		hackrf_gpio_clear(rf_path->gpio_no_rx_amp_pwr);
 	}
 
 	/*
@@ -166,17 +166,17 @@ static void switchctrl_set_hackrf_one(rf_path_t* const rf_path, uint8_t ctrl)
 	 * is unset:
 	 */
 	if (ctrl & SWITCHCTRL_NO_TX_AMP_PWR) {
-		gpio_set(rf_path->gpio_no_tx_amp_pwr);
+		hackrf_gpio_set(rf_path->gpio_no_tx_amp_pwr);
 	}
 	if (ctrl & SWITCHCTRL_NO_RX_AMP_PWR) {
-		gpio_set(rf_path->gpio_no_rx_amp_pwr);
+		hackrf_gpio_set(rf_path->gpio_no_rx_amp_pwr);
 	}
 
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
 		if (ctrl & SWITCHCTRL_ANT_PWR) {
-			gpio_clear(&gpio_h1r9_no_ant_pwr);
+			hackrf_gpio_clear(&gpio_h1r9_no_ant_pwr);
 		} else {
-			gpio_set(&gpio_h1r9_no_ant_pwr);
+			hackrf_gpio_set(&gpio_h1r9_no_ant_pwr);
 		}
 	} else {
 		if (ctrl & SWITCHCTRL_ANT_PWR) {
@@ -196,51 +196,51 @@ static void switchctrl_set_hackrf_one(rf_path_t* const rf_path, uint8_t ctrl)
 static void switchctrl_set_rad1o(rf_path_t* const rf_path, uint8_t ctrl)
 {
 	if (ctrl & SWITCHCTRL_TX) {
-		gpio_set(rf_path->gpio_tx_rx_n);
-		gpio_clear(rf_path->gpio_tx_rx);
+		hackrf_gpio_set(rf_path->gpio_tx_rx_n);
+		hackrf_gpio_clear(rf_path->gpio_tx_rx);
 	} else {
-		gpio_clear(rf_path->gpio_tx_rx_n);
-		gpio_set(rf_path->gpio_tx_rx);
+		hackrf_gpio_clear(rf_path->gpio_tx_rx_n);
+		hackrf_gpio_set(rf_path->gpio_tx_rx);
 	}
 
 	if (ctrl & SWITCHCTRL_MIX_BYPASS) {
-		gpio_clear(rf_path->gpio_by_mix);
-		gpio_set(rf_path->gpio_by_mix_n);
-		gpio_clear(rf_path->gpio_mixer_en);
+		hackrf_gpio_clear(rf_path->gpio_by_mix);
+		hackrf_gpio_set(rf_path->gpio_by_mix_n);
+		hackrf_gpio_clear(rf_path->gpio_mixer_en);
 	} else {
-		gpio_set(rf_path->gpio_by_mix);
-		gpio_clear(rf_path->gpio_by_mix_n);
-		gpio_set(rf_path->gpio_mixer_en);
+		hackrf_gpio_set(rf_path->gpio_by_mix);
+		hackrf_gpio_clear(rf_path->gpio_by_mix_n);
+		hackrf_gpio_set(rf_path->gpio_mixer_en);
 	}
 
 	if (ctrl & SWITCHCTRL_HP) {
-		gpio_set(rf_path->gpio_low_high_filt);
-		gpio_clear(rf_path->gpio_low_high_filt_n);
+		hackrf_gpio_set(rf_path->gpio_low_high_filt);
+		hackrf_gpio_clear(rf_path->gpio_low_high_filt_n);
 	} else {
-		gpio_clear(rf_path->gpio_low_high_filt);
-		gpio_set(rf_path->gpio_low_high_filt_n);
+		hackrf_gpio_clear(rf_path->gpio_low_high_filt);
+		hackrf_gpio_set(rf_path->gpio_low_high_filt_n);
 	}
 
 	if (ctrl & SWITCHCTRL_AMP_BYPASS) {
-		gpio_clear(rf_path->gpio_by_amp);
-		gpio_set(rf_path->gpio_by_amp_n);
+		hackrf_gpio_clear(rf_path->gpio_by_amp);
+		hackrf_gpio_set(rf_path->gpio_by_amp_n);
 
-		gpio_clear(rf_path->gpio_tx_amp);
-		gpio_clear(rf_path->gpio_rx_lna);
+		hackrf_gpio_clear(rf_path->gpio_tx_amp);
+		hackrf_gpio_clear(rf_path->gpio_rx_lna);
 
 	} else if (ctrl & SWITCHCTRL_TX) {
-		gpio_set(rf_path->gpio_by_amp);
-		gpio_clear(rf_path->gpio_by_amp_n);
+		hackrf_gpio_set(rf_path->gpio_by_amp);
+		hackrf_gpio_clear(rf_path->gpio_by_amp_n);
 
-		gpio_set(rf_path->gpio_tx_amp);
-		gpio_clear(rf_path->gpio_rx_lna);
+		hackrf_gpio_set(rf_path->gpio_tx_amp);
+		hackrf_gpio_clear(rf_path->gpio_rx_lna);
 
 	} else {
-		gpio_set(rf_path->gpio_by_amp);
-		gpio_clear(rf_path->gpio_by_amp_n);
+		hackrf_gpio_set(rf_path->gpio_by_amp);
+		hackrf_gpio_clear(rf_path->gpio_by_amp_n);
 
-		gpio_clear(rf_path->gpio_tx_amp);
-		gpio_set(rf_path->gpio_rx_lna);
+		hackrf_gpio_clear(rf_path->gpio_tx_amp);
+		hackrf_gpio_set(rf_path->gpio_rx_lna);
 	}
 
 	/*
@@ -249,10 +249,10 @@ static void switchctrl_set_rad1o(rf_path_t* const rf_path, uint8_t ctrl)
 	 * is unset:
 	 */
 	if (ctrl & SWITCHCTRL_NO_TX_AMP_PWR) {
-		gpio_clear(rf_path->gpio_tx_amp);
+		hackrf_gpio_clear(rf_path->gpio_tx_amp);
 	}
 	if (ctrl & SWITCHCTRL_NO_RX_AMP_PWR) {
-		gpio_clear(rf_path->gpio_rx_lna);
+		hackrf_gpio_clear(rf_path->gpio_rx_lna);
 	}
 }
 #endif
@@ -291,13 +291,13 @@ void rf_path_pin_setup(rf_path_t* const rf_path)
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
 		scu_pinmux(SCU_H1R9_RX, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
 		scu_pinmux(SCU_H1R9_NO_ANT_PWR, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
-		gpio_clear(&gpio_h1r9_no_ant_pwr);
-		gpio_output(&gpio_h1r9_no_ant_pwr);
+		hackrf_gpio_clear(&gpio_h1r9_no_ant_pwr);
+		hackrf_gpio_output(&gpio_h1r9_no_ant_pwr);
 		scu_pinmux(SCU_H1R9_NO_VAA_EN, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
 	} else {
 		scu_pinmux(SCU_TX, SCU_GPIO_FAST | SCU_CONF_FUNCTION4);
 		scu_pinmux(SCU_RX, SCU_GPIO_FAST | SCU_CONF_FUNCTION4);
-		gpio_output(rf_path->gpio_tx);
+		hackrf_gpio_output(rf_path->gpio_tx);
 		scu_pinmux(SCU_NO_VAA_ENABLE, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
 	}
 
@@ -308,18 +308,18 @@ void rf_path_pin_setup(rf_path_t* const rf_path)
 	switchctrl_set(rf_path, SWITCHCTRL_SAFE);
 
 	/* Configure RF switch control signals as outputs */
-	gpio_output(rf_path->gpio_amp_bypass);
-	gpio_output(rf_path->gpio_no_mix_bypass);
-	gpio_output(rf_path->gpio_rx_amp);
-	gpio_output(rf_path->gpio_no_rx_amp_pwr);
-	gpio_output(rf_path->gpio_hp);
-	gpio_output(rf_path->gpio_lp);
-	gpio_output(rf_path->gpio_tx_mix_bp);
-	gpio_output(rf_path->gpio_rx_mix_bp);
-	gpio_output(rf_path->gpio_tx_amp);
-	gpio_output(rf_path->gpio_no_tx_amp_pwr);
-	gpio_output(rf_path->gpio_mix_bypass);
-	gpio_output(rf_path->gpio_rx);
+	hackrf_gpio_output(rf_path->gpio_amp_bypass);
+	hackrf_gpio_output(rf_path->gpio_no_mix_bypass);
+	hackrf_gpio_output(rf_path->gpio_rx_amp);
+	hackrf_gpio_output(rf_path->gpio_no_rx_amp_pwr);
+	hackrf_gpio_output(rf_path->gpio_hp);
+	hackrf_gpio_output(rf_path->gpio_lp);
+	hackrf_gpio_output(rf_path->gpio_tx_mix_bp);
+	hackrf_gpio_output(rf_path->gpio_rx_mix_bp);
+	hackrf_gpio_output(rf_path->gpio_tx_amp);
+	hackrf_gpio_output(rf_path->gpio_no_tx_amp_pwr);
+	hackrf_gpio_output(rf_path->gpio_mix_bypass);
+	hackrf_gpio_output(rf_path->gpio_rx);
 #elif RAD1O
 	/* Configure RF switch control signals */
 	// clang-format off
@@ -346,17 +346,17 @@ void rf_path_pin_setup(rf_path_t* const rf_path)
 	switchctrl_set(rf_path, SWITCHCTRL_SAFE);
 
 	/* Configure RF switch control signals as outputs */
-	gpio_output(rf_path->gpio_tx_rx_n);
-	gpio_output(rf_path->gpio_tx_rx);
-	gpio_output(rf_path->gpio_by_mix);
-	gpio_output(rf_path->gpio_by_mix_n);
-	gpio_output(rf_path->gpio_by_amp);
-	gpio_output(rf_path->gpio_by_amp_n);
-	gpio_output(rf_path->gpio_mixer_en);
-	gpio_output(rf_path->gpio_low_high_filt);
-	gpio_output(rf_path->gpio_low_high_filt_n);
-	gpio_output(rf_path->gpio_tx_amp);
-	gpio_output(rf_path->gpio_rx_lna);
+	hackrf_gpio_output(rf_path->gpio_tx_rx_n);
+	hackrf_gpio_output(rf_path->gpio_tx_rx);
+	hackrf_gpio_output(rf_path->gpio_by_mix);
+	hackrf_gpio_output(rf_path->gpio_by_mix_n);
+	hackrf_gpio_output(rf_path->gpio_by_amp);
+	hackrf_gpio_output(rf_path->gpio_by_amp_n);
+	hackrf_gpio_output(rf_path->gpio_mixer_en);
+	hackrf_gpio_output(rf_path->gpio_low_high_filt);
+	hackrf_gpio_output(rf_path->gpio_low_high_filt_n);
+	hackrf_gpio_output(rf_path->gpio_tx_amp);
+	hackrf_gpio_output(rf_path->gpio_rx_lna);
 #else
 	(void) rf_path; /* silence unused param warning */
 #endif

@@ -41,9 +41,9 @@ void max2837_target_init(max2837_driver_t* const drv)
 	scu_pinmux(SCU_XCVR_TXENABLE, SCU_GPIO_FAST);
 
 	/* Set GPIO pins as outputs. */
-	gpio_output(drv->gpio_enable);
-	gpio_output(drv->gpio_rx_enable);
-	gpio_output(drv->gpio_tx_enable);
+	hackrf_gpio_output(drv->gpio_enable);
+	hackrf_gpio_output(drv->gpio_rx_enable);
+	hackrf_gpio_output(drv->gpio_tx_enable);
 }
 
 void max2837_target_set_mode(max2837_driver_t* const drv, const max2837_mode_t new_mode)
@@ -70,8 +70,8 @@ void max2837_target_set_mode(max2837_driver_t* const drv, const max2837_mode_t n
 	 * outputs. The slow- charging Tx circuits are in a precharged “idle-off”
 	 * state for fast Rx-to-Tx turnaround time.
 	 */
-	gpio_write(drv->gpio_enable, new_mode != MAX2837_MODE_SHUTDOWN);
-	gpio_write(drv->gpio_rx_enable, new_mode == MAX2837_MODE_RX);
-	gpio_write(drv->gpio_tx_enable, new_mode == MAX2837_MODE_TX);
+	hackrf_gpio_write(drv->gpio_enable, new_mode != MAX2837_MODE_SHUTDOWN);
+	hackrf_gpio_write(drv->gpio_rx_enable, new_mode == MAX2837_MODE_RX);
+	hackrf_gpio_write(drv->gpio_tx_enable, new_mode == MAX2837_MODE_TX);
 	drv->mode = new_mode;
 }

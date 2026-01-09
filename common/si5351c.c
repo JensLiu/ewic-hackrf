@@ -209,13 +209,13 @@ void si5351c_configure_clock_control(
 			 * but externally switches that input to CLKIN.
 			 */
 			pll = SI5351C_CLK_PLL_SRC_A;
-			gpio_set(&gpio_h1r9_clkin_en);
+			hackrf_gpio_set(&gpio_h1r9_clkin_en);
 		}
 	} else {
 		/* PLLA on XTAL */
 		pll = SI5351C_CLK_PLL_SRC_A;
 		if (detected_platform() == BOARD_ID_HACKRF1_R9) {
-			gpio_clear(&gpio_h1r9_clkin_en);
+			hackrf_gpio_clear(&gpio_h1r9_clkin_en);
 		}
 	}
 #endif
@@ -296,9 +296,9 @@ void si5351c_enable_clock_outputs(si5351c_driver_t* const drv)
 	si5351c_write(drv, data, sizeof(data));
 
 	if ((clkout_enabled) && (detected_platform() == BOARD_ID_HACKRF1_R9)) {
-		gpio_set(&gpio_h1r9_clkout_en);
+		hackrf_gpio_set(&gpio_h1r9_clkout_en);
 	} else {
-		gpio_clear(&gpio_h1r9_clkout_en);
+		hackrf_gpio_clear(&gpio_h1r9_clkout_en);
 	}
 }
 
@@ -374,18 +374,18 @@ void si5351c_init(si5351c_driver_t* const drv)
 	if (detected_platform() == BOARD_ID_HACKRF1_R9) {
 		/* CLKIN_EN */
 		scu_pinmux(SCU_H1R9_CLKIN_EN, SCU_GPIO_FAST | SCU_CONF_FUNCTION4);
-		gpio_clear(&gpio_h1r9_clkin_en);
-		gpio_output(&gpio_h1r9_clkin_en);
+		hackrf_gpio_clear(&gpio_h1r9_clkin_en);
+		hackrf_gpio_output(&gpio_h1r9_clkin_en);
 
 		/* CLKOUT_EN */
 		scu_pinmux(SCU_H1R9_CLKOUT_EN, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
-		gpio_clear(&gpio_h1r9_clkout_en);
-		gpio_output(&gpio_h1r9_clkout_en);
+		hackrf_gpio_clear(&gpio_h1r9_clkout_en);
+		hackrf_gpio_output(&gpio_h1r9_clkout_en);
 
 		/* MCU_CLK_EN */
 		scu_pinmux(SCU_H1R9_MCU_CLK_EN, SCU_GPIO_FAST | SCU_CONF_FUNCTION0);
-		gpio_clear(&gpio_h1r9_mcu_clk_en);
-		gpio_output(&gpio_h1r9_mcu_clk_en);
+		hackrf_gpio_clear(&gpio_h1r9_mcu_clk_en);
+		hackrf_gpio_output(&gpio_h1r9_mcu_clk_en);
 	}
 	(void) drv;
 }

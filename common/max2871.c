@@ -51,21 +51,21 @@ void max2871_setup(max2871_driver_t* const drv)
 	scu_pinmux(SCU_SYNT_RFOUT_EN, SCU_GPIO_FAST);
 
 	/* Set GPIO pins as outputs. */
-	gpio_output(drv->gpio_vco_ce);
-	gpio_output(drv->gpio_vco_sclk);
-	gpio_output(drv->gpio_vco_sdata);
-	gpio_output(drv->gpio_vco_le);
-	gpio_output(drv->gpio_synt_rfout_en);
+	hackrf_gpio_output(drv->gpio_vco_ce);
+	hackrf_gpio_output(drv->gpio_vco_sclk);
+	hackrf_gpio_output(drv->gpio_vco_sdata);
+	hackrf_gpio_output(drv->gpio_vco_le);
+	hackrf_gpio_output(drv->gpio_synt_rfout_en);
 
 	/* MUX is an input */
-	gpio_input(drv->gpio_vco_mux);
+	hackrf_gpio_input(drv->gpio_vco_mux);
 
 	/* set to known state */
-	gpio_set(drv->gpio_vco_ce); /* active high */
-	gpio_clear(drv->gpio_vco_sclk);
-	gpio_clear(drv->gpio_vco_sdata);
-	gpio_set(drv->gpio_vco_le);        /* active low */
-	gpio_set(drv->gpio_synt_rfout_en); /* active high */
+	hackrf_gpio_set(drv->gpio_vco_ce); /* active high */
+	hackrf_gpio_clear(drv->gpio_vco_sclk);
+	hackrf_gpio_clear(drv->gpio_vco_sdata);
+	hackrf_gpio_set(drv->gpio_vco_le);        /* active low */
+	hackrf_gpio_set(drv->gpio_synt_rfout_en); /* active high */
 
 	max2871_regs_init();
 	int i;
@@ -160,28 +160,28 @@ static void max2871_spi_write(max2871_driver_t* const drv, uint8_t r, uint32_t v
 	uint32_t data = v | r;
 
 	/* make sure everything is starting in the correct state */
-	gpio_set(drv->gpio_vco_le);
-	gpio_clear(drv->gpio_vco_sclk);
-	gpio_clear(drv->gpio_vco_sdata);
+	hackrf_gpio_set(drv->gpio_vco_le);
+	hackrf_gpio_clear(drv->gpio_vco_sclk);
+	hackrf_gpio_clear(drv->gpio_vco_sdata);
 
 	/* start transaction by bringing LE low */
-	gpio_clear(drv->gpio_vco_le);
+	hackrf_gpio_clear(drv->gpio_vco_le);
 
 	while (bits--) {
 		if (data & msb)
-			gpio_set(drv->gpio_vco_sdata);
+			hackrf_gpio_set(drv->gpio_vco_sdata);
 		else
-			gpio_clear(drv->gpio_vco_sdata);
+			hackrf_gpio_clear(drv->gpio_vco_sdata);
 		data <<= 1;
 
 		serial_delay();
-		gpio_set(drv->gpio_vco_sclk);
+		hackrf_gpio_set(drv->gpio_vco_sclk);
 
 		serial_delay();
-		gpio_clear(drv->gpio_vco_sclk);
+		hackrf_gpio_clear(drv->gpio_vco_sclk);
 	}
 
-	gpio_set(drv->gpio_vco_le);
+	hackrf_gpio_set(drv->gpio_vco_le);
 #endif
 }
 
@@ -193,20 +193,20 @@ static uint32_t max2871_spi_read(max2871_driver_t* const drv)
 	max2871_spi_write(drv, 0x06, 0x0);
 
 	serial_delay();
-	gpio_set(drv->gpio_vco_sclk);
+	hackrf_gpio_set(drv->gpio_vco_sclk);
 	serial_delay();
-	gpio_clear(drv->gpio_vco_sclk);
+	hackrf_gpio_clear(drv->gpio_vco_sclk);
 	serial_delay();
 
 	while (bits--) {
-		gpio_set(drv->gpio_vco_sclk);
+		hackrf_gpio_set(drv->gpio_vco_sclk);
 		serial_delay();
 
-		gpio_clear(drv->gpio_vco_sclk);
+		hackrf_gpio_clear(drv->gpio_vco_sclk);
 		serial_delay();
 
 		data <<= 1;
-		data |= gpio_read(drv->gpio_vco_mux) ? 1 : 0;
+		data |= hackrf_gpio_read(drv->gpio_vco_mux) ? 1 : 0;
 	}
 	return data;
 }
@@ -247,10 +247,10 @@ uint64_t max2871_set_frequency(max2871_driver_t* const drv, uint16_t mhz)
 
 void max2871_enable(max2871_driver_t* const drv)
 {
-	gpio_set(drv->gpio_vco_ce);
+	hackrf_gpio_set(drv->gpio_vco_ce);
 }
 
 void max2871_disable(max2871_driver_t* const drv)
 {
-	gpio_clear(drv->gpio_vco_ce);
+	hackrf_gpio_clear(drv->gpio_vco_ce);
 }

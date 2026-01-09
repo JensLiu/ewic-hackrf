@@ -136,9 +136,9 @@ usb_request_status_t usb_vendor_request_reset(
 		 * correctly after the reset.
 		 */
 		if (detected_platform() == BOARD_ID_HACKRF1_R9) {
-			gpio_input(&gpio_h1r9_mcu_clk_en);
-			gpio_input(&gpio_h1r9_clkout_en);
-			gpio_input(&gpio_h1r9_rx);
+			hackrf_gpio_input(&gpio_h1r9_mcu_clk_en);
+			hackrf_gpio_input(&gpio_h1r9_clkout_en);
+			hackrf_gpio_input(&gpio_h1r9_rx);
 		}
 #endif
 		wwdt_reset(100000);

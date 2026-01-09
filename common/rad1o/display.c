@@ -55,12 +55,12 @@ static void select()
 		SSP_MASTER,
 		SSP_SLAVE_OUT_ENABLE);
 
-	gpio_clear(&gpio_lcd_cs);
+	hackrf_gpio_clear(&gpio_lcd_cs);
 }
 
 static void deselect()
 {
-	gpio_set(&gpio_lcd_cs);
+	hackrf_gpio_set(&gpio_lcd_cs);
 }
 
 static void write(uint8_t cd, uint8_t data)
@@ -75,18 +75,18 @@ static void write(uint8_t cd, uint8_t data)
 
 void rad1o_lcdInit(void)
 {
-	gpio_output(&gpio_lcd_bl_en);
-	gpio_output(&gpio_lcd_reset);
-	gpio_output(&gpio_lcd_cs);
+	hackrf_gpio_output(&gpio_lcd_bl_en);
+	hackrf_gpio_output(&gpio_lcd_reset);
+	hackrf_gpio_output(&gpio_lcd_cs);
 
 	/* prepare SPI */
 	SETUPpin(LCD_DI);
 	SETUPpin(LCD_SCK);
 
 	// Reset the display
-	gpio_clear(&gpio_lcd_reset);
+	hackrf_gpio_clear(&gpio_lcd_reset);
 	delayms(100);
-	gpio_set(&gpio_lcd_reset);
+	hackrf_gpio_set(&gpio_lcd_reset);
 	delayms(100);
 
 	select();
@@ -126,12 +126,12 @@ void rad1o_lcdInit(void)
 	rad1o_lcdFill(0xff); /* Clear display buffer */
 	rotate();
 
-	gpio_set(&gpio_lcd_bl_en);
+	hackrf_gpio_set(&gpio_lcd_bl_en);
 }
 
 void rad1o_lcdDeInit(void)
 {
-	gpio_clear(&gpio_lcd_bl_en);
+	hackrf_gpio_clear(&gpio_lcd_bl_en);
 	rad1o_lcdFill(0xff);
 	rad1o_lcdDisplay();
 }

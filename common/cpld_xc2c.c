@@ -63,8 +63,8 @@ static bool cpld_xc2c_jtag_clock(
 	const uint32_t tdi)
 {
 	// 8 ns TMS/TDI to TCK setup
-	gpio_write(jtag->gpio->gpio_tdi, tdi);
-	gpio_write(jtag->gpio->gpio_tms, tms);
+	hackrf_gpio_write(jtag->gpio->gpio_tdi, tdi);
+	hackrf_gpio_write(jtag->gpio->gpio_tms, tms);
 
 	// 20 ns TCK high time
 	__asm__("nop");
@@ -73,7 +73,7 @@ static bool cpld_xc2c_jtag_clock(
 	__asm__("nop");
 	__asm__("nop");
 
-	gpio_clear(jtag->gpio->gpio_tck);
+	hackrf_gpio_clear(jtag->gpio->gpio_tck);
 
 	// 25 ns TCK falling edge to TDO valid
 	// 20 ns TCK low time
@@ -85,7 +85,7 @@ static bool cpld_xc2c_jtag_clock(
 	__asm__("nop");
 	__asm__("nop");
 
-	gpio_set(jtag->gpio->gpio_tck);
+	hackrf_gpio_set(jtag->gpio->gpio_tck);
 
 	// 15 ns TCK to TMS/TDI hold time
 	__asm__("nop");
@@ -93,7 +93,7 @@ static bool cpld_xc2c_jtag_clock(
 	__asm__("nop");
 	__asm__("nop");
 
-	return gpio_read(jtag->gpio->gpio_tdo);
+	return hackrf_gpio_read(jtag->gpio->gpio_tdo);
 }
 
 static void cpld_xc2c_jtag_shift_ptr_tms(

@@ -415,13 +415,13 @@ uint16_t gpio_test(uint8_t address)
 		OPERACAKE_POLARITY_NORMAL);
 	// clear state
 	for (i = 0; i < 5; i++) {
-		gpio_output(&gpio_pins[i]);
-		gpio_write(&gpio_pins[i], 0);
+		hackrf_gpio_output(&gpio_pins[i]);
+		hackrf_gpio_write(&gpio_pins[i], 0);
 	}
 	// Test each pin separately
 	for (i = 0; i < 5; i++) {
 		// Set pin high
-		gpio_write(&gpio_pins[i], 1);
+		hackrf_gpio_write(&gpio_pins[i], 1);
 		// check input
 		reg = operacake_read_reg(oc_bus, address, OPERACAKE_REG_INPUT);
 		reg >>= 2;
@@ -439,7 +439,7 @@ uint16_t gpio_test(uint8_t address)
 		}
 		result <<= 1;
 		// set pin low
-		gpio_write(&gpio_pins[i], 0);
+		hackrf_gpio_write(&gpio_pins[i], 0);
 		// check input
 		reg = operacake_read_reg(oc_bus, address, OPERACAKE_REG_INPUT);
 		reg >>= 2;
@@ -453,7 +453,7 @@ uint16_t gpio_test(uint8_t address)
 
 	// clean up
 	for (i = 0; i < 5; i++) {
-		gpio_input(&gpio_pins[i]);
+		hackrf_gpio_input(&gpio_pins[i]);
 	}
 
 	// Put it back in to I2C mode and set default pins

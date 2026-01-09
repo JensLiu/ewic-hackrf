@@ -28,37 +28,37 @@
 static void rffc5071_spi_target_select(spi_bus_t* const bus)
 {
 	const rffc5071_spi_config_t* const config = bus->config;
-	gpio_clear(config->gpio_select);
+	hackrf_gpio_clear(config->gpio_select);
 }
 
 static void rffc5071_spi_target_unselect(spi_bus_t* const bus)
 {
 	const rffc5071_spi_config_t* const config = bus->config;
-	gpio_set(config->gpio_select);
+	hackrf_gpio_set(config->gpio_select);
 }
 
 static void rffc5071_spi_direction_out(spi_bus_t* const bus)
 {
 	const rffc5071_spi_config_t* const config = bus->config;
-	gpio_output(config->gpio_data);
+	hackrf_gpio_output(config->gpio_data);
 }
 
 static void rffc5071_spi_direction_in(spi_bus_t* const bus)
 {
 	const rffc5071_spi_config_t* const config = bus->config;
-	gpio_input(config->gpio_data);
+	hackrf_gpio_input(config->gpio_data);
 }
 
 static void rffc5071_spi_data_out(spi_bus_t* const bus, const bool bit)
 {
 	const rffc5071_spi_config_t* const config = bus->config;
-	gpio_write(config->gpio_data, bit);
+	hackrf_gpio_write(config->gpio_data, bit);
 }
 
 static bool rffc5071_spi_data_in(spi_bus_t* const bus)
 {
 	const rffc5071_spi_config_t* const config = bus->config;
-	return gpio_read(config->gpio_data);
+	return hackrf_gpio_read(config->gpio_data);
 }
 
 static void rffc5071_spi_bus_init(spi_bus_t* const bus)
@@ -68,11 +68,11 @@ static void rffc5071_spi_bus_init(spi_bus_t* const bus)
 	scu_pinmux(SCU_MIXER_SCLK, SCU_GPIO_FAST | SCU_CONF_FUNCTION4);
 	scu_pinmux(SCU_MIXER_SDATA, SCU_GPIO_FAST);
 
-	gpio_output(config->gpio_clock);
+	hackrf_gpio_output(config->gpio_clock);
 	rffc5071_spi_direction_out(bus);
 
-	gpio_clear(config->gpio_clock);
-	gpio_clear(config->gpio_data);
+	hackrf_gpio_clear(config->gpio_clock);
+	hackrf_gpio_clear(config->gpio_data);
 }
 
 static void rffc5071_spi_target_init(spi_bus_t* const bus)
@@ -84,7 +84,7 @@ static void rffc5071_spi_target_init(spi_bus_t* const bus)
 	scu_pinmux(SCU_MIXER_RESETX, SCU_GPIO_FAST);
 
 	/* Set GPIO pins as outputs. */
-	gpio_output(config->gpio_select);
+	hackrf_gpio_output(config->gpio_select);
 
 	/* set to known state */
 	rffc5071_spi_target_unselect(bus);
@@ -113,10 +113,10 @@ static void rffc5071_spi_sck(spi_bus_t* const bus)
 	const rffc5071_spi_config_t* const config = bus->config;
 
 	rffc5071_spi_serial_delay(bus);
-	gpio_set(config->gpio_clock);
+	hackrf_gpio_set(config->gpio_clock);
 
 	rffc5071_spi_serial_delay(bus);
-	gpio_clear(config->gpio_clock);
+	hackrf_gpio_clear(config->gpio_clock);
 }
 
 static uint32_t rffc5071_spi_exchange_bit(spi_bus_t* const bus, const uint32_t bit)

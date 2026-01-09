@@ -37,21 +37,21 @@ void cpld_jtag_take(jtag_t* const jtag)
 	 * to avoid any glitches.
 	 */
 #ifdef HACKRF_ONE
-	gpio_set(gpio->gpio_pp_tms);
+	hackrf_gpio_set(gpio->gpio_pp_tms);
 #endif
-	gpio_set(gpio->gpio_tms);
-	gpio_set(gpio->gpio_tdi);
-	gpio_clear(gpio->gpio_tck);
+	hackrf_gpio_set(gpio->gpio_tms);
+	hackrf_gpio_set(gpio->gpio_tdi);
+	hackrf_gpio_clear(gpio->gpio_tck);
 
 #ifdef HACKRF_ONE
 	/* Do not drive PortaPack-specific TMS pin initially, just to be cautious. */
-	gpio_input(gpio->gpio_pp_tms);
-	gpio_input(gpio->gpio_pp_tdo);
+	hackrf_gpio_input(gpio->gpio_pp_tms);
+	hackrf_gpio_input(gpio->gpio_pp_tdo);
 #endif
-	gpio_output(gpio->gpio_tms);
-	gpio_output(gpio->gpio_tdi);
-	gpio_output(gpio->gpio_tck);
-	gpio_input(gpio->gpio_tdo);
+	hackrf_gpio_output(gpio->gpio_tms);
+	hackrf_gpio_output(gpio->gpio_tdi);
+	hackrf_gpio_output(gpio->gpio_tck);
+	hackrf_gpio_input(gpio->gpio_tdo);
 }
 
 void cpld_jtag_release(jtag_t* const jtag)
@@ -63,13 +63,13 @@ void cpld_jtag_release(jtag_t* const jtag)
 	 */
 #ifdef HACKRF_ONE
 	/* Do not drive PortaPack-specific pins, initially, just to be cautious. */
-	gpio_input(gpio->gpio_pp_tms);
-	gpio_input(gpio->gpio_pp_tdo);
+	hackrf_gpio_input(gpio->gpio_pp_tms);
+	hackrf_gpio_input(gpio->gpio_pp_tdo);
 #endif
-	gpio_input(gpio->gpio_tms);
-	gpio_input(gpio->gpio_tdi);
-	gpio_input(gpio->gpio_tck);
-	gpio_input(gpio->gpio_tdo);
+	hackrf_gpio_input(gpio->gpio_tms);
+	hackrf_gpio_input(gpio->gpio_tdi);
+	hackrf_gpio_input(gpio->gpio_tck);
+	hackrf_gpio_input(gpio->gpio_tdo);
 }
 
 /* return 0 if success else return error code see xsvfExecute() */

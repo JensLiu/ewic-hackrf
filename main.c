@@ -4,14 +4,16 @@
 
 #include "hackrf_core.h"
 #include "platform_detect.h"
+#include <libopencm3/lpc43xx/ccu.h>
+#include <libopencm3/lpc43xx/cgu.h>
 #include <libopencm3/lpc43xx/gpio.h>
 #include <libopencm3/lpc43xx/m4/nvic.h>
 #include <libopencm3/lpc43xx/scu.h>
 #include <libopencm3/lpc43xx/uart.h>
-#include <libopencm3/lpc43xx/cgu.h>
-#include <libopencm3/lpc43xx/ccu.h>
 
 // --------------------UART support---------------------
+char uart_read_char(void) { return (char)uart_read(UART0); }
+
 void uart_str(char *a) { // send string *a to uart
   int i = 0;
   while (a[i] != 0) {
@@ -65,8 +67,13 @@ int main(void) {
   pin_setup();
 
   /* Configure UART0 PIN*/
-  scu_pinmux(SCU_PINMUX_U0_TXD, SCU_UART_RX_TX | SCU_CONF_FUNCTION1);
-  scu_pinmux(SCU_PINMUX_U0_RXD, SCU_UART_RX_TX | SCU_CONF_FUNCTION1);
+  /* TX: Function 1, No special pull-up/down (default to drive), High speed slew rate if possible */
+  /* SCU_PINMUX_U0_TXD (P2_0) -> UART0_TXD (Func 1) */
+  scu_pinmux(SCU_PINMUX_U0_TXD, SCU_CONF_EPUN_DIS_PULLUP | SCU_CONF_FUNCTION1);
+
+  /* RX: Function 1, Pull-up enabled for idle high stability */
+  /* SCU_PINMUX_U0_RXD (P2_1) -> UART0_RXD (Func 1) */
+  scu_pinmux(SCU_PINMUX_U0_RXD, SCU_CONF_EZI_EN_IN_BUFFER | SCU_CONF_FUNCTION1);
 
   /* enable 1V8 power supply so that the 1V8 LED lights up */
   enable_1v8_power();
@@ -74,8 +81,8 @@ int main(void) {
   cpu_clock_init();
 
   /* Re-enable UART0 clock */
-  CGU_BASE_UART0_CLK =
-      CGU_BASE_UART0_CLK_AUTOBLOCK(1) | CGU_BASE_UART0_CLK_CLK_SEL(CGU_SRC_PLL1);
+  CGU_BASE_UART0_CLK = CGU_BASE_UART0_CLK_AUTOBLOCK(1) |
+                       CGU_BASE_UART0_CLK_CLK_SEL(CGU_SRC_PLL1);
   CCU1_CLK_M4_USART0_CFG = 1;
 
   {
@@ -84,29 +91,57 @@ int main(void) {
     get_uart_rate_config(921600, &uart_divisor, &uart_divaddval, &uart_mulval);
     uart_init(UART0, UART_DATABIT_8, UART_STOPBIT_1, UART_PARITY_NONE,
               uart_divisor, uart_divaddval, uart_mulval);
+
+    // Explicitly Enable FIFO
+    UART_FCR(UART0) = UART_FCR_FIFO_EN | UART_FCR_RX_RS | UART_FCR_TX_RS |
+                      UART_FCR_TRG_LEV0;
   }
 
+  // Debug: Turn on LED1 indicating we reached this point
+  led_on(LED1);
+  delay_1us(100000); 
+
+  uart_str("HackRF UART Ready.\n");
+
   /* Blink LED1/2/3 on the board. */
-  for (int i = 0;; i++) {
-    // Turn on one LED at a time in sequence
-    if (i % 3 == 0) {
-      led_on(LED1);
-      led_off(LED2);
-      led_off(LED3);
-    } else if (i % 3 == 1) {
-      led_off(LED1);
-      led_on(LED2);
-      led_off(LED3);
-    } else {
-      led_off(LED1);
-      led_off(LED2);
-      led_on(LED3);
+  uint32_t led_counter = 0;
+  int led_state = 0;
+
+  while (1) {
+    // Check for Data or Error (Overrun)
+    uart_rx_data_ready_t status = uart_rx_data_ready(UART0);
+
+    if (status == UART_RX_DATA_READY || status == UART_RX_DATA_ERROR) {
+      // Check if RDR (Receive Data Ready) is actually set in hardware to avoid
+      // blocking
+      if (UART_LSR(UART0) & UART_LSR_RDR) {
+        char ch = uart_read_char();
+		// sprintf(DISPLAY_BUFFER, "%c", ch);
+        sprintf(DISPLAY_BUFFER, "Recv: %c (Status: %d)\n", ch, status);
+        uart_str(DISPLAY_BUFFER);
+      }
     }
 
-    delay_1us(200000); // Add a small delay so the blinking is visible
+    // Blink Logic (Non-blocking)
+    led_counter++;
+    if (led_counter > 500000) { // Adjust speed as needed
+      led_counter = 0;
+      led_state++;
 
-    sprintf(DISPLAY_BUFFER, "Hello HACKRF. %d\n", i++);
-    uart_str(DISPLAY_BUFFER);
+      if (led_state % 3 == 0) {
+        led_on(LED1);
+        led_off(LED2);
+        led_off(LED3);
+      } else if (led_state % 3 == 1) {
+        led_off(LED1);
+        led_on(LED2);
+        led_off(LED3);
+      } else {
+        led_off(LED1);
+        led_off(LED2);
+        led_on(LED3);
+      }
+    }
   }
 
   return 0;

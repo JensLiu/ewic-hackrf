@@ -49,6 +49,11 @@
 
 #define USB_TRANSFER_SIZE 0x4000
 
+// ================== UART Support Begin =========================
+#define UART_TRANSFER
+extern void rf_uart_send(const char *data, const int len);
+extern void rf_uart_receive(char *data, const int max_len);
+// ================== UART Support End ===========================
 
 typedef struct {
   uint32_t freq_mhz;
@@ -369,13 +374,27 @@ void rx_mode(uint32_t seq) {
 
   baseband_streaming_enable(&sgpio_config);
 
+#ifdef UART_TRANSFER
   while (transceiver_request.seq == seq) {
     if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
       const uint32_t idx = usb_count & USB_BULK_BUFFER_MASK;
       rf_uart_send((const char *)&usb_bulk_buffer[idx], USB_TRANSFER_SIZE);
+      // Update M4 count to track consumer progress (same as USB callback would do)
+      m0_state.m4_count += USB_TRANSFER_SIZE;
       usb_count += USB_TRANSFER_SIZE;
     }
   }
+#else
+  while (transceiver_request.seq == seq) {
+    if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
+      usb_transfer_schedule_block(
+          &usb_endpoint_bulk_in,
+          &usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK], USB_TRANSFER_SIZE,
+          transceiver_bulk_transfer_complete, NULL);
+      usb_count += USB_TRANSFER_SIZE;
+    }
+  }
+#endif
 
   transceiver_shutdown();
 }
@@ -386,6 +405,27 @@ void tx_mode(uint32_t seq) {
 
   transceiver_startup(TRANSCEIVER_MODE_TX);
 
+#ifdef UART_TRANSFER
+  // Receive initial buffer via UART to fill the buffer before streaming
+  rf_uart_receive((char *)&usb_bulk_buffer[0x0000], USB_TRANSFER_SIZE);
+  m0_state.m4_count += USB_TRANSFER_SIZE;
+  usb_count += USB_TRANSFER_SIZE;
+
+  while (transceiver_request.seq == seq) {
+    if (!started && (m0_state.m4_count == USB_BULK_BUFFER_SIZE)) {
+      // Buffer is now full, start streaming.
+      baseband_streaming_enable(&sgpio_config);
+      started = true;
+    }
+    // When buffer space becomes available, receive more data via UART
+    if ((usb_count - m0_state.m0_count) <= USB_TRANSFER_SIZE) {
+      const uint32_t idx = usb_count & USB_BULK_BUFFER_MASK;
+      rf_uart_receive((char *)&usb_bulk_buffer[idx], USB_TRANSFER_SIZE);
+      m0_state.m4_count += USB_TRANSFER_SIZE;
+      usb_count += USB_TRANSFER_SIZE;
+    }
+  }
+#else
   // Set up OUT transfer of buffer 0.
   usb_transfer_schedule_block(&usb_endpoint_bulk_out, &usb_bulk_buffer[0x0000],
                               USB_TRANSFER_SIZE,
@@ -405,6 +445,7 @@ void tx_mode(uint32_t seq) {
       usb_count += USB_TRANSFER_SIZE;
     }
   }
+#endif
   transceiver_shutdown();
 }
 

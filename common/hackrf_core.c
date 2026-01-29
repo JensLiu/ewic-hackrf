@@ -245,6 +245,8 @@ sgpio_config_t sgpio_config = {
 	.slice_mode_multislice = true,
 };
 
+radio_t radio = {};
+
 rf_path_t rf_path = {
 	.switchctrl = 0,
 #ifdef HACKRF_ONE
@@ -1064,6 +1066,11 @@ void hw_sync_enable(const hw_sync_mode_t hw_sync_mode)
 	hackrf_gpio_write(sgpio_config.gpio_hw_sync_enable, hw_sync_mode == 1);
 }
 
+void trigger_enable(const bool enable)
+{
+	hw_sync_enable(enable ? HW_SYNC_MODE_ON : HW_SYNC_MODE_OFF);
+}
+
 void halt_and_flash(const uint32_t duration)
 {
 	/* blink LED1, LED2, and LED3 */
@@ -1077,4 +1084,20 @@ void halt_and_flash(const uint32_t duration)
 		led_off(LED3);
 		delay(duration);
 	}
+}
+
+void clock_gen_init(void)
+{
+	/* Clock generator initialization is already done in cpu_clock_init() */
+}
+
+void clock_gen_shutdown(void)
+{
+	si5351c_disable_all_outputs(&clock_gen);
+	si5351c_power_down_all_clocks(&clock_gen);
+}
+
+void pin_shutdown(void)
+{
+	/* Placeholder for pin shutdown - disable all outputs */
 }

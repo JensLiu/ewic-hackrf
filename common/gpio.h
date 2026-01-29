@@ -36,4 +36,14 @@ void hackrf_gpio_input(gpio_t gpio);
 void hackrf_gpio_write(gpio_t gpio, const bool value);
 bool hackrf_gpio_read(gpio_t gpio);
 
+/* Wrapper functions for compatibility with upstream HackRF firmware */
+static inline void gpio_init(void) { hackrf_gpio_init(); }
+static inline void gpio_set(gpio_t gpio) { hackrf_gpio_set(gpio); }
+static inline void gpio_clear(gpio_t gpio) { hackrf_gpio_clear(gpio); }
+static inline void gpio_toggle(gpio_t gpio) { hackrf_gpio_toggle(gpio); }
+static inline void gpio_output(gpio_t gpio) { hackrf_gpio_output(gpio); }
+static inline void gpio_input(gpio_t gpio) { hackrf_gpio_input(gpio); }
+static inline void gpio_write(gpio_t gpio, const bool value) { hackrf_gpio_write(gpio, value); }
+static inline bool gpio_read(gpio_t gpio) { return hackrf_gpio_read(gpio); }
+
 #endif /*__GPIO_H__*/

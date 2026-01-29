@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Great Scott Gadgets <info@greatscottgadgets.com>
+ * Copyright 2025 Great Scott Gadgets <info@greatscottgadgets.com>
  *
  * This file is part of HackRF.
  *
@@ -19,14 +19,31 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __M0_STATE_USB_H__
-#define __M0_STATE_USB_H__
+#include <stddef.h>
+#include <usb_queue.h>
+#include "adc.h"
+#include "usb_api_adc.h"
 
-#include <usb_request.h>
-#include "m0_state.h"
-
-usb_request_status_t usb_vendor_request_get_m0_state(
+usb_request_status_t usb_vendor_request_adc_read(
 	usb_endpoint_t* const endpoint,
-	const usb_transfer_stage_t stage);
-
-#endif /*__M0_STATE_USB_H__*/
+	const usb_transfer_stage_t stage)
+{
+	if (stage == USB_TRANSFER_STAGE_SETUP) {
+		if ((endpoint->setup.index & ~0x80) > 7) {
+			return USB_REQUEST_STATUS_STALL;
+		}
+		uint16_t value = adc_read(endpoint->setup.index);
+		adc_off();
+		endpoint->buffer[0] = value & 0xff;
+		endpoint->buffer[1] = value >> 8;
+		usb_transfer_schedule_block(
+			endpoint->in,
+			&endpoint->buffer,
+			2,
+			NULL,
+			NULL);
+		usb_transfer_schedule_ack(endpoint->out);
+		return USB_REQUEST_STATUS_OK;
+	}
+	return USB_REQUEST_STATUS_OK;
+}

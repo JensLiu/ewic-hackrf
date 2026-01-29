@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Great Scott Gadgets <info@greatscottgadgets.com>
+ * Copyright 2025 Great Scott Gadgets <info@greatscottgadgets.com>
  *
  * This file is part of HackRF.
  *
@@ -19,14 +19,18 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __M0_STATE_USB_H__
-#define __M0_STATE_USB_H__
+#ifndef __USB_API_SELFTEST_H
+#define __USB_API_SELFTEST_H
 
+#include <usb_type.h>
 #include <usb_request.h>
-#include "m0_state.h"
 
-usb_request_status_t usb_vendor_request_get_m0_state(
+usb_request_status_t usb_vendor_request_read_selftest(
 	usb_endpoint_t* const endpoint,
 	const usb_transfer_stage_t stage);
 
-#endif /*__M0_STATE_USB_H__*/
+usb_request_status_t usb_vendor_request_test_rtc_osc(
+	usb_endpoint_t* const endpoint,
+	const usb_transfer_stage_t stage);
+
+#endif // __USB_API_SELFTEST_H

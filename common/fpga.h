@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Great Scott Gadgets <info@greatscottgadgets.com>
+ * Copyright 2025 Great Scott Gadgets <info@greatscottgadgets.com>
  *
  * This file is part of HackRF.
  *
@@ -10,23 +10,25 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; see the file COPYING.  If not, write to
+ * along with this program; see the file COPYING. If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __M0_STATE_USB_H__
-#define __M0_STATE_USB_H__
+#ifndef __FPGA_H
+#define __FPGA_H
 
-#include <usb_request.h>
-#include "m0_state.h"
+#include <stdint.h>
+#include <stdbool.h>
 
-usb_request_status_t usb_vendor_request_get_m0_state(
-	usb_endpoint_t* const endpoint,
-	const usb_transfer_stage_t stage);
+typedef enum {
+	FPGA_QUARTER_SHIFT_MODE_NONE = 0b00,
+	FPGA_QUARTER_SHIFT_MODE_UP = 0b11,
+	FPGA_QUARTER_SHIFT_MODE_DOWN = 0b01,
+} fpga_quarter_shift_mode_t;
 
-#endif /*__M0_STATE_USB_H__*/
+#endif // __FPGA_H

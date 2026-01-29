@@ -39,6 +39,7 @@ extern "C" {
 #include "mixer.h"
 #include "w25q80bv.h"
 #include "sgpio.h"
+#include "radio.h"
 #include "rf_path.h"
 #include "cpld_jtag.h"
 
@@ -242,25 +243,14 @@ extern "C" {
 #define SCU_H1R9_NO_VAA_EN  (P6_10) /* GPIO3[6] on P6_10 */
 #define SCU_H1R9_HW_SYNC_EN (P2_5)  /* GPIO5[5] on P2_5 */
 
-typedef enum {
-	TRANSCEIVER_MODE_OFF = 0,
-	TRANSCEIVER_MODE_RX = 1,
-	TRANSCEIVER_MODE_TX = 2,
-	TRANSCEIVER_MODE_SS = 3,
-	TRANSCEIVER_MODE_CPLD_UPDATE = 4,
-	TRANSCEIVER_MODE_RX_SWEEP = 5,
-} transceiver_mode_t;
+/* transceiver_mode_t is now defined in radio.h */
 
 typedef enum {
 	HW_SYNC_MODE_OFF = 0,
 	HW_SYNC_MODE_ON = 1,
 } hw_sync_mode_t;
 
-typedef enum {
-	CLOCK_SOURCE_HACKRF = 0,
-	CLOCK_SOURCE_EXTERNAL = 1,
-	CLOCK_SOURCE_PORTAPACK = 2,
-} clock_source_t;
+/* clock_source_t is now defined in radio.h */
 
 void delay(uint32_t duration);
 void delay_us_at_mhz(uint32_t us, uint32_t mhz);
@@ -277,15 +267,19 @@ extern mixer_driver_t mixer;
 extern w25q80bv_driver_t spi_flash;
 extern sgpio_config_t sgpio_config;
 extern rf_path_t rf_path;
+extern radio_t radio;
 extern jtag_t jtag_cpld;
 extern i2c_bus_t i2c0;
 
 void cpu_clock_init(void);
 void cpu_clock_pll1_max_speed(void);
+void clock_gen_init(void);
+void clock_gen_shutdown(void);
 void ssp1_set_mode_max283x(void);
 void ssp1_set_mode_max5864(void);
 
 void pin_setup(void);
+void pin_shutdown(void);
 
 void enable_1v8_power(void);
 void disable_1v8_power(void);
@@ -314,6 +308,7 @@ void led_toggle(const led_t led);
 void set_leds(const uint8_t state);
 
 void hw_sync_enable(const hw_sync_mode_t hw_sync_mode);
+void trigger_enable(const bool enable);
 
 void halt_and_flash(const uint32_t duration);
 

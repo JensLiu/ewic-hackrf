@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 Great Scott Gadgets <info@greatscottgadgets.com>
+ * Copyright 2025 Great Scott Gadgets <info@greatscottgadgets.com>
  *
  * This file is part of HackRF.
  *
@@ -19,14 +19,30 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef __M0_STATE_USB_H__
-#define __M0_STATE_USB_H__
+#ifndef __USB_API_PRALINE_H__
+#define __USB_API_PRALINE_H__
 
+#include <usb_type.h>
 #include <usb_request.h>
-#include "m0_state.h"
 
-usb_request_status_t usb_vendor_request_get_m0_state(
+usb_request_status_t usb_vendor_request_p2_ctrl(
 	usb_endpoint_t* const endpoint,
 	const usb_transfer_stage_t stage);
 
-#endif /*__M0_STATE_USB_H__*/
+usb_request_status_t usb_vendor_request_p1_ctrl(
+	usb_endpoint_t* const endpoint,
+	const usb_transfer_stage_t stage);
+
+usb_request_status_t usb_vendor_request_clkin_ctrl(
+	usb_endpoint_t* const endpoint,
+	const usb_transfer_stage_t stage);
+
+usb_request_status_t usb_vendor_request_set_narrowband_filter(
+	usb_endpoint_t* const endpoint,
+	const usb_transfer_stage_t stage);
+
+usb_request_status_t usb_vendor_request_set_fpga_bitstream(
+	usb_endpoint_t* const endpoint,
+	const usb_transfer_stage_t stage);
+
+#endif /* end of include guard: __USB_API_PRALINE_H__ */

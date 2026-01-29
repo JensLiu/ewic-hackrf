@@ -47,6 +47,8 @@
 #include "usb_endpoint.h"
 #include "usb_api_sweep.h"
 
+#include "uart.h"
+
 #define USB_TRANSFER_SIZE 0x4000
 
 typedef struct {
@@ -460,6 +462,7 @@ void rx_mode(uint32_t seq)
 
 	while (transceiver_request.seq == seq) {
 		if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
+			uart_print("rx_mode: schedule block\n");
 			usb_transfer_schedule_block(
 				&usb_endpoint_bulk_in,
 				&usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK],

@@ -62,6 +62,8 @@
  #include "clkin.h"
  #include "fpga.h"
  #include "selftest.h"
+
+ #include "uart.h"
  
  extern uint32_t __m0_start__;
  extern uint32_t __m0_end__;
@@ -263,6 +265,7 @@
  
    detect_hardware_platform();
    pin_shutdown();
+   uart_pin_setup();
  #ifndef RAD1O
    clock_gen_shutdown();
  #endif
@@ -293,6 +296,7 @@
    clock_gen_init();
  #endif
    cpu_clock_init();
+   uart_setup();
  
    /* Wake the M0 */
    ipc_halt_m0();
@@ -359,6 +363,8 @@
      clkin_detect_init();
      clkin_detect_init();
    }
+
+   uart_print("Hello, World!\n");
  
    while (true) {
      transceiver_request_t request;

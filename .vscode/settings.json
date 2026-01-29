@@ -1,13 +1,21 @@
 {
-    "C_Cpp.errorSquiggles": "enabled",
-    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "C_Cpp.autocomplete": "disabled",
+    "C_Cpp.errorSquiggles": "disabled",
+    "clangd.path": "clangd",
+    "clangd.arguments": [
+        "--background-index",
+        "--clang-tidy=false",
+        "--header-insertion=never",
+        "--compile-commands-dir=${workspaceFolder}",
+        "--query-driver=/usr/bin/arm-none-eabi-*,/usr/local/bin/arm-none-eabi-*"
+    ],
     "files.associations": {
         "*.h": "c",
         "*.c": "c",
         "*.def": "c",
         "*.ld": "plaintext"
     },
-    "C_Cpp.intelliSenseEngine": "default",
     "cmake.configureOnOpen": false,
     "cmake.sourceDirectory": "${workspaceFolder}",
     "editor.formatOnSave": false

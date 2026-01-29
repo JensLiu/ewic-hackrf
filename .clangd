@@ -1,4 +1,5 @@
 CompileFlags:
+  CompilationDatabase: .
   Add:
     - -I.
     - -Icommon
@@ -14,7 +15,19 @@ CompileFlags:
     - -DLPC43XX_M4
     - -DCFG_TUSB_MCU=8
     - -Wno-unknown-attributes
+  Remove:
+    - -mthumb
+    - -mcpu=*
+    - -mfloat-abi=*
+    - -mfpu=*
+    - --target=*
 
 Diagnostics:
   Suppress:
     - pp_file_not_found
+    - drv_unknown_argument
+  ClangTidy:
+    Remove: "*"
+
+Index:
+  Background: Build

@@ -1,234 +1,655 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+// /*
+//  * Copyright 2012-2022 Great Scott Gadgets <info@greatscottgadgets.com>
+//  * Copyright 2012 Jared Boone
+//  * Copyright 2013 Benjamin Vernoux
+//  *
+//  * This file is part of HackRF.
+//  *
+//  * This program is free software; you can redistribute it and/or modify
+//  * it under the terms of the GNU General Public License as published by
+//  * the Free Software Foundation; either version 2, or (at your option)
+//  * any later version.
+//  *
+//  * This program is distributed in the hope that it will be useful,
+//  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  * GNU General Public License for more details.
+//  *
+//  * You should have received a copy of the GNU General Public License
+//  * along with this program; see the file COPYING.  If not, write to
+//  * the Free Software Foundation, Inc., 51 Franklin Street,
+//  * Boston, MA 02110-1301, USA.
+//  */
 
-#include "hackrf_core.h"
-#include "platform_detect.h"
-#include "uart_support/uart.h"
-#include "uart_support/uart_api_transceiver.h"
-#include <libopencm3/lpc43xx/ccu.h>
-#include <libopencm3/lpc43xx/cgu.h>
-#include <libopencm3/lpc43xx/gpio.h>
-#include <libopencm3/lpc43xx/m4/nvic.h>
-#include <libopencm3/lpc43xx/scu.h>
-#include <libopencm3/lpc43xx/uart.h>
+// #include <stddef.h>
+// #include <string.h>
 
-#include "cpld_xc2c.h"
-#include "usb_request.h"
-#include "usb_standard_request.h"
-#include <libopencm3/lpc43xx/ipc.h>
+// #include <libopencm3/lpc43xx/ipc.h>
+// #include <libopencm3/lpc43xx/m4/nvic.h>
+// #include <libopencm3/lpc43xx/rgu.h>
+// #include <libopencm3/lpc43xx/timer.h>
 
-// usb
-#include "streaming.h"
-#include "tuning.h"
-#include "usb_api_m0_state.h"
-#include "usb_bulk_buffer.h"
-#define USB_TRANSFER_SIZE 0x4000
+// #include <streaming.h>
 
-// USB vendor request handler (stub - UART is used for control instead of USB)
-static usb_request_status_t
-usb_vendor_request(usb_endpoint_t *const endpoint,
-                   const usb_transfer_stage_t stage) {
-  (void)endpoint;
-  (void)stage;
-  return USB_REQUEST_STATUS_STALL;
-}
+// #include "tuning.h"
 
-// USB request handlers required by usb_request.c
-const usb_request_handlers_t usb_request_handlers = {
-    .standard = usb_standard_request,
-    .class = 0,
-    .vendor = usb_vendor_request,
-    .reserved = 0,
-};
+// #include "usb.h"
+// #include "usb_standard_request.h"
 
-// Extern declarations for linker symbols
-extern uint32_t __ram_m0_start__;
-extern uint32_t _etext_rom;
-extern uint32_t _etext_ram;
-extern uint32_t _text_ram;
-extern uint32_t __m0_start__;
-extern uint32_t __m0_end__;
+// #include "usb_descriptor.h"
+// #include <rom_iap.h>
 
-// Prototypes for missing functions (not in headers)
-static void m0_rom_to_ram() {
-  uint32_t *dest = &__ram_m0_start__;
+// #include "clkin.h"
+// #include "cpld_xc2c.h"
+// #include "hackrf_ui.h"
+// #include "operacake.h"
+// #include "platform_detect.h"
+// #include "portapack.h"
+// #include "usb_api_board_info.h"
+// #include "usb_api_cpld.h"
+// #include "usb_api_m0_state.h"
+// #include "usb_api_operacake.h"
+// #include "usb_api_register.h"
+// #include "usb_api_spiflash.h"
+// #include "usb_api_sweep.h"
+// #include "usb_api_transceiver.h"
+// #include "usb_api_ui.h"
+// #include "usb_bulk_buffer.h"
+// #include "usb_device.h"
+// #include "usb_endpoint.h"
 
-  // Calculate the base address of ROM
-  uint32_t base = (uint32_t)(&_etext_rom - (&_etext_ram - &_text_ram));
+// // UART Debug
+// #include "uart_support/uart.h"
 
-  // M0 image location, relative to the start of ROM
-  uint32_t src = (uint32_t)&__m0_start__;
+// extern uint32_t __m0_start__;
+// extern uint32_t __m0_end__;
+// extern uint32_t __ram_m0_start__;
+// extern uint32_t _etext_ram, _text_ram, _etext_rom;
 
-  uint32_t len = (uint32_t)&__m0_end__ - (uint32_t)src;
-  memcpy(dest, (uint32_t *)(base + src), len);
-}
+// static usb_request_handler_fn vendor_request_handler[] = {
+//     NULL,
+//     usb_vendor_request_set_transceiver_mode,
+//     usb_vendor_request_write_max283x,
+//     usb_vendor_request_read_max283x,
+//     usb_vendor_request_write_si5351c,
+//     usb_vendor_request_read_si5351c,
+//     usb_vendor_request_set_sample_rate_frac,
+//     usb_vendor_request_set_baseband_filter_bandwidth,
+// #ifdef RAD1O
+//     NULL, // write_rffc5071 not used
+//     NULL, // read_rffc5071 not used
+// #else
+//     usb_vendor_request_write_rffc5071,
+//     usb_vendor_request_read_rffc5071,
+// #endif
+//     usb_vendor_request_erase_spiflash,
+//     usb_vendor_request_write_spiflash,
+//     usb_vendor_request_read_spiflash,
+//     NULL, // used to be write_cpld
+//     usb_vendor_request_read_board_id,
+//     usb_vendor_request_read_version_string,
+//     usb_vendor_request_set_freq,
+//     usb_vendor_request_set_amp_enable,
+//     usb_vendor_request_read_partid_serialno,
+//     usb_vendor_request_set_lna_gain,
+//     usb_vendor_request_set_vga_gain,
+//     usb_vendor_request_set_txvga_gain,
+//     NULL, // was set_if_freq
+// #ifdef HACKRF_ONE
+//     usb_vendor_request_set_antenna_enable,
+// #else
+//     NULL,
+// #endif
+//     usb_vendor_request_set_freq_explicit,
+//     usb_vendor_request_read_wcid, // USB_WCID_VENDOR_REQ
+//     usb_vendor_request_init_sweep,
+//     usb_vendor_request_operacake_get_boards,
+//     usb_vendor_request_operacake_set_ports,
+//     usb_vendor_request_set_hw_sync_mode,
+//     usb_vendor_request_reset,
+//     usb_vendor_request_operacake_set_ranges,
+//     usb_vendor_request_set_clkout_enable,
+//     usb_vendor_request_spiflash_status,
+//     usb_vendor_request_spiflash_clear_status,
+//     usb_vendor_request_operacake_gpio_test,
+// #ifdef HACKRF_ONE
+//     usb_vendor_request_cpld_checksum,
+// #else
+//     NULL,
+// #endif
+//     usb_vendor_request_set_ui_enable,
+//     usb_vendor_request_operacake_set_mode,
+//     usb_vendor_request_operacake_get_mode,
+//     usb_vendor_request_operacake_set_dwell_times,
+//     usb_vendor_request_get_m0_state,
+//     usb_vendor_request_set_tx_underrun_limit,
+//     usb_vendor_request_set_rx_overrun_limit,
+//     usb_vendor_request_get_clkin_status,
+//     usb_vendor_request_read_board_rev,
+//     usb_vendor_request_read_supported_platform,
+//     usb_vendor_request_set_leds,
+//     usb_vendor_request_user_config_set_bias_t_opts,
+// };
 
-static bool cpld_jtag_sram_load(jtag_t *const jtag) {
-  cpld_jtag_take(jtag);
-  cpld_xc2c64a_jtag_sram_write(jtag, &cpld_hackrf_program_sram);
-  const bool success = cpld_xc2c64a_jtag_sram_verify(
-      jtag, &cpld_hackrf_program_sram, &cpld_hackrf_verify);
-  cpld_jtag_release(jtag);
-  return success;
-}
+// static const uint32_t vendor_request_handler_count =
+//     sizeof(vendor_request_handler) / sizeof(vendor_request_handler[0]);
 
-// Additional includes for missing symbols
-#include "clkin.h"
-#include "cpld_jtag.h"
-#include "hackrf_ui.h"
-#include "mixer.h"
-#include "operacake.h"
-#include "portapack.h"
-#include "rf_path.h"
+// usb_request_status_t usb_vendor_request(usb_endpoint_t *const endpoint,
+//                                         const usb_transfer_stage_t stage) {
+//   usb_request_status_t status = USB_REQUEST_STATUS_STALL;
 
-char DISPLAY_BUFFER[512];
+//   if (endpoint->setup.request < vendor_request_handler_count) {
+//     usb_request_handler_fn handler =
+//         vendor_request_handler[endpoint->setup.request];
+//     if (handler) {
+//       status = handler(endpoint, stage);
+//     }
+//   }
 
-int main(void) {
-  static uint32_t led_counter = 0;
-  static int led_state = 0;
-  m0_rom_to_ram();
-  detect_hardware_platform();
-  pin_setup();
-  uart_pin_setup();
-  enable_1v8_power(); // enable 1V8 power supply so that the 1V8 LED lights up
-  // Set up mixer before enabling RF power, because its
-  // GPO is used to control the antenna bias tee.
-  mixer_setup(&mixer);
-  cpu_clock_init();
-  uart_setup();
+//   return status;
+// }
 
-  /* Wake the M0 */
-  ipc_halt_m0();
-  ipc_start_m0((uint32_t)&__ram_m0_start__);
+// const usb_request_handlers_t usb_request_handlers = {
+//     .standard = usb_standard_request,
+//     .class = 0,
+//     .vendor = usb_vendor_request,
+//     .reserved = 0,
+// };
 
-  if (!cpld_jtag_sram_load(&jtag_cpld)) {
-    halt_and_flash(6000000);
-  }
+// void usb_configuration_changed(usb_device_t *const device) {
+//   /* Reset transceiver to idle state until other commands are received */
+//   request_transceiver_mode(TRANSCEIVER_MODE_OFF);
+//   if (device->configuration->number == 1) {
+//     // transceiver configuration
+//     led_on(LED1);
+//   } else {
+//     /* Configuration number equal 0 means usb bus reset. */
+//     led_off(LED1);
+//   }
+//   usb_endpoint_init(&usb_endpoint_bulk_in);
+//   usb_endpoint_init(&usb_endpoint_bulk_out);
+// }
 
-  portapack_init();
+// void usb_set_descriptor_by_serial_number(void) {
+//   iap_cmd_res_t iap_cmd_res;
 
-  hackrf_ui()->init();
+//   /* Read IAP Serial Number Identification */
+//   iap_cmd_res.cmd_param.command_code = IAP_CMD_READ_SERIAL_NO;
+//   iap_cmd_call(&iap_cmd_res);
 
-  rf_path_init(&rf_path);
-  // Configure radio
-  sample_rate_set(10000000);              // 10 Msps
-  baseband_filter_bandwidth_set(5000000); // 5 MHz filter
-  set_freq(433000000ULL);                 // 433 MHz (ISM band)
+//   if (iap_cmd_res.status_res.status_ret == CMD_SUCCESS) {
+//     usb_descriptor_string_serial_number[0] =
+//         USB_DESCRIPTOR_STRING_SERIAL_BUF_LEN;
+//     usb_descriptor_string_serial_number[1] = USB_DESCRIPTOR_TYPE_STRING;
 
-  bool operacake_allow_gpio;
-  if (hackrf_ui()->operacake_gpio_compatible()) {
-    operacake_allow_gpio = true;
-  } else {
-    operacake_allow_gpio = false;
-  }
-  operacake_init(operacake_allow_gpio);
+//     /* 32 characters of serial number, convert to UTF-16LE */
+//     for (size_t i = 0; i < USB_DESCRIPTOR_STRING_SERIAL_LEN; i++) {
+//       const uint_fast8_t nibble =
+//           (iap_cmd_res.status_res.iap_result[i >> 3] >> (28 - (i & 7) * 4)) &
+//           0xf;
+//       const char c = (nibble > 9) ? ('a' + nibble - 10) : ('0' + nibble);
+//       usb_descriptor_string_serial_number[2 + i * 2] = c;
+//       usb_descriptor_string_serial_number[3 + i * 2] = 0x00;
+//     }
+//   } else {
+//     usb_descriptor_string_serial_number[0] = 2;
+//     usb_descriptor_string_serial_number[1] = USB_DESCRIPTOR_TYPE_STRING;
+//   }
+// }
 
-  // FIXME: clock detection on r9 only works when calling init twice
-  if (detected_platform() == BOARD_ID_HACKRF1_R9) {
-    clkin_detect_init();
-    clkin_detect_init();
-  }
+// static bool cpld_jtag_sram_load(jtag_t *const jtag) {
+//   cpld_jtag_take(jtag);
+//   cpld_xc2c64a_jtag_sram_write(jtag, &cpld_hackrf_program_sram);
+//   const bool success = cpld_xc2c64a_jtag_sram_verify(
+//       jtag, &cpld_hackrf_program_sram, &cpld_hackrf_verify);
+//   cpld_jtag_release(jtag);
+//   return success;
+// }
 
-  // Debug: Turn on LED1 indicating we reached this point
-  led_on(LED1);
-  delay_1us(100000);
+// static void m0_rom_to_ram() {
+//   uint32_t *dest = &__ram_m0_start__;
 
-  uart_send_str("HackRF UART Ready.\n");
+//   // Calculate the base address of ROM
+//   uint32_t base = (uint32_t)(&_etext_rom - (&_etext_ram - &_text_ram));
 
-  while (1) {
-    uint32_t usb_count = 0;
+//   // M0 image location, relative to the start of ROM
+//   uint32_t src = (uint32_t)&__m0_start__;
 
-    transceiver_startup(TRANSCEIVER_MODE_RX);
+//   uint32_t len = (uint32_t)&__m0_end__ - (uint32_t)src;
+//   memcpy(dest, (uint32_t *)(base + src), len);
+// }
 
-    baseband_streaming_enable(&sgpio_config);
+// int main(void) {
+//   // Copy M0 image from ROM before SPIFI is disabled
+//   m0_rom_to_ram();
 
-    while (1) {
-      if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
-        uart_send_str("Data Available\n");
-        const uint32_t idx = usb_count & USB_BULK_BUFFER_MASK;
-        sprintf(DISPLAY_BUFFER,
-                "usb_bulk_buffer"
-                "[%lu..%lu]: ",
-                (unsigned long)idx,
-                (unsigned long)(idx + USB_TRANSFER_SIZE - 1));
-        for (uint32_t i = 0; i < USB_TRANSFER_SIZE; i++) {
-          char byte = usb_bulk_buffer[idx + i];
-          sprintf(&DISPLAY_BUFFER[strlen(DISPLAY_BUFFER)], "%02X ",
-                  (unsigned int)(uint8_t)byte);
-        }
-        sprintf(&DISPLAY_BUFFER[strlen(DISPLAY_BUFFER)], "\n");
-        uart_send_str(DISPLAY_BUFFER);
-        // rf_uart_send((const char *)&usb_bulk_buffer[idx], USB_TRANSFER_SIZE);
-        usb_count += USB_TRANSFER_SIZE;
-        m0_state.m4_count +=
-            USB_TRANSFER_SIZE; // Tell M0 we consumed data, freeing buffer space
-      }
-      // Blink Logic(Non - blocking) led_counter++;
-      // if (led_counter > 500000) { // Adjust speed as needed
-      //   led_counter = 0;
-      //   led_state++;
+//   detect_hardware_platform();
+//   uart_pin_setup();
+//   pin_setup();
+//   enable_1v8_power();
+// #ifdef HACKRF_ONE
+//   // Set up mixer before enabling RF power, because its
+//   // GPO is used to control the antenna bias tee.
+//   mixer_setup(&mixer);
+// #endif
+// #if (defined HACKRF_ONE || defined RAD1O)
+//   enable_rf_power();
+// #endif
+//   cpu_clock_init();
+//   uart_setup();
 
-      //   if (led_state % 3 == 0) {
-      //     led_on(LED1);
-      //     led_off(LED2);
-      //     led_off(LED3);
-      //   } else if (led_state % 3 == 1) {
-      //     led_off(LED1);
-      //     led_on(LED2);
-      //     led_off(LED3);
-      //   } else {
-      //     led_off(LED1);
-      //     led_off(LED2);
-      //     led_on(LED3);
-      //   }
-      // }
-    }
+//   /* Wake the M0 */
+//   ipc_halt_m0();
+//   ipc_start_m0((uint32_t)&__ram_m0_start__);
 
-    transceiver_shutdown();
-  }
+//   if (!cpld_jtag_sram_load(&jtag_cpld)) {
+//     halt_and_flash(6000000);
+//   }
 
-  /* Blink LED1/2/3 on the board. */
-  // uint32_t led_counter = 0;
-  // int led_state = 0;
+// #ifdef HACKRF_ONE
+//   portapack_init();
+// #endif
 
-  // while (1) {
-  //   // Check for Data or Error` (Overrun)
-  //   uart_rx_data_ready_t status = uart_rx_data_ready(UART0);
+// #ifndef DFU_MODE
+//   usb_set_descriptor_by_serial_number();
+// #endif
 
-  //   if (status == UART_RX_DATA_READY || status == UART_RX_DATA_ERROR) {
-  //     // Check if RDR (Receive Data Ready) is actually set in hardware to
-  //     avoid
-  //     // blocking
-  //     if (UART_LSR(UART0) & UART_LSR_RDR) {
-  //       char ch = uart_read_char();
-  //       // sprintf(DISPLAY_BUFFER, "%c", ch);
-  //       sprintf(DISPLAY_BUFFER, "Recv: %c (Status: %d)\n", ch, status);
-  //       uart_send_str(DISPLAY_BUFFER);
-  //     }
-  //   }
+//   usb_set_configuration_changed_cb(usb_configuration_changed);
+//   usb_peripheral_reset();
 
-  //   // Blink Logic (Non-blocking)
-  //   led_counter++;
-  //   if (led_counter > 500000) { // Adjust speed as needed
-  //     led_counter = 0;
-  //     led_state++;
+//   usb_device_init(0, &usb_device);
 
-  //     if (led_state % 3 == 0) {
-  //       led_on(LED1);
-  //       led_off(LED2);
-  //       led_off(LED3);
-  //     } else if (led_state % 3 == 1) {
-  //       led_off(LED1);
-  //       led_on(LED2);
-  //       led_off(LED3);
-  //     } else {
-  //       led_off(LED1);
-  //       led_off(LED2);
-  //       led_on(LED3);
-  //     }
-  //   }
-  // }
+//   usb_queue_init(&usb_endpoint_control_out_queue);
+//   usb_queue_init(&usb_endpoint_control_in_queue);
+//   usb_queue_init(&usb_endpoint_bulk_out_queue);
+//   usb_queue_init(&usb_endpoint_bulk_in_queue);
 
-  return 0;
-}
+//   usb_endpoint_init(&usb_endpoint_control_out);
+//   usb_endpoint_init(&usb_endpoint_control_in);
+
+//   nvic_set_priority(NVIC_USB0_IRQ, 255);
+
+//   hackrf_ui()->init();
+
+//   usb_run(&usb_device);
+
+//   rf_path_init(&rf_path);
+
+//   bool operacake_allow_gpio;
+//   if (hackrf_ui()->operacake_gpio_compatible()) {
+//     operacake_allow_gpio = true;
+//   } else {
+//     operacake_allow_gpio = false;
+//   }
+//   operacake_init(operacake_allow_gpio);
+
+//   // FIXME: clock detection on r9 only works when calling init twice
+//   if (detected_platform() == BOARD_ID_HACKRF1_R9) {
+//     clkin_detect_init();
+//     clkin_detect_init();
+//   }
+
+//   uart_send_str("Hello, World!");
+
+//   while (true) {
+//     transceiver_request_t request;
+
+//     // Briefly disable USB interrupt so that we can
+//     // atomically retrieve both the transceiver mode
+//     // and the mode change sequence number. They are
+//     // changed together by request_transceiver_mode()
+//     // called from the USB ISR.
+
+//     nvic_disable_irq(NVIC_USB0_IRQ);
+//     request = transceiver_request;
+//     nvic_enable_irq(NVIC_USB0_IRQ);
+
+//     switch (request.mode) {
+//     case TRANSCEIVER_MODE_OFF:
+//       off_mode(request.seq);
+//       break;
+//     case TRANSCEIVER_MODE_RX:
+//       uart_send_str("Starting RX mode...\n");
+//       rx_mode(request.seq);
+//       break;
+//     case TRANSCEIVER_MODE_TX:
+//       tx_mode(request.seq);
+//       break;
+//     case TRANSCEIVER_MODE_RX_SWEEP:
+//       sweep_mode(request.seq);
+//       break;
+//     case TRANSCEIVER_MODE_CPLD_UPDATE:
+//       cpld_update();
+//       break;
+//     default:
+//       break;
+//     }
+//   }
+
+//   return 0;
+// }
+/*
+ * Copyright 2012-2022 Great Scott Gadgets <info@greatscottgadgets.com>
+ * Copyright 2012 Jared Boone
+ * Copyright 2013 Benjamin Vernoux
+ *
+ * This file is part of HackRF.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; see the file COPYING.  If not, write to
+ * the Free Software Foundation, Inc., 51 Franklin Street,
+ * Boston, MA 02110-1301, USA.
+ */
+
+ #include <stddef.h>
+ #include <string.h>
+ 
+ #include <libopencm3/lpc43xx/ipc.h>
+ #include <libopencm3/lpc43xx/m4/nvic.h>
+ #include <libopencm3/lpc43xx/rgu.h>
+ #include <libopencm3/lpc43xx/timer.h>
+ 
+ #include <streaming.h>
+ 
+ #include "tuning.h"
+ 
+ #include "usb.h"
+ #include "usb_standard_request.h"
+ 
+ #include "usb_descriptor.h"
+ #include <rom_iap.h>
+ 
+ #include "clkin.h"
+ #include "cpld_xc2c.h"
+ #include "hackrf_ui.h"
+ #include "operacake.h"
+ #include "platform_detect.h"
+ #include "portapack.h"
+ #include "usb_api_board_info.h"
+ #include "usb_api_cpld.h"
+ #include "usb_api_m0_state.h"
+ #include "usb_api_operacake.h"
+ #include "usb_api_register.h"
+ #include "usb_api_spiflash.h"
+ #include "usb_api_sweep.h"
+ #include "usb_api_transceiver.h"
+ #include "usb_api_ui.h"
+ #include "usb_bulk_buffer.h"
+ #include "usb_device.h"
+ #include "usb_endpoint.h"
+
+ 
+ extern uint32_t __m0_start__;
+ extern uint32_t __m0_end__;
+ extern uint32_t __ram_m0_start__;
+ extern uint32_t _etext_ram, _text_ram, _etext_rom;
+ 
+ static usb_request_handler_fn vendor_request_handler[] = {
+     NULL,
+     usb_vendor_request_set_transceiver_mode,
+     usb_vendor_request_write_max283x,
+     usb_vendor_request_read_max283x,
+     usb_vendor_request_write_si5351c,
+     usb_vendor_request_read_si5351c,
+     usb_vendor_request_set_sample_rate_frac,
+     usb_vendor_request_set_baseband_filter_bandwidth,
+ #ifdef RAD1O
+     NULL, // write_rffc5071 not used
+     NULL, // read_rffc5071 not used
+ #else
+     usb_vendor_request_write_rffc5071,
+     usb_vendor_request_read_rffc5071,
+ #endif
+     usb_vendor_request_erase_spiflash,
+     usb_vendor_request_write_spiflash,
+     usb_vendor_request_read_spiflash,
+     NULL, // used to be write_cpld
+     usb_vendor_request_read_board_id,
+     usb_vendor_request_read_version_string,
+     usb_vendor_request_set_freq,
+     usb_vendor_request_set_amp_enable,
+     usb_vendor_request_read_partid_serialno,
+     usb_vendor_request_set_lna_gain,
+     usb_vendor_request_set_vga_gain,
+     usb_vendor_request_set_txvga_gain,
+     NULL, // was set_if_freq
+ #ifdef HACKRF_ONE
+     usb_vendor_request_set_antenna_enable,
+ #else
+     NULL,
+ #endif
+     usb_vendor_request_set_freq_explicit,
+     usb_vendor_request_read_wcid, // USB_WCID_VENDOR_REQ
+     usb_vendor_request_init_sweep,
+     usb_vendor_request_operacake_get_boards,
+     usb_vendor_request_operacake_set_ports,
+     usb_vendor_request_set_hw_sync_mode,
+     usb_vendor_request_reset,
+     usb_vendor_request_operacake_set_ranges,
+     usb_vendor_request_set_clkout_enable,
+     usb_vendor_request_spiflash_status,
+     usb_vendor_request_spiflash_clear_status,
+     usb_vendor_request_operacake_gpio_test,
+ #ifdef HACKRF_ONE
+     usb_vendor_request_cpld_checksum,
+ #else
+     NULL,
+ #endif
+     usb_vendor_request_set_ui_enable,
+     usb_vendor_request_operacake_set_mode,
+     usb_vendor_request_operacake_get_mode,
+     usb_vendor_request_operacake_set_dwell_times,
+     usb_vendor_request_get_m0_state,
+     usb_vendor_request_set_tx_underrun_limit,
+     usb_vendor_request_set_rx_overrun_limit,
+     usb_vendor_request_get_clkin_status,
+     usb_vendor_request_read_board_rev,
+     usb_vendor_request_read_supported_platform,
+     usb_vendor_request_set_leds,
+     usb_vendor_request_user_config_set_bias_t_opts,
+ };
+ 
+ static const uint32_t vendor_request_handler_count =
+     sizeof(vendor_request_handler) / sizeof(vendor_request_handler[0]);
+ 
+ usb_request_status_t usb_vendor_request(usb_endpoint_t *const endpoint,
+                                         const usb_transfer_stage_t stage) {
+   usb_request_status_t status = USB_REQUEST_STATUS_STALL;
+ 
+   if (endpoint->setup.request < vendor_request_handler_count) {
+     usb_request_handler_fn handler =
+         vendor_request_handler[endpoint->setup.request];
+     if (handler) {
+       status = handler(endpoint, stage);
+     }
+   }
+ 
+   return status;
+ }
+ 
+ const usb_request_handlers_t usb_request_handlers = {
+     .standard = usb_standard_request,
+     .class = 0,
+     .vendor = usb_vendor_request,
+     .reserved = 0,
+ };
+ 
+ void usb_configuration_changed(usb_device_t *const device) {
+   /* Reset transceiver to idle state until other commands are received */
+   request_transceiver_mode(TRANSCEIVER_MODE_OFF);
+   if (device->configuration->number == 1) {
+     // transceiver configuration
+     led_on(LED1);
+   } else {
+     /* Configuration number equal 0 means usb bus reset. */
+     led_off(LED1);
+   }
+   usb_endpoint_init(&usb_endpoint_bulk_in);
+   usb_endpoint_init(&usb_endpoint_bulk_out);
+ }
+ 
+ void usb_set_descriptor_by_serial_number(void) {
+   iap_cmd_res_t iap_cmd_res;
+ 
+   /* Read IAP Serial Number Identification */
+   iap_cmd_res.cmd_param.command_code = IAP_CMD_READ_SERIAL_NO;
+   iap_cmd_call(&iap_cmd_res);
+ 
+   if (iap_cmd_res.status_res.status_ret == CMD_SUCCESS) {
+     usb_descriptor_string_serial_number[0] =
+         USB_DESCRIPTOR_STRING_SERIAL_BUF_LEN;
+     usb_descriptor_string_serial_number[1] = USB_DESCRIPTOR_TYPE_STRING;
+ 
+     /* 32 characters of serial number, convert to UTF-16LE */
+     for (size_t i = 0; i < USB_DESCRIPTOR_STRING_SERIAL_LEN; i++) {
+       const uint_fast8_t nibble =
+           (iap_cmd_res.status_res.iap_result[i >> 3] >> (28 - (i & 7) * 4)) &
+           0xf;
+       const char c = (nibble > 9) ? ('a' + nibble - 10) : ('0' + nibble);
+       usb_descriptor_string_serial_number[2 + i * 2] = c;
+       usb_descriptor_string_serial_number[3 + i * 2] = 0x00;
+     }
+   } else {
+     usb_descriptor_string_serial_number[0] = 2;
+     usb_descriptor_string_serial_number[1] = USB_DESCRIPTOR_TYPE_STRING;
+   }
+ }
+ 
+ static bool cpld_jtag_sram_load(jtag_t *const jtag) {
+   cpld_jtag_take(jtag);
+   cpld_xc2c64a_jtag_sram_write(jtag, &cpld_hackrf_program_sram);
+   const bool success = cpld_xc2c64a_jtag_sram_verify(
+       jtag, &cpld_hackrf_program_sram, &cpld_hackrf_verify);
+   cpld_jtag_release(jtag);
+   return success;
+ }
+ 
+ static void m0_rom_to_ram() {
+   uint32_t *dest = &__ram_m0_start__;
+ 
+   // Calculate the base address of ROM
+   uint32_t base = (uint32_t)(&_etext_rom - (&_etext_ram - &_text_ram));
+ 
+   // M0 image location, relative to the start of ROM
+   uint32_t src = (uint32_t)&__m0_start__;
+ 
+   uint32_t len = (uint32_t)&__m0_end__ - (uint32_t)src;
+   memcpy(dest, (uint32_t *)(base + src), len);
+ }
+ 
+ int main(void) {
+   // Copy M0 image from ROM before SPIFI is disabled
+   m0_rom_to_ram();
+ 
+   detect_hardware_platform();
+   pin_setup();
+   enable_1v8_power();
+ #ifdef HACKRF_ONE
+   // Set up mixer before enabling RF power, because its
+   // GPO is used to control the antenna bias tee.
+   mixer_setup(&mixer);
+ #endif
+ #if (defined HACKRF_ONE || defined RAD1O)
+   enable_rf_power();
+ #endif
+   cpu_clock_init();
+ 
+   /* Wake the M0 */
+   ipc_halt_m0();
+   ipc_start_m0((uint32_t)&__ram_m0_start__);
+ 
+   if (!cpld_jtag_sram_load(&jtag_cpld)) {
+     halt_and_flash(6000000);
+   }
+ 
+ #ifdef HACKRF_ONE
+   portapack_init();
+ #endif
+ 
+ #ifndef DFU_MODE
+   usb_set_descriptor_by_serial_number();
+ #endif
+ 
+   usb_set_configuration_changed_cb(usb_configuration_changed);
+   usb_peripheral_reset();
+ 
+   usb_device_init(0, &usb_device);
+ 
+   usb_queue_init(&usb_endpoint_control_out_queue);
+   usb_queue_init(&usb_endpoint_control_in_queue);
+   usb_queue_init(&usb_endpoint_bulk_out_queue);
+   usb_queue_init(&usb_endpoint_bulk_in_queue);
+ 
+   usb_endpoint_init(&usb_endpoint_control_out);
+   usb_endpoint_init(&usb_endpoint_control_in);
+ 
+   nvic_set_priority(NVIC_USB0_IRQ, 255);
+ 
+   hackrf_ui()->init();
+ 
+   usb_run(&usb_device);
+ 
+   rf_path_init(&rf_path);
+ 
+   bool operacake_allow_gpio;
+   if (hackrf_ui()->operacake_gpio_compatible()) {
+     operacake_allow_gpio = true;
+   } else {
+     operacake_allow_gpio = false;
+   }
+   operacake_init(operacake_allow_gpio);
+ 
+   // FIXME: clock detection on r9 only works when calling init twice
+   if (detected_platform() == BOARD_ID_HACKRF1_R9) {
+     clkin_detect_init();
+     clkin_detect_init();
+   }
+
+ 
+   while (true) {
+     transceiver_request_t request;
+ 
+     // Briefly disable USB interrupt so that we can
+     // atomically retrieve both the transceiver mode
+     // and the mode change sequence number. They are
+     // changed together by request_transceiver_mode()
+     // called from the USB ISR.
+ 
+     nvic_disable_irq(NVIC_USB0_IRQ);
+     request = transceiver_request;
+     nvic_enable_irq(NVIC_USB0_IRQ);
+ 
+     switch (request.mode) {
+     case TRANSCEIVER_MODE_OFF:
+       off_mode(request.seq);
+       break;
+     case TRANSCEIVER_MODE_RX:
+       rx_mode(request.seq);
+       break;
+     case TRANSCEIVER_MODE_TX:
+       tx_mode(request.seq);
+       break;
+     case TRANSCEIVER_MODE_RX_SWEEP:
+       sweep_mode(request.seq);
+       break;
+     case TRANSCEIVER_MODE_CPLD_UPDATE:
+       cpld_update();
+       break;
+     default:
+       break;
+     }
+   }
+ 
+   return 0;
+ }
+ 

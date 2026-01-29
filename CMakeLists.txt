@@ -31,10 +31,19 @@ add_custom_command(
 	DEPENDS ${PATH_CPLD_BITSTREAM_TOOL} ${PATH_HACKRF_CPLD_XSVF}
 )
 
+# TinyUSB directory (disabled for debugging)
+# set(TINYUSB_DIR ${PATH_HACKRF_FIRMWARE}/lib/tinyusb)
+
+# Include directories
 include_directories(
 	${PATH_HACKRF_FIRMWARE_COMMON}
 	${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb
 	${PATH_HACKRF_FIRMWARE}/lib/libopencm3/include
+	${PATH_HACKRF_FIRMWARE}/uart_support
+	# TinyUSB includes disabled for debugging
+	# ${PATH_HACKRF_FIRMWARE}/tinyusb_port
+	# ${TINYUSB_DIR}/src
+	# ${TINYUSB_DIR}/src/common
 )
 
 set(SRC_M4
@@ -56,8 +65,8 @@ set(SRC_M4
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_operacake.c"
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_sweep.c"
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_ui.c"
+	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_transceiver.c"
 	"${PATH_HACKRF_FIRMWARE}/uart_support/uart.c"
-	"${PATH_HACKRF_FIRMWARE}/uart_support/uart_api_transceiver.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/usb_queue.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/fault_handler.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/cpld_jtag.c"
@@ -73,6 +82,38 @@ set(SRC_M4
 )
 
 set(SRC_M0 sgpio_m0.s)
+
+#--------------------------------------------------------------------
+# TinyUSB USB Host Sources (DISABLED for debugging)
+#--------------------------------------------------------------------
+# NOTE: TinyUSB is temporarily disabled to debug USB bulk transfer issues.
+# The HCD driver may be interfering with USB device mode even when not initialized.
+#
+# To re-enable TinyUSB, uncomment the section below:
+#
+# set(TINYUSB_SRC
+# 	# TinyUSB core
+# 	${TINYUSB_DIR}/src/tusb.c
+# 	${TINYUSB_DIR}/src/common/tusb_fifo.c
+# 	# Host stack
+# 	${TINYUSB_DIR}/src/host/usbh.c
+# 	${TINYUSB_DIR}/src/host/hub.c
+# 	# Host class drivers
+# 	${TINYUSB_DIR}/src/class/hid/hid_host.c
+# 	${TINYUSB_DIR}/src/class/cdc/cdc_host.c
+# 	${TINYUSB_DIR}/src/class/msc/msc_host.c
+# 	# ChipIdea EHCI driver for LPC43xx
+# 	${TINYUSB_DIR}/src/portable/chipidea/ci_hs/hcd_ci_hs.c
+# 	${TINYUSB_DIR}/src/portable/ehci/ehci.c
+# 	# Our HackRF port
+# 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/tinyusb_port.c
+# )
+#
+# # Add TinyUSB sources to M4 build
+# set(SRC_M4
+# 	${SRC_M4}
+# 	${TINYUSB_SRC}
+# )
 
 if(BOARD STREQUAL "HACKRF_ONE")
 	SET(SRC_M4
@@ -95,5 +136,9 @@ if(BOARD STREQUAL "RAD1O")
 		"${PATH_HACKRF_FIRMWARE_COMMON}/ui_rad1o.c"
 	)
 endif()
+
+# TinyUSB compile definitions (disabled)
+# OPT_MCU_LPC43XX = 8 (from tusb_option.h)
+# set(HACKRF_OPTS "${HACKRF_OPTS} -DCFG_TUSB_MCU=OPT_MCU_LPC43XX")
 
 DeclareTargets()

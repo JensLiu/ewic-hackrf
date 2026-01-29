@@ -1,0 +1,14 @@
+{
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "files.associations": {
+        "*.h": "c",
+        "*.c": "c",
+        "*.def": "c",
+        "*.ld": "plaintext"
+    },
+    "C_Cpp.intelliSenseEngine": "default",
+    "cmake.configureOnOpen": false,
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "editor.formatOnSave": false
+}

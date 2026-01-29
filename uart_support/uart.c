@@ -88,3 +88,5 @@ void uart_setup() {
   UART_FCR(UART0) =
       UART_FCR_FIFO_EN | UART_FCR_RX_RS | UART_FCR_TX_RS | UART_FCR_TRG_LEV0;
 }
+
+char DISPLAY_BUFFER[512];

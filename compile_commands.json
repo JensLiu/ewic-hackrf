@@ -1,0 +1,25 @@
+[
+  {
+    "directory": "/home/jens/Documents/academic/n3cat/working-repos/ewic-hackrf",
+    "file": "main.c",
+    "arguments": [
+      "clang",
+      "-c",
+      "-I.",
+      "-Icommon",
+      "-Ilib/hackrf_usb",
+      "-Ilib/libopencm3/include",
+      "-Itinyusb_port",
+      "-Ilib/tinyusb/src",
+      "-Iuart_support",
+      "-DHACKRF_ONE",
+      "-DLPC43XX",
+      "-DLPC4320",
+      "-DTX_ENABLE",
+      "-DLPC43XX_M4",
+      "-DCFG_TUSB_MCU=8",
+      "-Wno-unknown-attributes",
+      "main.c"
+    ]
+  }
+]

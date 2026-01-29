@@ -1,0 +1,37 @@
+{
+    "configurations": [
+        {
+            "name": "HackRF Firmware (ARM Cortex-M4)",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/common/**",
+                "${workspaceFolder}/lib/hackrf_usb/**",
+                "${workspaceFolder}/lib/libopencm3/include/**",
+                "${workspaceFolder}/tinyusb_port/**",
+                "${workspaceFolder}/lib/tinyusb/src/**",
+                "${workspaceFolder}/uart_support/**"
+            ],
+            "defines": [
+                "HACKRF_ONE",
+                "LPC43XX",
+                "LPC4320",
+                "TX_ENABLE",
+                "LPC43XX_M4",
+                "CFG_TUSB_MCU=OPT_MCU_LPC43XX",
+                "__ARM_ARCH_7EM__",
+                "__thumb__"
+            ],
+            "compilerPath": "/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc",
+            "cStandard": "gnu99",
+            "cppStandard": "gnu++11",
+            "intelliSenseMode": "gcc-arm",
+            "compilerArgs": [
+                "-mthumb",
+                "-mcpu=cortex-m4",
+                "-mfloat-abi=hard",
+                "-mfpu=fpv4-sp-d16"
+            ]
+        }
+    ],
+    "version": 4
+}

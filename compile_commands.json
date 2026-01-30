@@ -2,336 +2,336 @@
   {
     "directory": ".",
     "file": "main.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "main.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "main.c"]
   },
   {
     "directory": ".",
     "file": "common/tuning.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/tuning.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/tuning.c"]
   },
   {
     "directory": ".",
     "file": "common/streaming.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/streaming.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/streaming.c"]
   },
   {
     "directory": ".",
     "file": "common/m0_state.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/m0_state.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/m0_state.c"]
   },
   {
     "directory": ".",
     "file": "common/radio.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/radio.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/radio.c"]
   },
   {
     "directory": ".",
     "file": "common/hackrf_core.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/hackrf_core.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/hackrf_core.c"]
   },
   {
     "directory": ".",
     "file": "common/usb.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/usb.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/usb.c"]
   },
   {
     "directory": ".",
     "file": "common/usb_request.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/usb_request.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/usb_request.c"]
   },
   {
     "directory": ".",
     "file": "common/usb_standard_request.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/usb_standard_request.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/usb_standard_request.c"]
   },
   {
     "directory": ".",
     "file": "common/usb_queue.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/usb_queue.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/usb_queue.c"]
   },
   {
     "directory": ".",
     "file": "common/fault_handler.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/fault_handler.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/fault_handler.c"]
   },
   {
     "directory": ".",
     "file": "common/selftest.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/selftest.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/selftest.c"]
   },
   {
     "directory": ".",
     "file": "common/sgpio.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/sgpio.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/sgpio.c"]
   },
   {
     "directory": ".",
     "file": "common/rf_path.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/rf_path.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/rf_path.c"]
   },
   {
     "directory": ".",
     "file": "common/si5351c.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/si5351c.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/si5351c.c"]
   },
   {
     "directory": ".",
     "file": "common/max283x.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max283x.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max283x.c"]
   },
   {
     "directory": ".",
     "file": "common/max2837.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max2837.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max2837.c"]
   },
   {
     "directory": ".",
     "file": "common/max2837_target.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max2837_target.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max2837_target.c"]
   },
   {
     "directory": ".",
     "file": "common/max2839.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max2839.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max2839.c"]
   },
   {
     "directory": ".",
     "file": "common/max2839_target.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max2839_target.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max2839_target.c"]
   },
   {
     "directory": ".",
     "file": "common/max5864.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max5864.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max5864.c"]
   },
   {
     "directory": ".",
     "file": "common/max5864_target.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/max5864_target.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/max5864_target.c"]
   },
   {
     "directory": ".",
     "file": "common/mixer.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/mixer.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/mixer.c"]
   },
   {
     "directory": ".",
     "file": "common/i2c_bus.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/i2c_bus.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/i2c_bus.c"]
   },
   {
     "directory": ".",
     "file": "common/i2c_lpc.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/i2c_lpc.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/i2c_lpc.c"]
   },
   {
     "directory": ".",
     "file": "common/w25q80bv.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/w25q80bv.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/w25q80bv.c"]
   },
   {
     "directory": ".",
     "file": "common/w25q80bv_target.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/w25q80bv_target.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/w25q80bv_target.c"]
   },
   {
     "directory": ".",
     "file": "common/spi_bus.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/spi_bus.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/spi_bus.c"]
   },
   {
     "directory": ".",
     "file": "common/spi_ssp.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/spi_ssp.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/spi_ssp.c"]
   },
   {
     "directory": ".",
     "file": "common/gpio_lpc.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/gpio_lpc.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/gpio_lpc.c"]
   },
   {
     "directory": ".",
     "file": "common/hackrf_ui.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/hackrf_ui.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/hackrf_ui.c"]
   },
   {
     "directory": ".",
     "file": "common/platform_detect.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/platform_detect.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/platform_detect.c"]
   },
   {
     "directory": ".",
     "file": "common/firmware_info.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/firmware_info.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/firmware_info.c"]
   },
   {
     "directory": ".",
     "file": "common/clkin.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/clkin.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/clkin.c"]
   },
   {
     "directory": ".",
     "file": "common/gpdma.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/gpdma.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/gpdma.c"]
   },
   {
     "directory": ".",
     "file": "common/user_config.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/user_config.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/user_config.c"]
   },
   {
     "directory": ".",
     "file": "common/rffc5071.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/rffc5071.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/rffc5071.c"]
   },
   {
     "directory": ".",
     "file": "common/rffc5071_spi.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/rffc5071_spi.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/rffc5071_spi.c"]
   },
   {
     "directory": ".",
     "file": "common/cpld_jtag.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/cpld_jtag.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/cpld_jtag.c"]
   },
   {
     "directory": ".",
     "file": "common/cpld_xc2c.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/cpld_xc2c.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/cpld_xc2c.c"]
   },
   {
     "directory": ".",
     "file": "common/crc.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/crc.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/crc.c"]
   },
   {
     "directory": ".",
     "file": "common/rom_iap.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/rom_iap.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/rom_iap.c"]
   },
   {
     "directory": ".",
     "file": "common/operacake.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/operacake.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/operacake.c"]
   },
   {
     "directory": ".",
     "file": "common/operacake_sctimer.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/operacake_sctimer.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/operacake_sctimer.c"]
   },
   {
     "directory": ".",
     "file": "common/portapack.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/portapack.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/portapack.c"]
   },
   {
     "directory": ".",
     "file": "common/ui_portapack.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/ui_portapack.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/ui_portapack.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_descriptor.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_descriptor.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_descriptor.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_device.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_device.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_device.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_endpoint.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_endpoint.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_endpoint.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_board_info.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_board_info.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_board_info.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_cpld.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_cpld.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_cpld.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_m0_state.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_m0_state.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_m0_state.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_register.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_register.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_register.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_spiflash.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_spiflash.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_spiflash.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_operacake.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_operacake.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_operacake.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_sweep.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_sweep.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_sweep.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_ui.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_ui.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_ui.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_selftest.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_selftest.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_selftest.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_adc.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_adc.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_adc.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_praline.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_praline.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_praline.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/usb_api_transceiver.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_transceiver.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/usb_api_transceiver.c"]
   },
   {
     "directory": ".",
     "file": "lib/hackrf_usb/hackrf_usb.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "lib/hackrf_usb/hackrf_usb.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "lib/hackrf_usb/hackrf_usb.c"]
   },
   {
     "directory": ".",
     "file": "uart_support/uart.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "uart_support/uart.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "uart_support/uart.c"]
   },
   {
     "directory": ".",
     "file": "tinyusb_port/tinyusb_port.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "tinyusb_port/tinyusb_port.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "tinyusb_port/tinyusb_port.c"]
   },
   {
     "directory": ".",
     "file": "common/xapp058/lenval.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/xapp058/lenval.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/xapp058/lenval.c"]
   },
   {
     "directory": ".",
     "file": "common/xapp058/micro.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/xapp058/micro.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/xapp058/micro.c"]
   },
   {
     "directory": ".",
     "file": "common/xapp058/ports.c",
-    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-Wno-unknown-attributes", "common/xapp058/ports.c"]
+    "arguments": ["clang", "-c", "-I.", "-Icommon", "-Ilib/hackrf_usb", "-Ilib/libopencm3/include", "-Itinyusb_port", "-Ilib/tinyusb/src", "-Ilib/tinyusb/src/common", "-Ilib/tinyusb/src/device", "-Ilib/tinyusb/src/portable/chipidea/ci_hs", "-Iuart_support", "-DHACKRF_ONE", "-DLPC43XX", "-DLPC4320", "-DTX_ENABLE", "-DLPC43XX_M4", "-DCFG_TUSB_MCU=8", "-DWEAK=__attribute__((weak))", "-Wno-unknown-attributes", "common/xapp058/ports.c"]
   }
 ]

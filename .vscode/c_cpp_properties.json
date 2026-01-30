@@ -3,13 +3,16 @@
         {
             "name": "HackRF Firmware (ARM Cortex-M4)",
             "includePath": [
-                "${workspaceFolder}/**",
-                "${workspaceFolder}/common/**",
-                "${workspaceFolder}/lib/hackrf_usb/**",
-                "${workspaceFolder}/lib/libopencm3/include/**",
-                "${workspaceFolder}/tinyusb_port/**",
-                "${workspaceFolder}/lib/tinyusb/src/**",
-                "${workspaceFolder}/uart_support/**"
+                "${workspaceFolder}",
+                "${workspaceFolder}/common",
+                "${workspaceFolder}/lib/hackrf_usb",
+                "${workspaceFolder}/lib/libopencm3/include",
+                "${workspaceFolder}/tinyusb_port",
+                "${workspaceFolder}/lib/tinyusb/src",
+                "${workspaceFolder}/lib/tinyusb/src/common",
+                "${workspaceFolder}/lib/tinyusb/src/device",
+                "${workspaceFolder}/lib/tinyusb/src/portable/chipidea/ci_hs",
+                "${workspaceFolder}/uart_support"
             ],
             "defines": [
                 "HACKRF_ONE",
@@ -18,6 +21,8 @@
                 "TX_ENABLE",
                 "LPC43XX_M4",
                 "CFG_TUSB_MCU=OPT_MCU_LPC43XX",
+                "WEAK=__attribute__((weak))",
+                "VERSION_STRING=\"git-unknown\"",
                 "__ARM_ARCH_7EM__",
                 "__thumb__"
             ],
@@ -30,7 +35,8 @@
                 "-mcpu=cortex-m4",
                 "-mfloat-abi=hard",
                 "-mfpu=fpv4-sp-d16"
-            ]
+            ],
+            "compileCommands": "${workspaceFolder}/build/compile_commands.json"
         }
     ],
     "version": 4

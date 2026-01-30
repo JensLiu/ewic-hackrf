@@ -21,6 +21,9 @@
 cmake_minimum_required(VERSION 3.10.0)
 set(CMAKE_TOOLCHAIN_FILE toolchain-arm-cortex-m.cmake)
 
+# Generate compile_commands.json in build dir for clangd/editor (use build/ as compile-commands-dir)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 project(hackrf_usb C)
 
 include(hackrf-common.cmake)

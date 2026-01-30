@@ -62,12 +62,6 @@ extern "C" {
   #define CFG_TUD_VENDOR_RX_MANUAL_XFER 0
 #endif
 
-// When 1, send ZLP after a full packet if FIFO is empty (signals end of transfer). When 0, do not send
-// ZLP automatically (e.g. for continuous streaming where the app feeds the FIFO from the tx_cb).
-#ifndef CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET
-  #define CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET 1
-#endif
-
 //--------------------------------------------------------------------+
 // Application API (Multiple Interfaces) i.e CFG_TUD_VENDOR > 1
 //--------------------------------------------------------------------+

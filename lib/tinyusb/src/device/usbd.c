@@ -411,7 +411,6 @@ void usbd_control_reset(void);
 void usbd_control_set_request(tusb_control_request_t const *request);
 void usbd_control_set_complete_callback( usbd_control_xfer_cb_t fp );
 bool usbd_control_xfer_cb (uint8_t rhport, uint8_t ep_addr, xfer_result_t event, uint32_t xferred_bytes);
-void usbd_control_deferred_status_poll(uint8_t rhport);
 
 //--------------------------------------------------------------------+
 // Weak stubs: invoked if no strong implementation is available
@@ -669,8 +668,6 @@ void tud_task_ext(uint32_t timeout_ms, bool in_isr) {
 
   // Loop until there is no more events in the queue
   while (1) {
-    // Retry deferred control status (EP0 was busy when DATA completed); internal only, no new API
-    usbd_control_deferred_status_poll(0);
     dcd_event_t event;
     if (!osal_queue_receive(_usbd_q, &event, timeout_ms)) {
       return;
@@ -1400,11 +1397,8 @@ bool usbd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t* buffer, uint16_t t
   }
 #endif
 
-  // Attempt to transfer on a busy endpoint (e.g. app already queued status in DATA callback)
-  if (_usbd_dev.ep_status[epnum][dir].busy != 0) {
-    TU_LOG_USBD("  EP %02X busy, skip\r\n", ep_addr);
-    return false;
-  }
+  // Attempt to transfer on a busy endpoint, sound like an race condition !
+  TU_ASSERT(_usbd_dev.ep_status[epnum][dir].busy == 0);
 
   // Set busy first since the actual transfer can be complete before dcd_edpt_xfer()
   // could return and USBD task can preempt and clear the busy

@@ -49,11 +49,7 @@
   #endif
 
 #elif TU_CHECK_MCU(OPT_MCU_LPC18XX, OPT_MCU_LPC43XX)
-  #if CFG_TUSB_MCU == OPT_MCU_LPC43XX
-    #include "ci_hs_hackrf.h"
-  #else
-    #include "ci_hs_lpc18_43.h"
-  #endif
+  #include "ci_hs_lpc18_43.h"
 
 #elif TU_CHECK_MCU(OPT_MCU_MCXN9)
   // MCX N9 only port 1 use this controller
@@ -187,9 +183,6 @@ typedef struct {
 
 CFG_TUD_MEM_SECTION TU_ATTR_ALIGNED(2048) static dcd_data_t _dcd_data;
 
-/* Per-EP queued length: hardware may zero QTD on completion (LPC43xx), so we use this on complete when expected==0 */
-static uint16_t _queued_len[TUP_DCD_ENDPOINT_MAX][2];
-
 //--------------------------------------------------------------------+
 // Prototypes and Helper Functions
 //--------------------------------------------------------------------+
@@ -231,7 +224,6 @@ static void bus_reset(uint8_t rhport) {
 
   //------------- Queue Head & Queue TD -------------//
   tu_memclr(&_dcd_data, sizeof(dcd_data_t));
-  tu_memclr(&_queued_len, sizeof(_queued_len));
 
   //------------- Set up Control Endpoints (0 OUT, 1 IN) -------------//
   _dcd_data.qhd[0][0].zero_length_termination = _dcd_data.qhd[0][1].zero_length_termination = 1;
@@ -246,7 +238,6 @@ static void bus_reset(uint8_t rhport) {
 bool dcd_init(uint8_t rhport, const tusb_rhport_init_t *rh_init) {
   (void)rh_init;
   tu_memclr(&_dcd_data, sizeof(dcd_data_t));
-  tu_memclr(&_queued_len, sizeof(_queued_len));
 
   ci_hs_regs_t *dcd_reg = CI_HS_REG(rhport);
 
@@ -533,7 +524,6 @@ bool dcd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t *buffer, uint16_t to
 
   // Prepare qtd
   qtd_init(p_qtd, buffer, total_bytes);
-  _queued_len[epnum][dir] = total_bytes;
 
   // Start qhd transfer
   p_qhd->ff = NULL;
@@ -588,9 +578,6 @@ bool dcd_edpt_xfer_fifo(uint8_t rhport, uint8_t ep_addr, tu_fifo_t *ff, uint16_t
     }
   }
 
-  /* Shadow for completion when hardware zeroes QTD (e.g. LPC43xx); same as dcd_edpt_xfer path. */
-  _queued_len[epnum][dir] = p_qtd->expected_bytes;
-
   // Start qhd transfer
   p_qhd->ff = ff;
   qhd_start_xfer(rhport, epnum, dir);
@@ -606,12 +593,10 @@ bool dcd_edpt_xfer_fifo(uint8_t rhport, uint8_t ep_addr, tu_fifo_t *ff, uint16_t
 static void process_edpt_complete_isr(uint8_t rhport, uint8_t epnum, uint8_t dir) {
   dcd_qhd_t *p_qhd = &_dcd_data.qhd[epnum][dir];
   dcd_qtd_t *p_qtd = &_dcd_data.qtd[epnum][dir];
-  /* Hardware updates the overlay in the QHD (remaining bytes); our local p_qtd is never updated. */
-  dcd_qtd_t const *p_overlay = &p_qhd->qtd_overlay;
 
-  uint8_t result = p_overlay->halted                            ? XFER_RESULT_STALLED
-                   : (p_overlay->xact_err || p_overlay->buffer_err) ? XFER_RESULT_FAILED
-                                                                    : XFER_RESULT_SUCCESS;
+  uint8_t result = p_qtd->halted                            ? XFER_RESULT_STALLED
+                   : (p_qtd->xact_err || p_qtd->buffer_err) ? XFER_RESULT_FAILED
+                                                            : XFER_RESULT_SUCCESS;
 
   if (result != XFER_RESULT_SUCCESS) {
     ci_hs_regs_t *dcd_reg = CI_HS_REG(rhport);
@@ -619,25 +604,7 @@ static void process_edpt_complete_isr(uint8_t rhport, uint8_t epnum, uint8_t dir
     dcd_reg->ENDPTFLUSH = TU_BIT(epnum + (dir ? 16 : 0));
   }
 
-  /* expected_bytes is in our local p_qtd; total_bytes (remaining) is in hardware-updated overlay.
-   * Hardware may zero the QTD on completion (LPC43xx), so expected/overlay can both be 0. */
-  uint16_t xferred_bytes = p_qtd->expected_bytes - (uint16_t) p_overlay->total_bytes;
-
-  /* Use shadow queued length when QTD was zeroed by hardware (expected==0, we stored length at prime). */
-  if (xferred_bytes == 0 && _queued_len[epnum][dir] != 0 && result == XFER_RESULT_SUCCESS) {
-    xferred_bytes = _queued_len[epnum][dir];
-    TU_LOG2("DCD EP%u %s: use queued_len %u (QTD zeroed)\r\n", (unsigned) epnum, dir ? "IN" : "OUT", (unsigned) xferred_bytes);
-  }
-  _queued_len[epnum][dir] = 0;
-
-  /* Debug: bulk EP completion */
-  if (epnum != 0) {
-    TU_LOG2("DCD EP%u %s complete: expected=%u overlay_total=%u xferred=%u\r\n",
-            (unsigned) epnum, dir ? "IN" : "OUT",
-            (unsigned) p_qtd->expected_bytes,
-            (unsigned) p_overlay->total_bytes,
-            (unsigned) xferred_bytes);
-  }
+  const uint16_t xferred_bytes = p_qtd->expected_bytes - p_qtd->total_bytes;
 
   if (p_qhd->ff) {
     if (dir == TUSB_DIR_IN) {
@@ -666,7 +633,7 @@ void dcd_int_handler(uint8_t rhport) {
   // Set if the port controller enters the full or high-speed operational state.
   // either from Bus Reset or Suspended state
   if (int_status & INTR_PORT_CHANGE) {
-    TU_LOG2("DCD PortChange PORTSC1=%08lx\r\n", (unsigned long)dcd_reg->PORTSC1);
+    // TU_LOG2("PortChange %08lx\r\n", dcd_reg->PORTSC1);
 
     // Reset interrupt is not enabled, we manually check if Port Change is due
     // to connection / disconnection
@@ -675,11 +642,9 @@ void dcd_int_handler(uint8_t rhport) {
 
       if (dcd_reg->PORTSC1 & PORTSC1_CURRENT_CONNECT_STATUS) {
         const uint32_t speed = (dcd_reg->PORTSC1 & PORTSC1_PORT_SPEED) >> PORTSC1_PORT_SPEED_POS;
-        TU_LOG2("DCD Bus Reset speed=%lu\r\n", (unsigned long)speed);
         bus_reset(rhport);
         dcd_event_bus_reset(rhport, (tusb_speed_t)speed, true);
       } else {
-        TU_LOG2("DCD Unplugged\r\n");
         dcd_event_bus_signal(rhport, DCD_EVENT_UNPLUGGED, true);
       }
     } else {
@@ -691,7 +656,7 @@ void dcd_int_handler(uint8_t rhport) {
   }
 
   if (int_status & INTR_SUSPEND) {
-    TU_LOG2("DCD Suspend PORTSC1=%08lx\r\n", (unsigned long)dcd_reg->PORTSC1);
+    // TU_LOG2("Suspend %08lx\r\n", dcd_reg->PORTSC1);
 
     if (dcd_reg->PORTSC1 & PORTSC1_SUSPEND) {
       // Note: Host may delay more than 3 ms before and/or after bus reset before doing enumeration.
@@ -729,7 +694,6 @@ void dcd_int_handler(uint8_t rhport) {
     // Must be after normal transfer complete since it is possible to have both previous control status + new setup
     // in the same frame and we should handle previous status first.
     if (dcd_reg->ENDPTSETUPSTAT) {
-      TU_LOG2("DCD Setup received\r\n");
       dcd_reg->ENDPTSETUPSTAT = dcd_reg->ENDPTSETUPSTAT;
       dcd_event_setup_received(rhport, (uint8_t *)(uintptr_t)&_dcd_data.qhd[0][0].setup_request, true);
     }

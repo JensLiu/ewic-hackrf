@@ -59,10 +59,6 @@ typedef struct {
 
 static usbd_control_xfer_t _ctrl_xfer;
 
-// When status_stage_xact fails (EP0 busy), defer until next status complete so host gets ACK
-static bool pending_status;
-static tusb_control_request_t pending_status_request;
-
 CFG_TUD_MEM_SECTION static struct {
   TUD_EPBUF_DEF(buf, CFG_TUD_ENDPOINT0_BUFSIZE);
 } _ctrl_epbuf;
@@ -117,9 +113,9 @@ bool tud_control_xfer(uint8_t rhport, const tusb_control_request_t* request, voi
     if (_ctrl_xfer.data_len > 0U) {
       TU_ASSERT(buffer);
     }
-    if (!data_stage_xact(rhport)) return false; /* EP0 busy */
+    TU_ASSERT(data_stage_xact(rhport));
   } else {
-    if (!status_stage_xact(rhport, request)) return false; /* EP0 busy */
+    TU_ASSERT(status_stage_xact(rhport, request));
   }
 
   return true;
@@ -135,15 +131,6 @@ bool usbd_control_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result,
 
 void usbd_control_reset(void) {
   tu_varclr(&_ctrl_xfer);
-  pending_status = false;
-}
-
-/* Retry sending deferred status (when DATA complete could not queue status because EP0 was busy).
- * Call from tud_task loop so host does not block waiting for status. */
-void usbd_control_deferred_status_poll(uint8_t rhport) {
-  if (!pending_status) return;
-  if (!status_stage_xact(rhport, &pending_status_request)) return; /* EP0 still busy */
-  pending_status = false;
 }
 
 // Set complete callback
@@ -177,11 +164,6 @@ bool usbd_control_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result,
       _ctrl_xfer.complete_cb(rhport, CONTROL_STAGE_ACK, &_ctrl_xfer.request);
     }
 
-    // Send any status we had to defer (EP0 was busy when DATA completed)
-    if (pending_status) {
-      pending_status = false;
-      (void) status_stage_xact(rhport, &pending_status_request);
-    }
     return true;
   }
 
@@ -212,12 +194,7 @@ bool usbd_control_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result,
     }
 
     if (is_ok) {
-      // Queue status; if EP0 busy (e.g. previous status still in flight), defer and retry from tud_task
-      if (!status_stage_xact(rhport, &_ctrl_xfer.request)) {
-        pending_status_request = _ctrl_xfer.request;
-        pending_status = true;
-        TU_LOG_USBD("  control: deferred status (EP0 busy), req=%u\r\n", (unsigned) _ctrl_xfer.request.bRequest);
-      }
+      TU_ASSERT(status_stage_xact(rhport, &_ctrl_xfer.request));
     } else {
       // Stall both IN and OUT control endpoint
       dcd_edpt_stall(rhport, EDPT_CTRL_OUT);

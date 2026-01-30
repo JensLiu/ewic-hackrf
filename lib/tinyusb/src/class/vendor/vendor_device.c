@@ -358,10 +358,8 @@ bool vendord_xfer_cb(uint8_t rhport, uint8_t ep_addr, xfer_result_t result, uint
 
     // try to send more if possible
     if (0 == tu_edpt_stream_write_xfer(&p_vendor->tx_stream)) {
-      #if CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET
       // If there is no data left, a ZLP should be sent if xferred_bytes is multiple of EP Packet size and not zero
       tu_edpt_stream_write_zlp_if_needed(&p_vendor->tx_stream, xferred_bytes);
-      #endif
     }
   }
   #else

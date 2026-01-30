@@ -36,51 +36,8 @@
 #include <string.h>
 
 uint8_t cpld_xsvf_buffer[512];
-volatile bool cpld_wait = false;
 
-static void cpld_buffer_refilled(void* user_data, unsigned int length)
-{
-	(void) user_data;
-	(void) length;
-	cpld_wait = false;
-}
-
-static void refill_cpld_buffer(void)
-{
-	cpld_wait = true;
-	usb_transfer_schedule(
-		&usb_endpoint_bulk_out,
-		cpld_xsvf_buffer,
-		sizeof(cpld_xsvf_buffer),
-		cpld_buffer_refilled,
-		NULL);
-
-	// Wait until transfer finishes
-	while (cpld_wait) {}
-}
-
-void cpld_update(void)
-{
-	int error;
-
-	usb_queue_flush_endpoint(&usb_endpoint_bulk_in);
-	usb_queue_flush_endpoint(&usb_endpoint_bulk_out);
-
-	refill_cpld_buffer();
-
-	error = cpld_jtag_program(
-		&jtag_cpld,
-		sizeof(cpld_xsvf_buffer),
-		cpld_xsvf_buffer,
-		refill_cpld_buffer);
-	if (error == 0) {
-		halt_and_flash(6000000);
-	} else {
-		/* LED3 (Red) steady on error */
-		led_on(LED3);
-		while (1) {}
-	}
-}
+/* cpld_update() lives in tinyusb_port/cpld_mode_tinyusb.c */
 
 usb_request_status_t usb_vendor_request_cpld_checksum(
 	usb_endpoint_t* const endpoint,

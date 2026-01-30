@@ -1,14 +1,12 @@
 /*
- * Override for TinyUSB's ci_hs_lpc18_43.h
+ * LPC18xx/LPC43xx ChipIdea HS port - HackRF (libopencm3)
  *
- * This file redirects to our libopencm3-compatible implementation.
- * It must be found BEFORE TinyUSB's version via include path ordering.
+ * This file redirects to our libopencm3 bridge so we do not need LPCOpen chip.h.
  */
 
-#ifndef CI_HS_LPC18_43_H_
-#define CI_HS_LPC18_43_H_
+#ifndef _CI_HS_LPC18_43_H_
+#define _CI_HS_LPC18_43_H_
 
-// Include our libopencm3-compatible bridge header
 #include "ci_hs_hackrf.h"
 
-#endif /* CI_HS_LPC18_43_H_ */
+#endif

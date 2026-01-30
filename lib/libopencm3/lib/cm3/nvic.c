@@ -159,7 +159,15 @@ void nvic_set_priority(uint8_t irqn, uint8_t priority)
 		SCS_SHPR((irqn & 0xF) - 4) = priority;
 	} else {
 		/* Device specific interrupts */
+#if defined(__ARM_ARCH_6M__)
+		/* CM0: IPR is word-only; each word holds 4 priority bytes */
+		uint32_t word = NVIC_IPR32(irqn / 4);
+		word &= ~(0xffU << (8 * (irqn % 4)));
+		word |= ((uint32_t)priority << (8 * (irqn % 4)));
+		NVIC_IPR32(irqn / 4) = word;
+#else
 		NVIC_IPR(irqn) = priority;
+#endif
 	}
 }
 

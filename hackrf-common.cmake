@@ -44,11 +44,14 @@ set(PATH_HACKRF_CPLD_DATA_C ${CMAKE_CURRENT_BINARY_DIR}/hackrf_cpld_data.c)
 include(${PATH_HACKRF_FIRMWARE}/dfu-util.cmake)
 
 include(ExternalProject)
+# Build only LPC43xx (M4 + M0) to avoid building all families and needing
+# lib/dispatch/vector_nvic.c. Populate dispatch from lpc43xx/m4 before building.
 ExternalProject_Add(libopencm3_${PROJECT_NAME}
 	SOURCE_DIR "${LIBOPENCM3}"
 	BUILD_IN_SOURCE true
 	DOWNLOAD_COMMAND ""
 	CONFIGURE_COMMAND ""
+	BUILD_COMMAND sh -c "cd ${LIBOPENCM3} && make include/libopencm3/lpc43xx/m4/irq.yaml.genhdr include/libopencm3/lpc43xx/m0/irq.yaml.genhdr && cp lib/lpc43xx/m4/vector_nvic.c lib/dispatch/vector_nvic.c && make lib/lpc43xx/m4 && cp lib/lpc43xx/m0/vector_nvic.c lib/dispatch/vector_nvic.c && make lib/lpc43xx/m0"
 	INSTALL_COMMAND ""
 )
 
@@ -90,7 +93,8 @@ SET(LDSCRIPT_M4_RAM "-T${PATH_HACKRF_FIRMWARE_COMMON}/${MCU_PARTNO}_M4_memory.ld
 
 SET(LDSCRIPT_M0 "-T${PATH_HACKRF_FIRMWARE_COMMON}/LPC43xx_M0_memory.ld -Tlibopencm3_lpc43xx_m0.ld")
 
-SET(CFLAGS_COMMON "-Os -g3 -Wall -Wextra ${HACKRF_OPTS} -fno-common -MD")
+# WEAK used by libopencm3 lpc43xx nvic.h (ISR prototypes) but not defined in common.h
+SET(CFLAGS_COMMON "-Os -g3 -Wall -Wextra ${HACKRF_OPTS} -DWEAK='__attribute__((weak))' -fno-common -MD")
 SET(LDFLAGS_COMMON "-nostartfiles -Wl,--gc-sections")
 
 if(V STREQUAL "1")

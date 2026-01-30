@@ -26,9 +26,11 @@
 #include "hackrf_ui.h"
 #include "operacake_sctimer.h"
 
+#include <libopencm3/lpc43xx/m4/nvic.h>
 #include <libopencm3/cm3/vector.h>
 #include "usb_bulk_buffer.h"
 #include "usb_api_m0_state.h"
+#include "uart.h"
 
 #include "usb_api_cpld.h" // Remove when CPLD update is handled elsewhere
 
@@ -48,8 +50,6 @@
 #include "usb_api_sweep.h"
 
 #include "uart.h"
-
-#define USB_TRANSFER_SIZE 0x4000
 
 typedef struct {
 	uint32_t freq_mhz;
@@ -113,6 +113,7 @@ usb_request_status_t usb_vendor_request_set_freq(
 			NULL);
 		return USB_REQUEST_STATUS_OK;
 	} else if (stage == USB_TRANSFER_STAGE_DATA) {
+		memcpy(&set_freq_params, endpoint->buffer, sizeof(set_freq_params_t));
 		const uint64_t freq =
 			set_freq_params.freq_mhz * 1000000ULL + set_freq_params.freq_hz;
 		radio_error_t result = radio_set_frequency(
@@ -143,6 +144,7 @@ usb_request_status_t usb_vendor_request_set_freq_explicit(
 			NULL);
 		return USB_REQUEST_STATUS_OK;
 	} else if (stage == USB_TRANSFER_STAGE_DATA) {
+		memcpy(&explicit_params, endpoint->buffer, sizeof(struct set_freq_explicit_params));
 		radio_error_t result = radio_set_frequency(
 			&radio,
 			RADIO_CHANNEL0,
@@ -174,6 +176,7 @@ usb_request_status_t usb_vendor_request_set_sample_rate_frac(
 			NULL);
 		return USB_REQUEST_STATUS_OK;
 	} else if (stage == USB_TRANSFER_STAGE_DATA) {
+		memcpy(&set_sample_r_params, endpoint->buffer, sizeof(set_sample_r_params_t));
 		radio_error_t result = radio_set_sample_rate(
 			&radio,
 			RADIO_CHANNEL0,
@@ -386,6 +389,7 @@ usb_request_status_t usb_vendor_request_set_transceiver_mode(
 	const usb_transfer_stage_t stage)
 {
 	if (stage == USB_TRANSFER_STAGE_SETUP) {
+		uart_print("set_trx_mode: value=%d\n", endpoint->setup.value);
 		switch (endpoint->setup.value) {
 		case TRANSCEIVER_MODE_OFF:
 		case TRANSCEIVER_MODE_RX:
@@ -393,6 +397,7 @@ usb_request_status_t usb_vendor_request_set_transceiver_mode(
 		case TRANSCEIVER_MODE_RX_SWEEP:
 		case TRANSCEIVER_MODE_CPLD_UPDATE:
 			request_transceiver_mode(endpoint->setup.value);
+			uart_print("set_trx_mode: requested mode=%d seq=%lu\n", endpoint->setup.value, (unsigned long)transceiver_request.seq);
 			usb_transfer_schedule_ack(endpoint->in);
 			return USB_REQUEST_STATUS_OK;
 		default:
@@ -446,75 +451,4 @@ usb_request_status_t usb_vendor_request_set_rx_overrun_limit(
 	return USB_REQUEST_STATUS_OK;
 }
 
-void transceiver_bulk_transfer_complete(void* user_data, unsigned int bytes_transferred)
-{
-	(void) user_data;
-	m0_state.m4_count += bytes_transferred;
-}
-
-void rx_mode(uint32_t seq)
-{
-	uint32_t usb_count = 0;
-
-	transceiver_startup(TRANSCEIVER_MODE_RX);
-
-	baseband_streaming_enable(&sgpio_config);
-
-	while (transceiver_request.seq == seq) {
-		if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
-			uart_print("rx_mode: schedule block\n");
-			usb_transfer_schedule_block(
-				&usb_endpoint_bulk_in,
-				&usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK],
-				USB_TRANSFER_SIZE,
-				transceiver_bulk_transfer_complete,
-				NULL);
-			usb_count += USB_TRANSFER_SIZE;
-		}
-	}
-
-	transceiver_shutdown();
-}
-
-void tx_mode(uint32_t seq)
-{
-	unsigned int usb_count = 0;
-	bool started = false;
-
-	transceiver_startup(TRANSCEIVER_MODE_TX);
-
-	// Set up OUT transfer of buffer 0.
-	usb_transfer_schedule_block(
-		&usb_endpoint_bulk_out,
-		&usb_bulk_buffer[0x0000],
-		USB_TRANSFER_SIZE,
-		transceiver_bulk_transfer_complete,
-		NULL);
-	usb_count += USB_TRANSFER_SIZE;
-
-	while (transceiver_request.seq == seq) {
-		if (!started && (m0_state.m4_count == USB_BULK_BUFFER_SIZE)) {
-			// Buffer is now full, start streaming.
-			baseband_streaming_enable(&sgpio_config);
-			started = true;
-		}
-		if ((usb_count - m0_state.m0_count) <= USB_TRANSFER_SIZE) {
-			usb_transfer_schedule_block(
-				&usb_endpoint_bulk_out,
-				&usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK],
-				USB_TRANSFER_SIZE,
-				transceiver_bulk_transfer_complete,
-				NULL);
-			usb_count += USB_TRANSFER_SIZE;
-		}
-	}
-
-	transceiver_shutdown();
-}
-
-void off_mode(uint32_t seq)
-{
-	hackrf_ui()->set_transceiver_mode(TRANSCEIVER_MODE_OFF);
-
-	while (transceiver_request.seq == seq) {}
-}
+/* off_mode(), rx_mode(), tx_mode(), transceiver_bulk_transfer_complete() live in tinyusb_port/transceiver_mode_tinyusb.c */

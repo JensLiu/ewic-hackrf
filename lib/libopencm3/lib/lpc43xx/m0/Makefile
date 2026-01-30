@@ -25,7 +25,10 @@ PREFIX		?= arm-none-eabi
 #PREFIX		?= arm-elf
 CC		= $(PREFIX)-gcc
 AR		= $(PREFIX)-ar
+# Pre-include family nvic.h and WEAK for cm3/vector.c (same as lpc43xx/m4).
 CFLAGS		= -O2 -g3 -Wall -Wextra -I../../../include -fno-common \
+		  -include libopencm3/lpc43xx/m0/nvic.h \
+		  -DWEAK='__attribute__((weak))' \
 		  -mcpu=cortex-m0 -mthumb -Wstrict-prototypes \
 		  -ffunction-sections -fdata-sections -MD -DLPC43XX -DLPC43XX_M0
 # ARFLAGS	= rcsv

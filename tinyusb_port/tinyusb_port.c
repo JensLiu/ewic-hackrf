@@ -1,283 +1,202 @@
 /*
- * TinyUSB Port for HackRF (USB Host mode)
+ * TinyUSB Device Port for HackRF
  *
- * This file provides:
- *   - USB0 hardware initialization for host mode
- *   - Interrupt handling bridge
- *   - TinyUSB callbacks
- *   - Timing functions
+ * Replaces hackrf_usb for USB device (TX/RX, vendor requests).
+ * - USB0 hardware init, ISR
+ * - Descriptor callbacks (HackRF descriptors)
+ * - SysTick for tusb_time_delay_ms
+ * - Debug printf -> UART
  */
 
 #include "tusb.h"
 #include "hackrf_core.h"
+#include "usb_descriptor.h"
+#include "usb_device.h"
+#include "uart.h"
+#include "ci_hs_hackrf.h"
 
-#include <stdio.h>
-
-// libopencm3 includes
+#include <libopencm3/cm3/systick.h>
 #include <libopencm3/lpc43xx/cgu.h>
 #include <libopencm3/lpc43xx/ccu.h>
 #include <libopencm3/lpc43xx/creg.h>
-#include <libopencm3/lpc43xx/scu.h>
+#include <libopencm3/lpc43xx/rgu.h>
 #include <libopencm3/lpc43xx/m4/nvic.h>
-#include <libopencm3/cm3/systick.h>
 
-// For UART debug output
-#include "uart.h"
+#include <stdarg.h>
+#include <stdio.h>
 
-// CCU clock configuration bits (LPC43xx)
-// Bit 0: RUN - Enable clock
-// Bit 1: AUTO - Auto power down when not needed
 #define CCU_CLK_CFG_RUN   (1 << 0)
 #define CCU_CLK_CFG_AUTO  (1 << 1)
 #define CCU_CLK_STAT_RUN  (1 << 0)
 
-//--------------------------------------------------------------------
-// Timing Support
-//--------------------------------------------------------------------
+#define BOARD_TUD_RHPORT 0
 
-// Millisecond tick counter (incremented by SysTick)
-static volatile uint32_t tinyusb_millis = 0;
+/*---------------------------------------------------------------------------*/
+/* Descriptor callbacks - return HackRF descriptor data                      */
+/*---------------------------------------------------------------------------*/
 
-// SysTick handler for TinyUSB timing
-// Note: If you already have a SysTick handler, merge this into it
-void tinyusb_systick_handler(void) {
-  tinyusb_millis++;
+uint8_t const *tud_descriptor_device_cb(void) {
+  tusb_uart_printf("desc: device\r\n");
+  return usb_descriptor_device;
 }
 
-// TinyUSB requires this function for timing
-uint32_t board_millis(void) {
-  return tinyusb_millis;
+uint8_t const *tud_descriptor_configuration_cb(uint8_t index) {
+  (void)index;
+  tusb_uart_printf("desc: config\r\n");
+  return usb_descriptor_configuration_high_speed;
 }
 
-// Initialize SysTick for 1ms ticks
-// Call this if you don't already have SysTick configured
-static void systick_init(void) {
-  // Configure SysTick for 1ms interrupt
-  // System clock is 204 MHz after cpu_clock_init()
-  systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB);
-  systick_set_reload(204000 - 1);  // 204 MHz / 1000 = 204000 ticks per ms
-  systick_interrupt_enable();
-  systick_counter_enable();
+uint8_t const *tud_descriptor_device_qualifier_cb(void) {
+  tusb_uart_printf("desc: dev_qual\r\n");
+  return usb_descriptor_device_qualifier;
 }
 
-//--------------------------------------------------------------------
-// USB Hardware Initialization
-//--------------------------------------------------------------------
+uint8_t const *tud_descriptor_other_speed_configuration_cb(uint8_t index) {
+  (void)index;
+  tusb_uart_printf("desc: other_speed_config\r\n");
+  return usb_descriptor_configuration_full_speed;
+}
 
-/*
- * Initialize USB0 for Host mode
- *
- * USB0 on LPC43xx is an EHCI-compatible high-speed controller.
- * This function:
- *   1. Enables USB0 clocks (PLL0USB should already be configured)
- *   2. Enables the USB0 PHY
- *   3. Configures pins (if needed)
- *
- * Prerequisites:
- *   - cpu_clock_init() must have been called (sets up PLL0USB)
- */
+uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
+  (void)langid;
+  tusb_uart_printf("desc: string %u\r\n", (unsigned)index);
+  if (index >= 5) return NULL;
+  if (!usb_descriptor_strings[index]) return NULL;
+  return (const uint16_t *)usb_descriptor_strings[index];
+}
+
+/*---------------------------------------------------------------------------*/
+/* Event hook: called when DCD queues an event (ISR context). If you see
+ * "evt" but never "USBD" or "desc:", the main loop is not draining the queue. */
+/*---------------------------------------------------------------------------*/
+static volatile uint32_t s_events_queued_in_isr;
+
+void tud_event_hook_cb(uint8_t rhport, uint32_t eventid, bool in_isr) {
+  (void)rhport;
+  (void)in_isr;
+  s_events_queued_in_isr++;  /* diagnostic: can main loop see this? */
+  tusb_uart_printf("evt%lu ", (unsigned long)eventid);
+}
+
+uint32_t tinyusb_events_queued_in_isr_get_and_reset(void) {
+  uint32_t n = s_events_queued_in_isr;
+  s_events_queued_in_isr = 0;
+  return n;
+}
+
+/*---------------------------------------------------------------------------*/
+/* Hardware init                                                             */
+/*---------------------------------------------------------------------------*/
+
 void tinyusb_hardware_init(void) {
-  // USB0 clock should already be configured by cpu_clock_init() in hackrf_core.c
-  // CGU_BASE_USB0_CLK is set to use PLL0USB (480 MHz)
-  
-  // Ensure USB0 peripheral clock is enabled
-  // CCU1 controls the USB0 peripheral clock
+  /* 1. Enable USB0 clocks (same as original HackRF) */
   CCU1_CLK_M4_USB0_CFG = CCU_CLK_CFG_AUTO | CCU_CLK_CFG_RUN;
   while (!(CCU1_CLK_M4_USB0_STAT & CCU_CLK_STAT_RUN)) {}
-  
-  // Enable USB0 register interface clock
   CCU1_CLK_USB0_CFG = CCU_CLK_CFG_AUTO | CCU_CLK_CFG_RUN;
   while (!(CCU1_CLK_USB0_STAT & CCU_CLK_STAT_RUN)) {}
 
-  // Enable USB0 PHY
-  // CREG0 bit 5 controls USB0 PHY power
-  // 0 = PHY powered, 1 = PHY powered down
-  CREG_CREG0 &= ~(1 << 5);  // Clear bit to enable PHY
-  
-  // Small delay for PHY to stabilize
+  /* 2. USB0 peripheral reset via RGU (pulse; no wait to avoid hanging) */
+  RESET_CTRL0 = RESET_CTRL0_USB0_RST;
+  RESET_CTRL0 = 0;
+
+  /* 3. Enable USB0 PHY (LPC43xx: bit 5 = 0 enables, 1 = disabled) */
+  CREG_CREG0 &= ~CREG_CREG0_USB0PHY;
   delay(10000);
-  
-  // USB0 D+/D- pins are directly connected to the USB PHY,
-  // no pin mux configuration needed for them.
-  
-  // If your setup needs VBUS power control, configure the GPIO here
-  // HackRF doesn't have built-in VBUS control for host mode,
-  // so you may need external power for connected devices.
 }
 
-/*
- * Initialize TinyUSB stack for USB Host mode
- *
- * Call this after:
- *   - cpu_clock_init()
- *   - tinyusb_hardware_init()
- */
-bool tinyusb_host_init(void) {
-  // Initialize timing (SysTick)
-  systick_init();
-  
-  // Initialize USB hardware
+/*---------------------------------------------------------------------------*/
+/* TinyUSB device init - call after cpu_clock_init()                         */
+/*---------------------------------------------------------------------------*/
+
+bool tinyusb_device_init(void) {
   tinyusb_hardware_init();
-  
-  // Initialize TinyUSB host stack
-  tusb_rhport_init_t host_init = {
-    .role = TUSB_ROLE_HOST,
-    .speed = TUSB_SPEED_AUTO  // Auto-detect speed
+  tusb_rhport_init_t dev_init = {
+    .role = TUSB_ROLE_DEVICE,
+    .speed = TUSB_SPEED_HIGH
   };
-  
-  return tusb_init(BOARD_TUH_RHPORT, &host_init);
+  if (!tusb_init(BOARD_TUD_RHPORT, &dev_init))
+    return false;
+
+  /* Present device to host (required on some ports when no VBUS detection) */
+  tud_connect();
+
+  /* Debug: dump USB0 controller state after init */
+  {
+    ci_hs_regs_t *r = CI_HS_REG(BOARD_TUD_RHPORT);
+    tusb_uart_printf("USB0 init: USBCMD=%08lx USBSTS=%08lx PORTSC1=%08lx\r\n",
+                     (unsigned long)r->USBCMD, (unsigned long)r->USBSTS,
+                     (unsigned long)r->PORTSC1);
+  }
+
+  /* SysTick 1 ms for tusb_time_delay_ms and board_millis (assumes 204 MHz AHB) */
+  systick_set_reload(204000 - 1);
+  systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB);
+  systick_interrupt_enable();
+  systick_counter_enable();
+
+  return true;
 }
 
-//--------------------------------------------------------------------
-// USB Interrupt Handler
-//--------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
+/* USB0 ISR - forward to TinyUSB device stack                                 */
+/*---------------------------------------------------------------------------*/
 
-/*
- * USB0 Interrupt Service Routine
- *
- * This forwards USB0 interrupts to TinyUSB.
- * 
- * Note: libopencm3 expects the handler to be named usb0_isr().
- * If you have existing USB code using usb0_isr(), you'll need to
- * conditionally compile or merge the handlers.
- */
+static volatile uint32_t s_usb_isr_count;
+
 void tinyusb_usb0_isr(void) {
-  tusb_int_handler(0, true);
+  s_usb_isr_count++;
+  tud_int_handler(BOARD_TUD_RHPORT);
+  /* Workaround: main loop never sees queue writes (wr=0 rd=0). Process queue here
+   * in ISR context so we see our own writes; keeps enumeration working. */
+  tud_task();
+  __asm__ volatile ("dsb" ::: "memory");
 }
 
-// For standalone use, this can be the actual ISR
-// Uncomment if you're replacing the existing USB0 handler:
-// void usb0_isr(void) __attribute__((alias("tinyusb_usb0_isr")));
-
-//--------------------------------------------------------------------
-// TinyUSB Callbacks - Device Connection
-//--------------------------------------------------------------------
-
-// Called when a device is successfully mounted (enumerated)
-void tuh_mount_cb(uint8_t dev_addr) {
-  uart_send_str("[USB Host] Device mounted at address ");
-  char buf[8];
-  snprintf(buf, sizeof(buf), "%d\n", dev_addr);
-  uart_send_str(buf);
+uint32_t tinyusb_usb_isr_count_get_and_reset(void) {
+  uint32_t n = s_usb_isr_count;
+  s_usb_isr_count = 0;
+  return n;
 }
 
-// Called when a device is unmounted (disconnected)
-void tuh_umount_cb(uint8_t dev_addr) {
-  uart_send_str("[USB Host] Device unmounted from address ");
-  char buf[8];
-  snprintf(buf, sizeof(buf), "%d\n", dev_addr);
-  uart_send_str(buf);
+/* libopencm3 vector table expects this name */
+void usb0_isr(void) {
+  tinyusb_usb0_isr();
 }
 
-//--------------------------------------------------------------------
-// TinyUSB Callbacks - HID (Keyboard, Mouse, etc.)
-//--------------------------------------------------------------------
+/*---------------------------------------------------------------------------*/
+/* SysTick: 1 ms tick for board_millis and tusb_time_delay_ms                */
+/*---------------------------------------------------------------------------*/
 
-#if CFG_TUH_HID
+static volatile uint32_t s_millis;
 
-// Called when HID device is mounted
-void tuh_hid_mount_cb(uint8_t dev_addr, uint8_t instance, 
-                      uint8_t const* desc_report, uint16_t desc_len) {
-  (void)desc_report;
-  (void)desc_len;
-  
-  uart_send_str("[USB Host] HID device mounted\n");
-  
-  // Request to receive HID reports
-  if (!tuh_hid_receive_report(dev_addr, instance)) {
-    uart_send_str("[USB Host] Failed to request HID report\n");
-  }
+void tinyusb_systick_handler(void) {
+  s_millis++;
 }
 
-// Called when HID device is unmounted
-void tuh_hid_umount_cb(uint8_t dev_addr, uint8_t instance) {
-  (void)dev_addr;
-  (void)instance;
-  uart_send_str("[USB Host] HID device unmounted\n");
+uint32_t board_millis(void) {
+  return s_millis;
 }
 
-// Called when HID report is received
-void tuh_hid_report_received_cb(uint8_t dev_addr, uint8_t instance,
-                                 uint8_t const* report, uint16_t len) {
-  // Process the HID report here
-  // For a keyboard, report contains key codes
-  // For a mouse, report contains movement and button data
-  
-  uart_send_str("[USB Host] HID report received, len=");
-  char buf[16];
-  snprintf(buf, sizeof(buf), "%d\n", len);
-  uart_send_str(buf);
-  
-  // Continue receiving reports
-  tuh_hid_receive_report(dev_addr, instance);
+uint32_t tusb_time_millis_api(void) {
+  return board_millis();
 }
 
-#endif // CFG_TUH_HID
-
-//--------------------------------------------------------------------
-// TinyUSB Callbacks - CDC (Serial)
-//--------------------------------------------------------------------
-
-#if CFG_TUH_CDC
-
-// Called when CDC device is mounted
-void tuh_cdc_mount_cb(uint8_t idx) {
-  uart_send_str("[USB Host] CDC device mounted, idx=");
-  char buf[8];
-  snprintf(buf, sizeof(buf), "%d\n", idx);
-  uart_send_str(buf);
+/* Override weak sys_tick_handler so millis advance */
+void sys_tick_handler(void) {
+  tinyusb_systick_handler();
 }
 
-// Called when CDC device is unmounted
-void tuh_cdc_umount_cb(uint8_t idx) {
-  uart_send_str("[USB Host] CDC device unmounted\n");
-  (void)idx;
+/*---------------------------------------------------------------------------*/
+/* TinyUSB debug printf -> UART (CFG_TUSB_DEBUG_PRINTF) via uart_print path  */
+/* Uses same DISPLAY_BUFFER + uart_send_str as uart_print macro.             */
+/*---------------------------------------------------------------------------*/
+
+int tusb_uart_printf(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  int n = vsnprintf(DISPLAY_BUFFER, sizeof(DISPLAY_BUFFER), format, args);
+  va_end(args);
+  if (n > 0)
+    uart_send_str(DISPLAY_BUFFER);
+  return n;
 }
-
-// Called when data is received from CDC device
-void tuh_cdc_rx_cb(uint8_t idx) {
-  uint8_t buf[64];
-  uint32_t count = tuh_cdc_read(idx, buf, sizeof(buf));
-  
-  if (count > 0) {
-    uart_send_str("[USB Host] CDC RX: ");
-    // Forward to UART or process
-    // uart_send_data(buf, count);
-    uart_send_str("\n");
-  }
-}
-
-#endif // CFG_TUH_CDC
-
-//--------------------------------------------------------------------
-// TinyUSB Callbacks - MSC (Mass Storage)
-//--------------------------------------------------------------------
-
-#if CFG_TUH_MSC
-
-// Called when MSC device is mounted
-void tuh_msc_mount_cb(uint8_t dev_addr) {
-  uart_send_str("[USB Host] MSC device mounted at ");
-  char buf[8];
-  snprintf(buf, sizeof(buf), "%d\n", dev_addr);
-  uart_send_str(buf);
-  
-  // Get device capacity
-  uint32_t block_count = tuh_msc_get_block_count(dev_addr, 0);
-  uint32_t block_size = tuh_msc_get_block_size(dev_addr, 0);
-  
-  uart_send_str("[USB Host] Capacity: ");
-  snprintf(buf, sizeof(buf), "%lu", (unsigned long)(block_count / 2048));  // MB
-  uart_send_str(buf);
-  uart_send_str(" MB\n");
-  
-  (void)block_size;
-}
-
-// Called when MSC device is unmounted
-void tuh_msc_umount_cb(uint8_t dev_addr) {
-  uart_send_str("[USB Host] MSC device unmounted\n");
-  (void)dev_addr;
-}
-
-#endif // CFG_TUH_MSC

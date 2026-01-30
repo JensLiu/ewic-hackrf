@@ -27,11 +27,15 @@ PREFIX		?= arm-none-eabi
 
 CC		= $(PREFIX)-gcc
 AR		= $(PREFIX)-ar
+# Pre-include family nvic.h so NVIC_IRQ_COUNT and NVIC_*_IRQ are defined for cm3/vector.c.
+# WEAK is used by the generated nvic.h but not defined in common.h; define it on the command line.
 CFLAGS		= -O2 -g3 \
 		  -Wall -Wextra -Wimplicit-function-declaration \
 		  -Wredundant-decls -Wmissing-prototypes -Wstrict-prototypes \
 		  -Wundef -Wshadow \
 		  -I../../../include -fno-common \
+		  -include libopencm3/lpc43xx/m4/nvic.h \
+		  -DWEAK='__attribute__((weak))' \
 		  -mcpu=cortex-m4 -mthumb -Wstrict-prototypes \
 		  -ffunction-sections -fdata-sections -MD \
 		  $(FP_FLAGS) -DLPC43XX -DLPC43XX_M4

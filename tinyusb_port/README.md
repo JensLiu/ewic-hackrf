@@ -22,12 +22,19 @@ to work with HackRF's libopencm3-based firmware.
 
 ## Usage
 
-### 1. Enable USB Host Mode
+### Important: USB0 device vs host
 
-In `main.c`, set:
-```c
-#define ENABLE_USB_HOST_MODE 1
-```
+**USB0 can operate as either device (HackRF↔PC) or host (keyboard, etc.), not both.**
+
+- **Device mode** (default): The existing hackrf_usb stack uses USB0 so the HackRF appears as a USB device to the PC. Do **not** call `tinyusb_host_init()` or you will break PC communication.
+- **Host mode**: To use TinyUSB host (keyboards, serial adapters, mass storage), you must **not** initialise the existing USB device stack on USB0. Use a build-time switch (e.g. `ENABLE_USB_HOST_MODE`) to compile either device-only or host-only and call either `usb_run()` or `tinyusb_host_init()` from `main.c`, and wire `usb0_isr()` to either the device handler or `tinyusb_usb0_isr()`.
+
+### 1. (Optional) Enable USB Host Mode
+
+If you want USB host instead of device, in `main.c`:
+- Define `ENABLE_USB_HOST_MODE 1` and gate the existing USB device init (e.g. `usb_run()`, `usb_device_init()`) with `#if !ENABLE_USB_HOST_MODE`.
+- After `cpu_clock_init()`, call `tinyusb_host_init()` when host mode is enabled.
+- In the vector table / ISR, call `tinyusb_usb0_isr()` instead of the device `usb0_isr()` when host mode is enabled.
 
 ### 2. Build the Firmware
 

@@ -24,8 +24,11 @@
 #ifndef __USB_ENDPOINT_H__
 #define __USB_ENDPOINT_H__
 
+#include <stdbool.h>
 #include <usb_type.h>
 #include <usb_queue.h>
+
+void usb_endpoint_init(const usb_endpoint_t* const endpoint, const bool enable_zlp);
 
 extern usb_endpoint_t usb_endpoint_control_out;
 extern USB_DECLARE_QUEUE(usb_endpoint_control_out);

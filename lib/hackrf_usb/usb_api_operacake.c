@@ -78,9 +78,9 @@ usb_request_status_t usb_vendor_request_operacake_set_ranges(
 			NULL);
 	} else if (stage == USB_TRANSFER_STAGE_DATA) {
 		for (i = 0; i < endpoint->setup.length; i += 5) {
-			freq_min = data[i] << 8 | data[i + 1];
-			freq_max = data[i + 2] << 8 | data[i + 3];
-			port = data[i + 4];
+			freq_min = endpoint->buffer[i] << 8 | endpoint->buffer[i + 1];
+			freq_max = endpoint->buffer[i + 2] << 8 | endpoint->buffer[i + 3];
+			port = endpoint->buffer[i + 4];
 			operacake_add_range(freq_min, freq_max, port);
 		}
 		usb_transfer_schedule_ack(endpoint->in);
@@ -166,9 +166,9 @@ usb_request_status_t usb_vendor_request_operacake_set_dwell_times(
 		count = endpoint->setup.length / 5;
 
 		for (int i = 0; i < count; i++) {
-			dwell = data[(i * 5) + 0] | (data[(i * 5) + 1] << 8) |
-				(data[(i * 5) + 2] << 16) | (data[(i * 5) + 3] << 24);
-			port = data[(i * 5) + 4];
+			dwell = endpoint->buffer[(i * 5) + 0] | (endpoint->buffer[(i * 5) + 1] << 8) |
+				(endpoint->buffer[(i * 5) + 2] << 16) | (endpoint->buffer[(i * 5) + 3] << 24);
+			port = endpoint->buffer[(i * 5) + 4];
 			dwell_times[i].dwell = dwell;
 			dwell_times[i].port = port;
 		}

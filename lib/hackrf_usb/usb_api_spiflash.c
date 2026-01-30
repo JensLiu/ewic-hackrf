@@ -80,7 +80,7 @@ usb_request_status_t usb_vendor_request_write_spiflash(
 		    ((addr + len) > spi_flash.num_bytes)) {
 			return USB_REQUEST_STATUS_STALL;
 		} else {
-			w25q80bv_program(&spi_flash, addr, len, &spiflash_buffer[0]);
+			w25q80bv_program(&spi_flash, addr, len, endpoint->buffer);
 			usb_transfer_schedule_ack(endpoint->in);
 			return USB_REQUEST_STATUS_OK;
 		}

@@ -669,8 +669,7 @@ void tud_task_ext(uint32_t timeout_ms, bool in_isr) {
 
   // Loop until there is no more events in the queue
   while (1) {
-    // Retry deferred control status (EP0 was busy when DATA completed); internal only, no new API
-    usbd_control_deferred_status_poll(0);
+    usbd_control_deferred_status_poll(_usbd_rhport);
     dcd_event_t event;
     if (!osal_queue_receive(_usbd_q, &event, timeout_ms)) {
       return;

@@ -19,13 +19,13 @@ This document lists modifications made for the HackRF/LPC43xx TinyUSB device por
 
 - **Added** `pending_status = false;` so deferred state is cleared on reset.
 
-### 1.3 New internal function: `usbd_control_deferred_status_poll(uint8_t rhport)`
+### 1.3 `usbd_control_deferred_status_poll(rhport)`
 
-- **Added** (lines 141–147). Internal implementation only (not a public API): retries sending the deferred status stage when EP0 becomes free. Called from inside `tud_task_ext()` at the start of the event loop so the application uses only canonical TinyUSB APIs (`tud_task()`, etc.); no new API is exposed.
+- **Added**: retries sending the deferred status stage when EP0 becomes free. Called at the start of the `tud_task_ext()` loop so deferred status is sent promptly without waiting for another control transfer.
 
 ### 1.4 `usbd_control_xfer_cb()` – status stage complete path
 
-- **Existing behaviour kept**: when a status stage completes, if `pending_status` is set, the code sends the deferred status (and clears `pending_status`). No change to logic, only to when `pending_status` gets set (see below).
+- **Added**: when a status stage completes, if `pending_status` is set, the code retries `status_stage_xact()` to send the deferred status. Complements the poll for cases where another transfer's status completion runs first.
 
 ### 1.5 `usbd_control_xfer_cb()` – DATA stage complete path
 
@@ -34,8 +34,9 @@ This document lists modifications made for the HackRF/LPC43xx TinyUSB device por
   - Store the request in `pending_status_request` and set `pending_status = true`.
   - **Added** debug log: `TU_LOG_USBD("  control: deferred status (EP0 busy), req=%u\r\n", ...)`.
 - **Unchanged**: when `status_stage_xact()` succeeds, behaviour is as before (status queued immediately).
+- Deferred status is retried by `usbd_control_deferred_status_poll()` (each tud_task loop) and by the status-stage complete path (or via `hackrf_usb_bridge_poll()` for no-data requests).
 
-**Reason**: With `tud_task()` run from the USB ISR, EP0 can still be busy when DATA completes. Deferring and retrying from the task loop avoids host blocking and prevents asserts.
+**Reason**: With `tud_task()` run from the USB ISR, EP0 can still be busy when DATA completes. Deferring and retrying when EP0 is free avoids host blocking and prevents asserts.
 
 ---
 
@@ -43,21 +44,13 @@ This document lists modifications made for the HackRF/LPC43xx TinyUSB device por
 
 (Copy of `lib/tinyusb/src/device/usbd.c` with the following changes.)
 
-### 2.1 Declaration for internal control deferred-status poll
+### 2.1 `tud_task_ext()` – task loop
 
-- **Added** (around line 414):
-  ```c
-  void usbd_control_deferred_status_poll(uint8_t rhport);
-  ```
-  (with the other `usbd_control_*` declarations). Internal only; not exposed in `usbd.h`.
+- **Added** at the start of the `while (1)` loop (before `osal_queue_receive`): call `usbd_control_deferred_status_poll(_usbd_rhport)` so deferred control status is retried on each task iteration.
 
-### 2.2 `tud_task_ext()` – task loop
+### 2.2 `usbd_edpt_xfer()` – busy endpoint handling
 
-- **Added** at the start of the `while (1)` event loop (before `osal_queue_receive`): call `usbd_control_deferred_status_poll(0)` so deferred control status is retried inside the existing `tud_task()` API. No new public API; application uses only canonical TinyUSB APIs.
-
-### 2.3 `usbd_edpt_xfer()` – busy endpoint handling
-
-- **Changed** (around lines 1403–1407): when the target endpoint is already busy (`_usbd_dev.ep_status[epnum][dir].busy != 0`), the code no longer asserts.
+- **Changed** (around lines 1400–1404): when the target endpoint is already busy (`_usbd_dev.ep_status[epnum][dir].busy != 0`), the code no longer asserts.
 - **New behaviour**:
   - Log: `TU_LOG_USBD("  EP %02X busy, skip\r\n", ep_addr);`
   - **Return `false`** so the caller can defer (e.g. control status in `usbd_control.c`).
@@ -69,9 +62,9 @@ This document lists modifications made for the HackRF/LPC43xx TinyUSB device por
 
 | File                       | Change                                                                 |
 |----------------------------|-----------------------------------------------------------------------|
-| `tinyusb_port/usbd_control.c` | Deferred status state + internal `usbd_control_deferred_status_poll(rhport)`; defer on EP0 busy in DATA complete path; clear deferred in reset; extra TU_LOG when deferring. No new public API. |
-| `tinyusb_port/usbd.c`        | Declare internal `usbd_control_deferred_status_poll`; call it at start of `tud_task_ext()` loop (retry inside canonical `tud_task()`); on busy EP in `usbd_edpt_xfer()` log and return false instead of asserting. No new public API. |
-| `tinyusb_port/dcd_ci_hs.c`   | For `OPT_MCU_LPC43XX`, include `ci_hs_hackrf.h`; add `_queued_len` shadow for correct xferred_bytes when hardware zeros QTD. |
+| `tinyusb_port/usbd_control.c` | Deferred status state; `usbd_control_deferred_status_poll()`; defer on EP0 busy in DATA complete path; retry in status-complete path and poll; clear deferred in reset; extra TU_LOG when deferring. |
+| `tinyusb_port/usbd.c`        | Call `usbd_control_deferred_status_poll()` at start of `tud_task_ext()` loop; on busy EP in `usbd_edpt_xfer()`: log and return false instead of asserting. |
+| `tinyusb_port/dcd_ci_hs.c`   | For `OPT_MCU_LPC43XX`, include `ci_hs_hackrf.h`. |
 | `tinyusb_port/vendor_device.c`, `.h` | Add `CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET` (0 = no auto-ZLP for streaming). |
 
 ---
@@ -84,20 +77,28 @@ This document lists modifications made for the HackRF/LPC43xx TinyUSB device por
 
 - **Changed** (around lines 50–56): for `OPT_MCU_LPC43XX`, the file includes `ci_hs_hackrf.h` instead of `ci_hs_lpc18_43.h`. Upstream uses `ci_hs_lpc18_43.h` for both LPC18xx and LPC43xx; the HackRF port uses `ci_hs_hackrf.h`, which bridges libopencm3 LPC43xx definitions to the ChipIdea driver.
 
-### 3.2 Per-EP queued length shadow (LPC43xx hardware)
-
-- **Added** `_queued_len[][]` shadow to track expected transfer length; LPC43xx hardware may zero the QTD overlay on completion, causing incorrect `xferred_bytes`. When `expected==0` but `_queued_len` is non-zero, report the shadow value as the actual bytes transferred.
-
 ---
 
 ## 4. `tinyusb_port/vendor_device.c` and `tinyusb_port/vendor_device.h`
 
-(Copies of `lib/tinyusb/src/class/vendor/vendor_device.c` and `vendor_device.h` with the following addition.)
+(Copies of lib/tinyusb vendor class with ZLP option.)
 
 ### 4.1 CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET
 
-- **Added** config option (default 1): when 1, send ZLP after a full packet if FIFO is empty (signals end of transfer). When 0, do not send ZLP automatically.
-- **Use case**: HackRF bulk streaming: the app feeds the FIFO from `tx_cb`; auto-ZLP would terminate the stream prematurely. Set to 0 in `tusb_config.h`.
+- **Added** config option (default 1): when 1, send ZLP after full packet if FIFO empty (signals end of transfer). When 0, do not send ZLP.
+- **tusb_config.h** sets it to 0 for HackRF streaming: the app feeds data in `tx_cb`; auto-ZLP would terminate the stream and make the host stop.
+
+---
+
+## 5. `tinyusb_port_debug.h` (unified port debug)
+
+Single switch `TUSB_PORT_DEBUG` (in tusb_config.h) controls all port debug output. Does not alter TinyUSB's `CFG_TUSB_DEBUG` / `CFG_TUD_LOG_LEVEL`.
+
+- **TUSB_PORT_DBG(fmt, ...)**: descriptor callbacks, init (tinyusb_port.c)
+- **TUSB_PORT_DBG_BRIDGE(fmt, ...)**: control/bulk path (hackrf_usb_bridge.c)
+- **TUSB_PORT_DBG_EVT(eventid)**: event hook (evt6, evt7, etc.)
+
+Set `TUSB_PORT_DEBUG 1` in tusb_config.h for bring-up; 0 for production (UART in ISR blocks streaming).
 
 ---
 

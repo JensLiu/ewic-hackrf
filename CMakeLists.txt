@@ -48,6 +48,7 @@ include_directories(
 	${TINYUSB_DIR}/src/common
 	${TINYUSB_DIR}/src/device
 	${TINYUSB_DIR}/src/portable/chipidea/ci_hs
+	${TINYUSB_DIR}/src/class/vendor
 )
 
 # Core firmware (USB stack replaced by TinyUSB device - see TINYUSB_SRC and hackrf_usb_bridge)
@@ -102,7 +103,7 @@ set(TINYUSB_SRC
 	# Device stack (modified for HackRF: deferred EP0 status, busy EP handling)
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/usbd.c
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/usbd_control.c
-	# Vendor device class (control + bulk) - HackRF copy with CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET
+	# Vendor device class (control + bulk) - tinyusb_port copy with ZLP option disabled for streaming
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/vendor_device.c
 	# ChipIdea device controller (HackRF copy: uses ci_hs_hackrf.h for LPC43xx)
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/dcd_ci_hs.c

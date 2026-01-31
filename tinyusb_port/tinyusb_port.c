@@ -9,6 +9,7 @@
  */
 
 #include "tusb.h"
+#include "tinyusb_port_debug.h"
 #include "hackrf_core.h"
 #include "usb_descriptor.h"
 #include "usb_device.h"
@@ -36,30 +37,30 @@
 /*---------------------------------------------------------------------------*/
 
 uint8_t const *tud_descriptor_device_cb(void) {
-  tusb_uart_printf("desc: device\r\n");
+  TUSB_PORT_DBG("desc: device");
   return usb_descriptor_device;
 }
 
 uint8_t const *tud_descriptor_configuration_cb(uint8_t index) {
   (void)index;
-  tusb_uart_printf("desc: config\r\n");
+  TUSB_PORT_DBG("desc: config");
   return usb_descriptor_configuration_high_speed;
 }
 
 uint8_t const *tud_descriptor_device_qualifier_cb(void) {
-  tusb_uart_printf("desc: dev_qual\r\n");
+  TUSB_PORT_DBG("desc: dev_qual");
   return usb_descriptor_device_qualifier;
 }
 
 uint8_t const *tud_descriptor_other_speed_configuration_cb(uint8_t index) {
   (void)index;
-  tusb_uart_printf("desc: other_speed_config\r\n");
+  TUSB_PORT_DBG("desc: other_speed_config");
   return usb_descriptor_configuration_full_speed;
 }
 
 uint16_t const *tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
   (void)langid;
-  tusb_uart_printf("desc: string %u\r\n", (unsigned)index);
+  TUSB_PORT_DBG("desc: string %u", (unsigned)index);
   if (index >= 5) return NULL;
   if (!usb_descriptor_strings[index]) return NULL;
   return (const uint16_t *)usb_descriptor_strings[index];
@@ -74,8 +75,8 @@ static volatile uint32_t s_events_queued_in_isr;
 void tud_event_hook_cb(uint8_t rhport, uint32_t eventid, bool in_isr) {
   (void)rhport;
   (void)in_isr;
-  s_events_queued_in_isr++;  /* diagnostic: can main loop see this? */
-  tusb_uart_printf("evt%lu ", (unsigned long)eventid);
+  s_events_queued_in_isr++;
+  TUSB_PORT_DBG_EVT(eventid);
 }
 
 uint32_t tinyusb_events_queued_in_isr_get_and_reset(void) {
@@ -120,13 +121,10 @@ bool tinyusb_device_init(void) {
   /* Present device to host (required on some ports when no VBUS detection) */
   tud_connect();
 
-  /* Debug: dump USB0 controller state after init */
-  {
-    ci_hs_regs_t *r = CI_HS_REG(BOARD_TUD_RHPORT);
-    tusb_uart_printf("USB0 init: USBCMD=%08lx USBSTS=%08lx PORTSC1=%08lx\r\n",
-                     (unsigned long)r->USBCMD, (unsigned long)r->USBSTS,
-                     (unsigned long)r->PORTSC1);
-  }
+  TUSB_PORT_DBG("USB0 init: USBCMD=%08lx USBSTS=%08lx PORTSC1=%08lx",
+                (unsigned long)CI_HS_REG(BOARD_TUD_RHPORT)->USBCMD,
+                (unsigned long)CI_HS_REG(BOARD_TUD_RHPORT)->USBSTS,
+                (unsigned long)CI_HS_REG(BOARD_TUD_RHPORT)->PORTSC1);
 
   /* SysTick 1 ms for tusb_time_delay_ms and board_millis (assumes 204 MHz AHB) */
   systick_set_reload(204000 - 1);

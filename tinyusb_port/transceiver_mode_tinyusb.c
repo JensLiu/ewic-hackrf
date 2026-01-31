@@ -23,13 +23,16 @@
 #include <stddef.h>
 #include <string.h>
 
-#define USB_TRANSFER_SIZE 0x4000
+/* Vendor stream FIFO is 512 bytes; schedule that much per transfer so m4_count stays in sync. */
+#define USB_TRANSFER_SIZE 512
+
+/* Block size for "logical" scheduling (rx schedules until we've sent this much per iteration). */
+#define USB_BLOCK_SIZE 0x4000
 
 static void transceiver_bulk_transfer_complete(void* user_data, unsigned int bytes_transferred)
 {
 	(void)user_data;
 	m0_state.m4_count += bytes_transferred;
-	uart_print("xfer_complete: bytes=%u m4_count=%lu\n", bytes_transferred, (unsigned long)m0_state.m4_count);
 }
 
 void off_mode(uint32_t seq)
@@ -41,25 +44,20 @@ void off_mode(uint32_t seq)
 
 void rx_mode(uint32_t seq)
 {
-	uint32_t usb_count = 0;
-
 	transceiver_startup(TRANSCEIVER_MODE_RX);
 
 	baseband_streaming_enable(&sgpio_config);
 
-	uart_print("rx_mode: start m0=%lu m4=%lu usb=%lu\n",
-	           (unsigned long)m0_state.m0_count, (unsigned long)m0_state.m4_count, (unsigned long)usb_count);
-
 	while (transceiver_request.seq == seq) {
-		if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
-			uart_print("rx_mode: sched m0=%lu usb=%lu\n", (unsigned long)m0_state.m0_count, (unsigned long)usb_count);
+		/* avail = bytes M0 has produced but M4 hasn't sent yet */
+		uint32_t avail = m0_state.m0_count - m0_state.m4_count;
+		if (avail >= USB_TRANSFER_SIZE) {
 			usb_transfer_schedule_block(
 				&usb_endpoint_bulk_in,
-				&usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK],
+				&usb_bulk_buffer[m0_state.m4_count & USB_BULK_BUFFER_MASK],
 				USB_TRANSFER_SIZE,
 				transceiver_bulk_transfer_complete,
 				NULL);
-			usb_count += USB_TRANSFER_SIZE;
 		}
 	}
 
@@ -76,24 +74,24 @@ void tx_mode(uint32_t seq)
 	usb_transfer_schedule_block(
 		&usb_endpoint_bulk_out,
 		&usb_bulk_buffer[0x0000],
-		USB_TRANSFER_SIZE,
+		USB_BLOCK_SIZE,
 		transceiver_bulk_transfer_complete,
 		NULL);
-	usb_count += USB_TRANSFER_SIZE;
+	usb_count += USB_BLOCK_SIZE;
 
 	while (transceiver_request.seq == seq) {
 		if (!started && (m0_state.m4_count == USB_BULK_BUFFER_SIZE)) {
 			baseband_streaming_enable(&sgpio_config);
 			started = true;
 		}
-		if ((usb_count - m0_state.m0_count) <= USB_TRANSFER_SIZE) {
+		if ((usb_count - m0_state.m0_count) <= USB_BLOCK_SIZE) {
 			usb_transfer_schedule_block(
 				&usb_endpoint_bulk_out,
 				&usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK],
-				USB_TRANSFER_SIZE,
+				USB_BLOCK_SIZE,
 				transceiver_bulk_transfer_complete,
 				NULL);
-			usb_count += USB_TRANSFER_SIZE;
+			usb_count += USB_BLOCK_SIZE;
 		}
 	}
 

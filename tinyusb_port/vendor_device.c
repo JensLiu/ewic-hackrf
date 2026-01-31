@@ -23,7 +23,7 @@
  *
  * This file is part of the TinyUSB stack.
  *
- * HackRF port: Uses CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET (see TINYUSB_CHANGES.md).
+ * HackRF port: wrap ZLP in #if CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET (set 0 for streaming).
  */
 
 #include "tusb_option.h"

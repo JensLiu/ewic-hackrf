@@ -16,9 +16,14 @@ extern "C" {
 //--------------------------------------------------------------------
 #define CFG_TUSB_MCU          OPT_MCU_LPC43XX
 #define CFG_TUSB_OS           OPT_OS_NONE
-#define CFG_TUSB_DEBUG        3
-#define CFG_TUD_LOG_LEVEL     3
-// Reduce to 0 (or omit TU_LOG_USBD) to avoid UART blocking from ISR: CFG_TUSB_DEBUG 0 and/or CFG_TUD_LOG_LEVEL 0
+#define CFG_TUSB_DEBUG        0
+#define CFG_TUD_LOG_LEVEL     0
+/* TinyUSB debug 3 for bring-up; 0 for production - UART in ISR blocks streaming */
+
+/* Port debug: 1 = descriptor/event/bridge UART prints (tinyusb_port_debug.h); 0 = off */
+#ifndef TUSB_PORT_DEBUG
+#define TUSB_PORT_DEBUG 0
+#endif
 
 // TinyUSB debug -> same UART path as uart_print (DISPLAY_BUFFER + uart_send_str).
 // View at 921600 baud on UART0 (e.g. screen /dev/ttyUSB0 921600).
@@ -44,7 +49,7 @@ extern int tusb_uart_printf(const char *format, ...);
 /* Use buffered mode with manual RX for streaming */
 #define CFG_TUD_VENDOR_TXRX_BUFFERED 1
 #define CFG_TUD_VENDOR_RX_MANUAL_XFER 1
-/* Disable auto-ZLP: bridge continuously feeds data */
+/* Disable ZLP after full packet: streaming must not signal "end of transfer" to host */
 #define CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET 0
 
 #define CFG_TUD_ENDPOINT0_SIZE    64

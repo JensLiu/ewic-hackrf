@@ -354,46 +354,13 @@ int main(void) {
 
   uart_print("Hello, World!\n");
 
-  uint32_t last_usb_debug_millis = 0;
-  static uint32_t
-      main_loop_count; /* debug: last print shows where we might block */
-
   while (true) {
-    main_loop_count++;
-    if ((main_loop_count % 2000u) == 0u) {
-      uart_print("[main] %lu enter\n", (unsigned long)main_loop_count);
-    }
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
     __asm__ volatile("dsb" ::: "memory");
-    /* Diagnostic: can main loop see events the ISR queued? (if >0 but no USBD
-     * msgs, queue read fails) */
-    {
-      uint32_t queued = tinyusb_events_queued_in_isr_get_and_reset();
-      if (queued > 0) {
-        uart_print("events_queued_by_isr: %lu (before tud_task)\n",
-                   (unsigned long)queued);
-      }
-    }
-    /* Always run tud_task multiple times so DCD events are processed. */
+    /* Always run tud_task so DCD events are processed. */
     tud_task();
-    if ((main_loop_count % 2000u) == 0u) {
-      uart_print("[main] %lu after_tud_task\n", (unsigned long)main_loop_count);
-    }
     hackrf_usb_bridge_poll(); /* retry deferred no-data control status if EP0
                                  was busy */
-    if ((main_loop_count % 2000u) == 0u) {
-      uart_print("[main] %lu after_poll\n", (unsigned long)main_loop_count);
-    }
-    /* Debug: every ~5s print USB ISR count (shows if host triggers any
-     * interrupts) */
-    {
-      uint32_t now = board_millis();
-      if (now - last_usb_debug_millis >= 5000) {
-        uint32_t n = tinyusb_usb_isr_count_get_and_reset();
-        uart_print("USB ISR count (5s): %lu\n", (unsigned long)n);
-        last_usb_debug_millis = now;
-      }
-    }
     transceiver_request_t request;
 
     // Briefly disable USB interrupt so that we can
@@ -406,16 +373,12 @@ int main(void) {
     request = transceiver_request;
     nvic_enable_irq(NVIC_USB0_IRQ);
 
-    uart_print("main: mode=%d seq=%lu\n", request.mode,
-               (unsigned long)request.seq);
     switch (request.mode) {
     case TRANSCEIVER_MODE_OFF:
       off_mode(request.seq);
       break;
     case TRANSCEIVER_MODE_RX:
-      uart_print("main: calling rx_mode\n");
       rx_mode(request.seq);
-      uart_print("main: rx_mode returned\n");
       break;
     case TRANSCEIVER_MODE_TX:
       tx_mode(request.seq);

@@ -23,7 +23,7 @@
  *
  * This file is part of the TinyUSB stack.
  *
- * HackRF port: Added CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET (see TINYUSB_CHANGES.md).
+ * HackRF port: added CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET (see vendor_device.c).
  */
 
 #ifndef TUSB_VENDOR_DEVICE_H_
@@ -64,8 +64,7 @@ extern "C" {
   #define CFG_TUD_VENDOR_RX_MANUAL_XFER 0
 #endif
 
-// When 1, send ZLP after a full packet if FIFO is empty (signals end of transfer). When 0, do not send
-// ZLP automatically (e.g. for continuous streaming where the app feeds the FIFO from the tx_cb).
+// HackRF: when 0, do NOT send ZLP after full packet when FIFO empty (needed for continuous streaming)
 #ifndef CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET
   #define CFG_TUD_VENDOR_TX_ZLP_AFTER_FULL_PACKET 1
 #endif

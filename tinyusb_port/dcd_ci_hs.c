@@ -187,9 +187,6 @@ typedef struct {
 
 CFG_TUD_MEM_SECTION TU_ATTR_ALIGNED(2048) static dcd_data_t _dcd_data;
 
-/* Per-EP queued length: hardware may zero QTD on completion (LPC43xx), so we use this on complete when expected==0 */
-static uint16_t _queued_len[TUP_DCD_ENDPOINT_MAX][2];
-
 //--------------------------------------------------------------------+
 // Prototypes and Helper Functions
 //--------------------------------------------------------------------+
@@ -231,7 +228,6 @@ static void bus_reset(uint8_t rhport) {
 
   //------------- Queue Head & Queue TD -------------//
   tu_memclr(&_dcd_data, sizeof(dcd_data_t));
-  tu_memclr(&_queued_len, sizeof(_queued_len));
 
   //------------- Set up Control Endpoints (0 OUT, 1 IN) -------------//
   _dcd_data.qhd[0][0].zero_length_termination = _dcd_data.qhd[0][1].zero_length_termination = 1;
@@ -246,7 +242,6 @@ static void bus_reset(uint8_t rhport) {
 bool dcd_init(uint8_t rhport, const tusb_rhport_init_t *rh_init) {
   (void)rh_init;
   tu_memclr(&_dcd_data, sizeof(dcd_data_t));
-  tu_memclr(&_queued_len, sizeof(_queued_len));
 
   ci_hs_regs_t *dcd_reg = CI_HS_REG(rhport);
 
@@ -533,7 +528,6 @@ bool dcd_edpt_xfer(uint8_t rhport, uint8_t ep_addr, uint8_t *buffer, uint16_t to
 
   // Prepare qtd
   qtd_init(p_qtd, buffer, total_bytes);
-  _queued_len[epnum][dir] = total_bytes;
 
   // Start qhd transfer
   p_qhd->ff = NULL;
@@ -588,9 +582,6 @@ bool dcd_edpt_xfer_fifo(uint8_t rhport, uint8_t ep_addr, tu_fifo_t *ff, uint16_t
     }
   }
 
-  /* Shadow for completion when hardware zeroes QTD (e.g. LPC43xx); same as dcd_edpt_xfer path. */
-  _queued_len[epnum][dir] = p_qtd->expected_bytes;
-
   // Start qhd transfer
   p_qhd->ff = ff;
   qhd_start_xfer(rhport, epnum, dir);
@@ -619,22 +610,15 @@ static void process_edpt_complete_isr(uint8_t rhport, uint8_t epnum, uint8_t dir
     dcd_reg->ENDPTFLUSH = TU_BIT(epnum + (dir ? 16 : 0));
   }
 
-  /* expected_bytes is in our local p_qtd; total_bytes (remaining) is in hardware-updated overlay.
-   * Hardware may zero the QTD on completion (LPC43xx), so expected/overlay can both be 0. */
-  uint16_t xferred_bytes = p_qtd->expected_bytes - (uint16_t) p_overlay->total_bytes;
-
-  /* Use shadow queued length when QTD was zeroed by hardware (expected==0, we stored length at prime). */
-  if (xferred_bytes == 0 && _queued_len[epnum][dir] != 0 && result == XFER_RESULT_SUCCESS) {
-    xferred_bytes = _queued_len[epnum][dir];
-    TU_LOG2("DCD EP%u %s: use queued_len %u (QTD zeroed)\r\n", (unsigned) epnum, dir ? "IN" : "OUT", (unsigned) xferred_bytes);
-  }
-  _queued_len[epnum][dir] = 0;
+  /* expected_bytes is in our local p_qtd; total_bytes (remaining) is in hardware-updated overlay. */
+  uint16_t expected = p_qtd->expected_bytes;
+  uint16_t xferred_bytes = expected - (uint16_t) p_overlay->total_bytes;
 
   /* Debug: bulk EP completion */
   if (epnum != 0) {
     TU_LOG2("DCD EP%u %s complete: expected=%u overlay_total=%u xferred=%u\r\n",
             (unsigned) epnum, dir ? "IN" : "OUT",
-            (unsigned) p_qtd->expected_bytes,
+            (unsigned) expected,
             (unsigned) p_overlay->total_bytes,
             (unsigned) xferred_bytes);
   }

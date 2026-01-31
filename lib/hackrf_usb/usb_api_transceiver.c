@@ -389,7 +389,6 @@ usb_request_status_t usb_vendor_request_set_transceiver_mode(
 	const usb_transfer_stage_t stage)
 {
 	if (stage == USB_TRANSFER_STAGE_SETUP) {
-		uart_print("set_trx_mode: value=%d\n", endpoint->setup.value);
 		switch (endpoint->setup.value) {
 		case TRANSCEIVER_MODE_OFF:
 		case TRANSCEIVER_MODE_RX:
@@ -397,7 +396,6 @@ usb_request_status_t usb_vendor_request_set_transceiver_mode(
 		case TRANSCEIVER_MODE_RX_SWEEP:
 		case TRANSCEIVER_MODE_CPLD_UPDATE:
 			request_transceiver_mode(endpoint->setup.value);
-			uart_print("set_trx_mode: requested mode=%d seq=%lu\n", endpoint->setup.value, (unsigned long)transceiver_request.seq);
 			usb_transfer_schedule_ack(endpoint->in);
 			return USB_REQUEST_STATUS_OK;
 		default:

@@ -148,6 +148,11 @@ void tinyusb_usb0_isr(void) {
    * in ISR context so we see our own writes; keeps enumeration working. */
   tud_task();
   __asm__ volatile ("dsb" ::: "memory");
+  /* Rate-limited ISR debug: every 10000th call */
+  if (TUSB_PORT_DEBUG && (s_usb_isr_count % 10000) == 0) {
+    tusb_uart_printf("[isr] cnt=%lu evt=%lu\r\n", (unsigned long)s_usb_isr_count,
+                     (unsigned long)s_events_queued_in_isr);
+  }
 }
 
 uint32_t tinyusb_usb_isr_count_get_and_reset(void) {

@@ -352,7 +352,7 @@ int main(void) {
     clkin_detect_init();
   }
 
-  uart_print("Hello, World!\n");
+  uart_print("HackRF Started!\n");
 
   while (true) {
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
@@ -375,12 +375,15 @@ int main(void) {
 
     switch (request.mode) {
     case TRANSCEIVER_MODE_OFF:
+      uart_print("main: mode=OFF\n");
       off_mode(request.seq);
       break;
     case TRANSCEIVER_MODE_RX:
+      uart_print("main: mode=RX -> rx_mode\n");
       rx_mode(request.seq);
       break;
     case TRANSCEIVER_MODE_TX:
+      uart_print("main: mode=TX -> tx_mode\n");
       tx_mode(request.seq);
       break;
     case TRANSCEIVER_MODE_RX_SWEEP:

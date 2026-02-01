@@ -132,7 +132,7 @@ int usb_transfer_schedule_block(
       tud_control_xfer(current_control_rhport, &current_control_request,
                        data, (uint16_t)maximum_length);
     }
-  } else {
+  } else {  
     TUSB_PORT_DBG_BRIDGE("block status (no data)");
     handler_sent_status = true;
     tud_control_status(current_control_rhport, &current_control_request);
@@ -166,8 +166,8 @@ void usb_endpoint_stall(const usb_endpoint_t* const endpoint) {
 }
 
 void usb_endpoint_flush(const usb_endpoint_t* const endpoint) {
-  (void)endpoint;
-  /* No-op for control in this bridge; bulk flush below */
+  if (endpoint->address == 0x81 || endpoint->address == 0x02)
+    usb_queue_flush_endpoint(endpoint);
 }
 
 /* Map TinyUSB control stage to HackRF transfer stage */
@@ -366,6 +366,8 @@ int usb_transfer_schedule(const usb_endpoint_t* const endpoint,
       uint32_t written = tud_vendor_write(data, maximum_length);
       uint32_t flushed = tud_vendor_write_flush();
       TUSB_PORT_DBG_BRIDGE("sched IN written=%lu flushed=%lu (auto-flush in tx_cb)", (unsigned long)written, (unsigned long)flushed);
+      if (written == 0)
+        TUSB_PORT_DBG_BRIDGE("sched IN WARN: written=0 (stream full?) max_len=%lu", (unsigned long)maximum_length);
     } else {
       bulk_out_accumulated = 0;
       tud_vendor_read_xfer();
@@ -429,27 +431,41 @@ void usb_queue_flush_endpoint(const usb_endpoint_t* const endpoint) {
 void tud_vendor_rx_cb(uint8_t idx, const uint8_t* buffer, uint32_t bufsize) {
   (void)idx;
   usb_queue_t* queue = endpoint_queues[USB_ENDPOINT_INDEX(0x02)];
-  if (queue && queue->active) {
-    usb_transfer_t* t = queue->active;
-    uint32_t n;
-    if (bufsize > 0 && buffer) {
-      n = bufsize <= (t->maximum_length - bulk_out_accumulated) ? bufsize : (t->maximum_length - bulk_out_accumulated);
-      memcpy((uint8_t*)TRANSFER_DATA(t) + bulk_out_accumulated, buffer, n);
-    } else {
-      n = tud_vendor_n_available(0);
-      if (n > (t->maximum_length - bulk_out_accumulated)) n = t->maximum_length - bulk_out_accumulated;
-      if (n) tud_vendor_n_read(0, (uint8_t*)TRANSFER_DATA(t) + bulk_out_accumulated, n);
+  TUSB_PORT_DBG_BRIDGE("rx_cb bufsize=%lu active=%p", (unsigned long)bufsize, queue ? (void*)queue->active : NULL);
+  if (!queue || !queue->active) {
+    /* Data arrived before we scheduled (e.g. from flush's read); drain FIFO and re-prime */
+    uint32_t total = 0;
+    uint8_t discard[64];
+    for (;;) {
+      uint32_t n = tud_vendor_n_available(0);
+      if (n == 0) break;
+      uint32_t r = tud_vendor_n_read(0, discard, n < sizeof(discard) ? n : sizeof(discard));
+      if (r == 0) break;
+      total += r;
     }
-    bulk_out_accumulated += n;
-    if (bulk_out_accumulated >= t->maximum_length) {
-      t->td.total_bytes = t->maximum_length;
+    if (total) TUSB_PORT_DBG_BRIDGE("rx_cb drained %lu bytes (no active xfer)", (unsigned long)total);
+    tud_vendor_read_xfer();
+    return;
+  }
+  usb_transfer_t* t = queue->active;
+  uint32_t n;
+  if (bufsize > 0 && buffer) {
+    n = bufsize <= (t->maximum_length - bulk_out_accumulated) ? bufsize : (t->maximum_length - bulk_out_accumulated);
+    memcpy((uint8_t*)TRANSFER_DATA(t) + bulk_out_accumulated, buffer, n);
+  } else {
+    n = tud_vendor_n_available(0);
+    if (n > (t->maximum_length - bulk_out_accumulated)) n = t->maximum_length - bulk_out_accumulated;
+    if (n) tud_vendor_n_read(0, (uint8_t*)TRANSFER_DATA(t) + bulk_out_accumulated, n);
+  }
+  bulk_out_accumulated += n;
+  if (bulk_out_accumulated >= t->maximum_length) {
+    t->td.total_bytes = t->maximum_length;
+    bulk_out_accumulated = 0;
+    usb_queue_transfer_complete(&usb_endpoint_bulk_out);
+    if (queue->active)
       bulk_out_accumulated = 0;
-      usb_queue_transfer_complete(&usb_endpoint_bulk_out);
-      if (queue->active)
-        bulk_out_accumulated = 0;
-    } else {
-      tud_vendor_read_xfer(); /* chain next read */
-    }
+  } else {
+    tud_vendor_read_xfer(); /* chain next read */
   }
 }
 
@@ -457,6 +473,8 @@ void tud_vendor_tx_cb(uint8_t idx, uint32_t sent_bytes) {
   (void)idx;
   usb_queue_t* queue = endpoint_queues[USB_ENDPOINT_INDEX(0x81)];
   TUSB_PORT_DBG_BRIDGE("tx_cb sent=%lu active=%p", (unsigned long)sent_bytes, (void*)queue ? (void*)queue->active : NULL);
+  if (sent_bytes == 0)
+    TUSB_PORT_DBG_BRIDGE("tx_cb WARN: sent_bytes=0");
   if (queue && queue->active) {
     queue->active->td.total_bytes = sent_bytes;
     usb_queue_transfer_complete(&usb_endpoint_bulk_in);

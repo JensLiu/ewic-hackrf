@@ -411,7 +411,6 @@ void usbd_control_reset(void);
 void usbd_control_set_request(tusb_control_request_t const *request);
 void usbd_control_set_complete_callback( usbd_control_xfer_cb_t fp );
 bool usbd_control_xfer_cb (uint8_t rhport, uint8_t ep_addr, xfer_result_t event, uint32_t xferred_bytes);
-void usbd_control_deferred_status_poll(uint8_t rhport);
 
 //--------------------------------------------------------------------+
 // Weak stubs: invoked if no strong implementation is available
@@ -669,7 +668,6 @@ void tud_task_ext(uint32_t timeout_ms, bool in_isr) {
 
   // Loop until there is no more events in the queue
   while (1) {
-    usbd_control_deferred_status_poll(_usbd_rhport);
     dcd_event_t event;
     if (!osal_queue_receive(_usbd_q, &event, timeout_ms)) {
       return;

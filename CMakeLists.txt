@@ -37,7 +37,7 @@ add_custom_command(
 # TinyUSB directory
 set(TINYUSB_DIR ${PATH_HACKRF_FIRMWARE}/lib/tinyusb)
 
-# Include directories (tinyusb_port for ci_hs_hackrf.h, usbd*.c; ci_hs for ci_hs_type.h; device for dcd.h when building tinyusb_port/usbd_control.c)
+# Include directories (tinyusb_port for ci_hs_hackrf.h, usbd.c; ci_hs for ci_hs_type.h; device for usbd_control.c, dcd.h)
 include_directories(
 	${PATH_HACKRF_FIRMWARE_COMMON}
 	${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb
@@ -100,11 +100,11 @@ set(TINYUSB_SRC
 	# TinyUSB core
 	${TINYUSB_DIR}/src/tusb.c
 	${TINYUSB_DIR}/src/common/tusb_fifo.c
-	# Device stack (modified for HackRF: deferred EP0 status, busy EP handling)
+	# Device stack (usbd.c modified for HackRF: busy EP returns false instead of assert)
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/usbd.c
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/usbd_control.c
-	# Vendor device class (control + bulk) - tinyusb_port copy with ZLP option disabled for streaming
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/vendor_device.c
+	${TINYUSB_DIR}/src/device/usbd_control.c
+	# Vendor device class (control + bulk) - original from lib/tinyusb
+	${TINYUSB_DIR}/src/class/vendor/vendor_device.c
 	# ChipIdea device controller (HackRF copy: uses ci_hs_hackrf.h for LPC43xx)
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/dcd_ci_hs.c
 	# HackRF TinyUSB port: init, ISR, descriptors, vendor/bulk bridge

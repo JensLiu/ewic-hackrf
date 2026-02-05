@@ -1,24 +1,19 @@
 /*
+ * HackRF USB Host Firmware for FTDI Communication
+ *
+ * This firmware configures the HackRF as a USB host to communicate with
+ * an FTDI chip (FT4232HQ). The HackRF is powered externally via VBUS/GND pins,
+ * so the micro USB port is available for host functionality.
+ *
+ * Based on original HackRF firmware:
  * Copyright 2012-2022 Great Scott Gadgets <info@greatscottgadgets.com>
  * Copyright 2012 Jared Boone
  * Copyright 2013 Benjamin Vernoux
- *
- * This file is part of HackRF.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or (at your option)
  * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street,
- * Boston, MA 02110-1301, USA.
  */
 
 #include <stddef.h>
@@ -32,10 +27,8 @@
 #include <streaming.h>
 
 #include "tuning.h"
-
-#include "usb_standard_request.h"
-
 #include "usb_descriptor.h"
+#include "usb_type.h"
 #include <rom_iap.h>
 
 #include "clkin.h"
@@ -46,153 +39,17 @@
 #include "platform_detect.h"
 #include "portapack.h"
 #include "selftest.h"
-#include "usb_api_adc.h"
-#include "usb_api_board_info.h"
-#include "usb_api_cpld.h"
-#include "usb_api_m0_state.h"
-#include "usb_api_operacake.h"
-#include "usb_api_praline.h"
-#include "usb_api_register.h"
-#include "usb_api_selftest.h"
-#include "usb_api_spiflash.h"
-#include "usb_api_sweep.h"
-#include "usb_api_transceiver.h"
-#include "usb_api_ui.h"
-#include "usb_bulk_buffer.h"
-#include "usb_device.h"
-#include "usb_endpoint.h"
 
 #include "tinyusb_port.h"
+#include "ftdi_host.h"
 #include "uart.h"
+#include "ci_hs_hackrf.h"
+#include "tusb_config.h"  /* for tusb_uart_printf */
 
 extern uint32_t __m0_start__;
 extern uint32_t __m0_end__;
 extern uint32_t __ram_m0_start__;
 extern uint32_t _etext_ram, _text_ram, _etext_rom;
-
-static usb_request_handler_fn vendor_request_handler[] = {
-    NULL,
-    usb_vendor_request_set_transceiver_mode,
-    usb_vendor_request_write_max283x,
-    usb_vendor_request_read_max283x,
-    usb_vendor_request_write_si5351c,
-    usb_vendor_request_read_si5351c,
-    usb_vendor_request_set_sample_rate_frac,
-    usb_vendor_request_set_baseband_filter_bandwidth,
-#ifdef RAD1O
-    NULL, // write_rffc5071 not used
-    NULL, // read_rffc5071 not used
-#else
-    usb_vendor_request_write_rffc5071,
-    usb_vendor_request_read_rffc5071,
-#endif
-    usb_vendor_request_erase_spiflash,
-    usb_vendor_request_write_spiflash,
-    usb_vendor_request_read_spiflash,
-    NULL, // used to be write_cpld
-    usb_vendor_request_read_board_id,
-    usb_vendor_request_read_version_string,
-    usb_vendor_request_set_freq,
-    usb_vendor_request_set_amp_enable,
-    usb_vendor_request_read_partid_serialno,
-    usb_vendor_request_set_lna_gain,
-    usb_vendor_request_set_vga_gain,
-    usb_vendor_request_set_txvga_gain,
-    NULL, // was set_if_freq
-#if (defined HACKRF_ONE || defined PRALINE)
-    usb_vendor_request_set_antenna_enable,
-#else
-    NULL,
-#endif
-    usb_vendor_request_set_freq_explicit,
-    usb_vendor_request_read_wcid, // USB_WCID_VENDOR_REQ
-    usb_vendor_request_init_sweep,
-    usb_vendor_request_operacake_get_boards,
-    usb_vendor_request_operacake_set_ports,
-    usb_vendor_request_set_hw_sync_mode,
-    usb_vendor_request_reset,
-    usb_vendor_request_operacake_set_ranges,
-    usb_vendor_request_set_clkout_enable,
-    usb_vendor_request_spiflash_status,
-    usb_vendor_request_spiflash_clear_status,
-    usb_vendor_request_operacake_gpio_test,
-#ifdef HACKRF_ONE
-    usb_vendor_request_cpld_checksum,
-#else
-    NULL,
-#endif
-    usb_vendor_request_set_ui_enable,
-    usb_vendor_request_operacake_set_mode,
-    usb_vendor_request_operacake_get_mode,
-    usb_vendor_request_operacake_set_dwell_times,
-    usb_vendor_request_get_m0_state,
-    usb_vendor_request_set_tx_underrun_limit,
-    usb_vendor_request_set_rx_overrun_limit,
-    usb_vendor_request_get_clkin_status,
-    usb_vendor_request_read_board_rev,
-    usb_vendor_request_read_supported_platform,
-    usb_vendor_request_set_leds,
-    usb_vendor_request_user_config_set_bias_t_opts,
-#ifdef PRALINE
-    usb_vendor_request_write_fpga_reg,
-    usb_vendor_request_read_fpga_reg,
-    usb_vendor_request_p2_ctrl,
-    usb_vendor_request_p1_ctrl,
-    usb_vendor_request_set_narrowband_filter,
-    usb_vendor_request_set_fpga_bitstream,
-    usb_vendor_request_clkin_ctrl,
-#else
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-    NULL,
-#endif
-    usb_vendor_request_read_selftest,
-    usb_vendor_request_adc_read,
-    usb_vendor_request_test_rtc_osc,
-};
-
-static const uint32_t vendor_request_handler_count =
-    sizeof(vendor_request_handler) / sizeof(vendor_request_handler[0]);
-
-usb_request_status_t usb_vendor_request(usb_endpoint_t *const endpoint,
-                                        const usb_transfer_stage_t stage) {
-  usb_request_status_t status = USB_REQUEST_STATUS_STALL;
-
-  if (endpoint->setup.request < vendor_request_handler_count) {
-    usb_request_handler_fn handler =
-        vendor_request_handler[endpoint->setup.request];
-    if (handler) {
-      status = handler(endpoint, stage);
-    }
-  }
-
-  return status;
-}
-
-const usb_request_handlers_t usb_request_handlers = {
-    .standard = usb_standard_request,
-    .class = 0,
-    .vendor = usb_vendor_request,
-    .reserved = 0,
-};
-
-void usb_configuration_changed(usb_device_t *const device) {
-  /* Reset transceiver to idle state until other commands are received */
-  request_transceiver_mode(TRANSCEIVER_MODE_OFF);
-  if (device->configuration->number == 1) {
-    // transceiver configuration
-    led_on(LED1);
-  } else {
-    /* Configuration number equal 0 means usb bus reset. */
-    led_off(LED1);
-  }
-  usb_endpoint_init(&usb_endpoint_bulk_in, false);
-  usb_endpoint_init(&usb_endpoint_bulk_out, false);
-}
 
 void usb_set_descriptor_by_serial_number(void) {
   iap_cmd_res_t iap_cmd_res;
@@ -310,24 +167,17 @@ int main(void) {
   usb_set_descriptor_by_serial_number();
 #endif
 
-  usb_set_configuration_changed_cb(usb_configuration_changed);
+  uart_print("\r\n[USB] HackRF USB Host starting...\r\n");
 
-  usb_queue_init(&usb_endpoint_control_out_queue);
-  usb_queue_init(&usb_endpoint_control_in_queue);
-  usb_queue_init(&usb_endpoint_bulk_out_queue);
-  usb_queue_init(&usb_endpoint_bulk_in_queue);
-
-  usb_endpoint_init(&usb_endpoint_control_out, false);
-  usb_endpoint_init(&usb_endpoint_control_in, true);
-
-  if (!tinyusb_device_init()) {
-    uart_print("TinyUSB init failed\n");
+  /* Initialize USB host stack */
+  if (!tinyusb_host_init()) {
+    uart_print("[USB] ERROR: Host init failed!\r\n");
   }
+  
   nvic_set_priority(NVIC_USB0_IRQ, 255);
-  nvic_enable_irq(NVIC_USB0_IRQ); /* USB0 ISR = usb0_isr() in tinyusb_port.c */
+  nvic_enable_irq(NVIC_USB0_IRQ);
 
   hackrf_ui()->init();
-
   rf_path_init(&rf_path);
 
 #ifndef RAD1O
@@ -338,64 +188,50 @@ int main(void) {
   fpga_if_xcvr_selftest();
 #endif
 
-  bool operacake_allow_gpio;
-  if (hackrf_ui()->operacake_gpio_compatible()) {
-    operacake_allow_gpio = true;
-  } else {
-    operacake_allow_gpio = false;
-  }
+  bool operacake_allow_gpio = hackrf_ui()->operacake_gpio_compatible();
   operacake_init(operacake_allow_gpio);
 
-  // FIXME: clock detection on r9 only works when calling init twice
   if (detected_platform() == BOARD_ID_HACKRF1_R9) {
     clkin_detect_init();
     clkin_detect_init();
   }
 
-  uart_print("HackRF Started!\n");
+  uart_print("[USB] Waiting for device...\r\n");
 
+  uint32_t last_status_print = 0;
+  bool ftdi_was_ready = false;
+  uint32_t loop_count = 0;
+  
   while (true) {
+    loop_count++;
+    
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
     __asm__ volatile("dsb" ::: "memory");
-    /* Always run tud_task so DCD events are processed. */
-    tud_task();
-    hackrf_usb_bridge_poll(); /* retry deferred no-data control status if EP0
-                                 was busy */
-    transceiver_request_t request;
-
-    // Briefly disable USB interrupt so that we can
-    // atomically retrieve both the transceiver mode
-    // and the mode change sequence number. They are
-    // changed together by request_transceiver_mode()
-    // called from the USB ISR.
-
-    nvic_disable_irq(NVIC_USB0_IRQ);
-    request = transceiver_request;
-    nvic_enable_irq(NVIC_USB0_IRQ);
-
-    switch (request.mode) {
-    case TRANSCEIVER_MODE_OFF:
-      uart_print("main: mode=OFF\n");
-      off_mode(request.seq);
-      break;
-    case TRANSCEIVER_MODE_RX:
-      uart_print("main: mode=RX -> rx_mode\n");
-      rx_mode(request.seq);
-      break;
-    case TRANSCEIVER_MODE_TX:
-      uart_print("main: mode=TX -> tx_mode\n");
-      tx_mode(request.seq);
-      break;
-    case TRANSCEIVER_MODE_RX_SWEEP:
-      sweep_mode(request.seq);
-      break;
-#ifndef PRALINE
-    case TRANSCEIVER_MODE_CPLD_UPDATE:
-      cpld_update();
-      break;
-#endif
-    default:
-      break;
+    
+    /* Always run tuh_task so host events are processed. */
+    tuh_task();
+    
+    /* Check FTDI status and print when it changes */
+    bool ftdi_ready = ftdi_host_ready();
+    if (ftdi_ready != ftdi_was_ready) {
+      if (ftdi_ready) {
+        uart_print("[MAIN] FTDI connected and ready!\r\n");
+      } else {
+        uart_print("[MAIN] FTDI disconnected\r\n");
+      }
+      ftdi_was_ready = ftdi_ready;
+    }
+    
+    /* Print status every 5 seconds */
+    uint32_t now = board_millis();
+    if (now - last_status_print >= 5000) {
+      last_status_print = now;
+      uint32_t isr_count = tinyusb_usb_isr_count_get_and_reset();
+      tusb_uart_printf("[USB] t=%lus ISRs=%lu PORTSC1=0x%08lx\r\n",
+                       (unsigned long)(now/1000),
+                       (unsigned long)isr_count,
+                       (unsigned long)CI_HS_REG(0)->PORTSC1);
+      loop_count = 0;
     }
   }
 

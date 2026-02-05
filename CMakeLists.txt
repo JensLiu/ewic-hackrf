@@ -37,7 +37,7 @@ add_custom_command(
 # TinyUSB directory
 set(TINYUSB_DIR ${PATH_HACKRF_FIRMWARE}/lib/tinyusb)
 
-# Include directories (tinyusb_port for ci_hs_hackrf.h, usbd.c; ci_hs for ci_hs_type.h; device for usbd_control.c, dcd.h)
+# Include directories (tinyusb_port for ci_hs_hackrf.h, usbd.c; ci_hs for ci_hs_type.h; host for usbh.h)
 include_directories(
 	${PATH_HACKRF_FIRMWARE_COMMON}
 	${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb
@@ -46,9 +46,9 @@ include_directories(
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port
 	${TINYUSB_DIR}/src
 	${TINYUSB_DIR}/src/common
-	${TINYUSB_DIR}/src/device
+	${TINYUSB_DIR}/src/host
 	${TINYUSB_DIR}/src/portable/chipidea/ci_hs
-	${TINYUSB_DIR}/src/class/vendor
+	${TINYUSB_DIR}/src/portable/ehci
 )
 
 # Core firmware (USB stack replaced by TinyUSB device - see TINYUSB_SRC and hackrf_usb_bridge)
@@ -94,26 +94,23 @@ set(SRC_M4
 set(SRC_M0 sgpio_m0.s)
 
 #--------------------------------------------------------------------
-# TinyUSB USB Device Sources (replaces hackrf_usb for TX/RX/vendor)
+# TinyUSB USB Host Sources (for FTDI communication)
 #--------------------------------------------------------------------
 set(TINYUSB_SRC
 	# TinyUSB core
 	${TINYUSB_DIR}/src/tusb.c
 	${TINYUSB_DIR}/src/common/tusb_fifo.c
-	# Device stack (usbd.c modified for HackRF: busy EP returns false instead of assert)
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/usbd.c
-	${TINYUSB_DIR}/src/device/usbd_control.c
-	# Vendor device class (control + bulk) - original from lib/tinyusb
-	${TINYUSB_DIR}/src/class/vendor/vendor_device.c
-	# ChipIdea device controller (HackRF copy: uses ci_hs_hackrf.h for LPC43xx)
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/dcd_ci_hs.c
-	# HackRF TinyUSB port: init, ISR, descriptors, vendor/bulk bridge
+	# Host stack
+	${TINYUSB_DIR}/src/host/usbh.c
+	${TINYUSB_DIR}/src/host/hub.c
+	# EHCI host controller
+	${TINYUSB_DIR}/src/portable/ehci/ehci.c
+	# ChipIdea host controller driver (HackRF copy: uses ci_hs_hackrf.h for LPC43xx)
+	${PATH_HACKRF_FIRMWARE}/tinyusb_port/hcd_ci_hs.c
+	# HackRF TinyUSB port: init, ISR
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/tinyusb_port.c
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/hackrf_usb_bridge.c
-	# Mode loops (off/rx/tx/sweep/cpld) using TinyUSB bridge; main.c switch calls these
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/transceiver_mode_tinyusb.c
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/sweep_mode_tinyusb.c
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/cpld_mode_tinyusb.c
+	# FTDI host driver
+	${PATH_HACKRF_FIRMWARE}/tinyusb_port/ftdi_host.c
 )
 
 # Add TinyUSB sources to M4 build

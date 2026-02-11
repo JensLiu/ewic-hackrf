@@ -2,12 +2,25 @@
 
 char uart_read_char(void) { return (char)uart_read(UART0); }
 
-void uart_send_str(char *a) { // send string *a to uart
+void uart_send_str(char *a) { // send string *a to uart - BLOCKING + ATOMIC
+  // Disable interrupts for atomic output
+  uint32_t primask;
+  __asm__ volatile("mrs %0, primask" : "=r"(primask));
+  __asm__ volatile("cpsid i" ::: "memory");
+  
   int i = 0;
   while (a[i] != 0) {
+    // Wait for TX FIFO to have space (THRE = Transmitter Holding Register Empty)
+    while (!(UART_LSR(UART0) & UART_LSR_THRE)) {}
     uart_write(UART0, a[i]);
     i++;
   }
+  
+  // Wait for transmission to complete before re-enabling interrupts
+  while (!(UART_LSR(UART0) & UART_LSR_TEMT)) {}
+  
+  // Restore interrupt state
+  __asm__ volatile("msr primask, %0" :: "r"(primask) : "memory");
 }
 
 bool rf_uart_receive(char *data, const int max_len) {

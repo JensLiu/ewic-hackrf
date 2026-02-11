@@ -9,10 +9,6 @@
 #define WAIT_CPU_CLOCK_INIT_DELAY (34) // 1us
 
 extern char DISPLAY_BUFFER[512];
-#define uart_print(_fmt, _args...) { \
-    snprintf(DISPLAY_BUFFER, sizeof(DISPLAY_BUFFER), _fmt, ##_args); \
-    uart_send_str(DISPLAY_BUFFER); \
-}
 
 void uart_pin_setup();
 void uart_setup();

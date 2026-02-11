@@ -27,8 +27,6 @@
 #include <streaming.h>
 
 #include "tuning.h"
-#include "usb_descriptor.h"
-#include "usb_type.h"
 #include <rom_iap.h>
 
 #include "clkin.h"
@@ -50,33 +48,6 @@ extern uint32_t __m0_start__;
 extern uint32_t __m0_end__;
 extern uint32_t __ram_m0_start__;
 extern uint32_t _etext_ram, _text_ram, _etext_rom;
-
-void usb_set_descriptor_by_serial_number(void) {
-  iap_cmd_res_t iap_cmd_res;
-
-  /* Read IAP Serial Number Identification */
-  iap_cmd_res.cmd_param.command_code = IAP_CMD_READ_SERIAL_NO;
-  iap_cmd_call(&iap_cmd_res);
-
-  if (iap_cmd_res.status_res.status_ret == CMD_SUCCESS) {
-    usb_descriptor_string_serial_number[0] =
-        USB_DESCRIPTOR_STRING_SERIAL_BUF_LEN;
-    usb_descriptor_string_serial_number[1] = USB_DESCRIPTOR_TYPE_STRING;
-
-    /* 32 characters of serial number, convert to UTF-16LE */
-    for (size_t i = 0; i < USB_DESCRIPTOR_STRING_SERIAL_LEN; i++) {
-      const uint_fast8_t nibble =
-          (iap_cmd_res.status_res.iap_result[i >> 3] >> (28 - (i & 7) * 4)) &
-          0xf;
-      const char c = (nibble > 9) ? ('a' + nibble - 10) : ('0' + nibble);
-      usb_descriptor_string_serial_number[2 + i * 2] = c;
-      usb_descriptor_string_serial_number[3 + i * 2] = 0x00;
-    }
-  } else {
-    usb_descriptor_string_serial_number[0] = 2;
-    usb_descriptor_string_serial_number[1] = USB_DESCRIPTOR_TYPE_STRING;
-  }
-}
 
 #ifndef PRALINE
 static bool cpld_jtag_sram_load(jtag_t *const jtag) {
@@ -163,15 +134,11 @@ int main(void) {
   portapack_init();
 #endif
 
-#ifndef DFU_MODE
-  usb_set_descriptor_by_serial_number();
-#endif
-
-  uart_print("\r\n[USB] HackRF USB Host starting...\r\n");
+  uart_send_str("\r\n[USB] HackRF USB Host starting...\r\n");
 
   /* Initialize USB host stack */
   if (!tinyusb_host_init()) {
-    uart_print("[USB] ERROR: Host init failed!\r\n");
+    uart_send_str("[USB] ERROR: Host init failed!\r\n");
   }
   
   nvic_set_priority(NVIC_USB0_IRQ, 255);
@@ -196,7 +163,7 @@ int main(void) {
     clkin_detect_init();
   }
 
-  uart_print("[USB] Waiting for device...\r\n");
+  uart_send_str("[USB] Waiting for device...\r\n");
 
   uint32_t last_status_print = 0;
   bool ftdi_was_ready = false;
@@ -215,9 +182,9 @@ int main(void) {
     bool ftdi_ready = ftdi_host_ready();
     if (ftdi_ready != ftdi_was_ready) {
       if (ftdi_ready) {
-        uart_print("[MAIN] FTDI connected and ready!\r\n");
+        uart_send_str("[MAIN] FTDI connected and ready!\r\n");
       } else {
-        uart_print("[MAIN] FTDI disconnected\r\n");
+        uart_send_str("[MAIN] FTDI disconnected\r\n");
       }
       ftdi_was_ready = ftdi_ready;
     }

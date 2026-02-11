@@ -775,10 +775,26 @@ uint16_t cdch_open(uint8_t rhport, uint8_t daddr, const tusb_desc_interface_t *i
 
 bool cdch_set_config(uint8_t daddr, uint8_t itf_num) {
   tusb_control_request_t request;
-  request.wIndex = tu_htole16((uint16_t) itf_num);
   uint8_t const idx = tuh_cdc_itf_get_index(daddr, itf_num);
   cdch_interface_t *p_cdc = get_itf(idx);
   TU_ASSERT(p_cdc && p_cdc->serial_drid < SERIAL_DRIVER_COUNT);
+
+  // For FTDI: get_itf_by_xfer() matches on the FTDI channel number
+  // (1-based: CHANNEL_A=1 …), not the interface number.  Before
+  // ftdi_determine_type() runs, channel is 0 which acts as a
+  // "not-yet-configured" wildcard.  Using itf_num here would collide
+  // with an already-configured interface's channel and cause an
+  // infinite re-enumeration loop on multi-port FTDI chips (FT2232,
+  // FT4232, …).
+  #if CFG_TUH_CDC_FTDI
+  if (p_cdc->serial_drid == SERIAL_DRIVER_FTDI) {
+    request.wIndex = tu_htole16((uint16_t) p_cdc->ftdi.channel);
+  } else
+  #endif
+  {
+    request.wIndex = tu_htole16((uint16_t) itf_num);
+  }
+
   TU_LOG_CDC(p_cdc, "set config");
 
   // fake transfer to kick-off process_set_config()
@@ -1230,6 +1246,11 @@ static bool ftdi_proccess_set_config(cdch_interface_t *p_cdc, tuh_xfer_t *xfer) 
         cdch_interface_t const *p_cdc_itf0 = get_itf(idx_itf0);
         TU_ASSERT(p_cdc_itf0);
         p_cdc->ftdi.chip_type = p_cdc_itf0->ftdi.chip_type;
+        // Multi-port FTDI chips (FT2232, FT4232, …) need per-interface
+        // channel numbers so that get_itf_by_xfer() can distinguish
+        // completion callbacks.  ftdi_determine_type() sets this for
+        // interface 0; replicate it here for the remaining interfaces.
+        p_cdc->ftdi.channel = CHANNEL_A + p_cdc->bInterfaceNumber;
       }
       TU_ATTR_FALLTHROUGH;
 

@@ -83,16 +83,9 @@ bool tinyusb_host_init(void) {
 /*---------------------------------------------------------------------------*/
 
 static volatile uint32_t s_usb_isr_count;
-static volatile uint32_t s_usb_isr_first_few = 0;
 
 void tinyusb_usb0_isr(void) {
   s_usb_isr_count++;
-  
-  /* Log first 5 ISRs to confirm interrupts are firing */
-  if (s_usb_isr_first_few < 5) {
-    s_usb_isr_first_few++;
-    /* Can't safely printf in ISR, but we'll track it */
-  }
   
   tuh_int_handler(BOARD_TUH_RHPORT, true);
   __asm__ volatile ("dsb" ::: "memory");

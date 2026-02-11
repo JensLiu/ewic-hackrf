@@ -37,7 +37,7 @@ add_custom_command(
 # TinyUSB directory
 set(TINYUSB_DIR ${PATH_HACKRF_FIRMWARE}/lib/tinyusb)
 
-# Include directories (tinyusb_port for ci_hs_hackrf.h, usbd.c; ci_hs for ci_hs_type.h; host for usbh.h)
+# Include directories (tinyusb_port for ci_hs_hackrf.h; ci_hs for ci_hs_type.h; host for usbh.h)
 include_directories(
 	${PATH_HACKRF_FIRMWARE_COMMON}
 	${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb
@@ -51,7 +51,7 @@ include_directories(
 	${TINYUSB_DIR}/src/portable/ehci
 )
 
-# Core firmware (USB stack replaced by TinyUSB device - see TINYUSB_SRC and hackrf_usb_bridge)
+# Core firmware (USB host mode only - see TINYUSB_SRC for host stack)
 set(SRC_M4
 	main.c
 	"${PATH_HACKRF_FIRMWARE_COMMON}/tuning.c"
@@ -59,10 +59,8 @@ set(SRC_M4
 	"${PATH_HACKRF_FIRMWARE_COMMON}/m0_state.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/radio.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/hackrf_core.c"
-	# Old USB stack removed when using TinyUSB device:
-	# usb.c, usb_request.c, usb_standard_request.c, usb_endpoint.c, usb_queue.c
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_descriptor.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_device.c"
+	# USB device mode removed - using USB host mode only
+	# Removed: usb_descriptor.c, usb_device.c (device mode files)
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_board_info.c"
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_cpld.c"
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_m0_state.c"
@@ -77,7 +75,6 @@ set(SRC_M4
 	"${PATH_HACKRF_FIRMWARE_COMMON}/selftest.c"
 	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_transceiver.c"
 	"${PATH_HACKRF_FIRMWARE}/uart_support/uart.c"
-	# usb_queue.c replaced by TinyUSB vendor bulk in hackrf_usb_bridge
 	"${PATH_HACKRF_FIRMWARE_COMMON}/fault_handler.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/cpld_jtag.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/cpld_xc2c.c"
@@ -103,13 +100,15 @@ set(TINYUSB_SRC
 	# Host stack
 	${TINYUSB_DIR}/src/host/usbh.c
 	${TINYUSB_DIR}/src/host/hub.c
+	# CDC host class (includes built-in FTDI serial sub-driver)
+	${TINYUSB_DIR}/src/class/cdc/cdc_host.c
 	# EHCI host controller
 	${TINYUSB_DIR}/src/portable/ehci/ehci.c
 	# ChipIdea host controller driver (HackRF copy: uses ci_hs_hackrf.h for LPC43xx)
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/hcd_ci_hs.c
 	# HackRF TinyUSB port: init, ISR
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/tinyusb_port.c
-	# FTDI host driver
+	# FTDI host: CDC callbacks + public API
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/ftdi_host.c
 )
 

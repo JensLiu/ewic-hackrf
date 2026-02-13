@@ -2,7 +2,7 @@
 
 char uart_read_char(void) { return (char)uart_read(UART0); }
 
-void uart_send_str(char *a) { // send string *a to uart - BLOCKING + ATOMIC
+void uart_send_str(const char *a) { // send string *a to uart - BLOCKING + ATOMIC
   // Disable interrupts for atomic output
   uint32_t primask;
   __asm__ volatile("mrs %0, primask" : "=r"(primask));

@@ -17,8 +17,8 @@ extern "C" {
 //--------------------------------------------------------------------
 #define CFG_TUSB_MCU          OPT_MCU_LPC43XX
 #define CFG_TUSB_OS           OPT_OS_NONE
-#define CFG_TUSB_DEBUG        1
-#define CFG_TUH_LOG_LEVEL     1
+#define CFG_TUSB_DEBUG        0
+#define CFG_TUH_LOG_LEVEL     0
 
 /* Port debug: 0 = off, 1 = descriptor/event/bridge/stream UART prints */
 #ifndef TUSB_PORT_DEBUG

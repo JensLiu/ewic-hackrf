@@ -138,26 +138,38 @@ void tuh_umount_cb(uint8_t daddr) {
 }
 
 /* Invoked when new data is received on a CDC interface.
- * Read it and print the payload. */
+ * Read it and print the payload with hex dump for diagnostics. */
 void tuh_cdc_rx_cb(uint8_t idx) {
-  tusb_uart_printf("tuh_cdc_rx_cb callback with idx=%d\n", idx);
   if ((int8_t)idx != s_cdc_idx) return;
 
   uint8_t buf[256];
   uint32_t count = tuh_cdc_read(idx, buf, sizeof(buf));
   if (count == 0) return;
 
-  /* Print payload as ASCII (non-printable -> '.') */
-  for (uint32_t i = 0; i < count; i++) {
+  /* Print header with byte count */
+  tusb_uart_printf("[RX %lu] ", (unsigned long)count);
+
+  /* Hex dump for diagnostic (limit to first 32 bytes) */
+  uint32_t hex_limit = (count < 32) ? count : 32;
+  for (uint32_t i = 0; i < hex_limit; i++) {
+    tusb_uart_printf("%02X ", buf[i]);
+  }
+  if (count > 32) tusb_uart_printf("...");
+
+  /* ASCII representation */
+  tusb_uart_printf(" | ");
+  char out[257];
+  uint32_t out_len = 0;
+  for (uint32_t i = 0; i < count && out_len + 1 < sizeof(out); i++) {
     char c = (char)buf[i];
-    if (c >= 0x20 && c < 0x7f) {
-      tusb_uart_printf("%c", c);
-    } else if (c == '\r' || c == '\n') {
-      tusb_uart_printf("%c", c);
+    if ((c >= 0x20 && c < 0x7f) || c == '\r' || c == '\n') {
+      out[out_len++] = c;
     } else {
-      tusb_uart_printf(".");
+      out[out_len++] = '.';
     }
   }
+  out[out_len] = '\0';
+  tusb_uart_printf("%s\n", out);
 }
 
 /* Invoked when a TX completes and buffer space is available. */

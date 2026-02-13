@@ -38,11 +38,11 @@
 #include "portapack.h"
 #include "selftest.h"
 
-#include "tinyusb_port.h"
-#include "ftdi_host.h"
-#include "uart.h"
 #include "ci_hs_hackrf.h"
-#include "tusb_config.h"  /* for tusb_uart_printf */
+#include "ftdi_host.h"
+#include "tinyusb_port.h"
+#include "tusb_config.h" /* for tusb_uart_printf */
+#include "uart.h"
 
 extern uint32_t __m0_start__;
 extern uint32_t __m0_end__;
@@ -140,7 +140,7 @@ int main(void) {
   if (!tinyusb_host_init()) {
     uart_send_str("[USB] ERROR: Host init failed!\r\n");
   }
-  
+
   nvic_set_priority(NVIC_USB0_IRQ, 255);
   nvic_enable_irq(NVIC_USB0_IRQ);
 
@@ -166,20 +166,31 @@ int main(void) {
   uart_send_str("[USB] Waiting for device...\r\n");
 
   uint32_t last_status_print = 0;
+  uint32_t last_write_time = 0;
   bool ftdi_was_ready = false;
-  uint32_t loop_count = 0;
-  
+
+  int i = 0;
+
   while (true) {
-    loop_count++;
-    
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
     __asm__ volatile("dsb" ::: "memory");
-    
+
     /* Always run tuh_task so host events are processed. */
     tuh_task();
-    
-    /* Check FTDI status and print when it changes */
-    bool ftdi_ready = ftdi_host_ready();
+
+    const char *str = "Hello from HackRF USB host!\n";
+    const bool ftdi_ready = ftdi_host_ready();
+    if (ftdi_ready) {
+      uint32_t now_w = board_millis();
+      if (now_w - last_write_time >= 10) {
+        last_write_time = now_w;
+        const int len = strlen(str);
+        ftdi_host_write(&str[i], 1);
+        i = (i + 1) % len; /* rotate the string by one character each time */
+        uart_send_str("[MAIN] Sent echo request\r\n");
+      }
+    }
+
     if (ftdi_ready != ftdi_was_ready) {
       if (ftdi_ready) {
         uart_send_str("[MAIN] FTDI connected and ready!\r\n");
@@ -188,17 +199,15 @@ int main(void) {
       }
       ftdi_was_ready = ftdi_ready;
     }
-    
+
     /* Print status every 5 seconds */
     uint32_t now = board_millis();
     if (now - last_status_print >= 5000) {
       last_status_print = now;
       uint32_t isr_count = tinyusb_usb_isr_count_get_and_reset();
       tusb_uart_printf("[USB] t=%lus ISRs=%lu PORTSC1=0x%08lx\r\n",
-                       (unsigned long)(now/1000),
-                       (unsigned long)isr_count,
+                       (unsigned long)(now / 1000), (unsigned long)isr_count,
                        (unsigned long)CI_HS_REG(0)->PORTSC1);
-      loop_count = 0;
     }
   }
 

@@ -16,6 +16,10 @@
 #include <libopencm3/lpc43xx/memorymap.h>
 #include <libopencm3/lpc43xx/m4/nvic.h>
 
+// TinyUSB common defines (TU_BIT, TU_RESERVED, etc.) are needed
+// by ci_hs_type.h below.
+#include "tusb_common.h"
+
 // Include the ChipIdea type definitions from TinyUSB
 #include "ci_hs_type.h"
 

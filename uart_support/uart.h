@@ -13,7 +13,7 @@ extern char DISPLAY_BUFFER[512];
 void uart_pin_setup();
 void uart_setup();
 char uart_read_char(void);
-void uart_send_str(char *a);
+void uart_send_str(const char *a);
 void delay_1us(const uint32_t num_1us);
 void rf_uart_send(const char *data, const int len);
 bool rf_uart_receive(char *data, const int max_len);

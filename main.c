@@ -180,14 +180,22 @@ int main(void) {
 
     const char *str = "Hello from HackRF USB host!\n";
     const bool ftdi_ready = ftdi_host_ready();
+    
     if (ftdi_ready) {
       uint32_t now_w = board_millis();
       if (now_w - last_write_time >= 10) {
         last_write_time = now_w;
         const int len = strlen(str);
         ftdi_host_write(&str[i], 1);
+        tuh_task();
+        tusb_uart_printf("[TX] Sent '%c' to FTDI\r\n",
+                         (str[i] >= 0x20 && str[i] < 0x7f) ? str[i] : '.');
+        char ch;
+        ftdi_host_read(&ch, 1);
+        tuh_task();
+        tusb_uart_printf("[ECHO] Received '%c' from FTDI\r\n",
+                         (ch >= 0x20 && ch < 0x7f) ? ch : '.');
         i = (i + 1) % len; /* rotate the string by one character each time */
-        uart_send_str("[MAIN] Sent echo request\r\n");
       }
     }
 

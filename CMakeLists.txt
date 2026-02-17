@@ -60,20 +60,8 @@ set(SRC_M4
 	"${PATH_HACKRF_FIRMWARE_COMMON}/radio.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/hackrf_core.c"
 	# USB device mode removed - using USB host mode only
-	# Removed: usb_descriptor.c, usb_device.c (device mode files)
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_board_info.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_cpld.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_m0_state.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_register.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_spiflash.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_operacake.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_sweep.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_ui.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_selftest.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_adc.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_praline.c"
+	# Removed: USB device mode sources (usb_api_*.c, usb_descriptor.c, usb_device.c)
 	"${PATH_HACKRF_FIRMWARE_COMMON}/selftest.c"
-	"${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb/usb_api_transceiver.c"
 	"${PATH_HACKRF_FIRMWARE}/uart_support/uart.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/fault_handler.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/cpld_jtag.c"
@@ -110,6 +98,8 @@ set(TINYUSB_SRC
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/tinyusb_port.c
 	# FTDI host: CDC callbacks + public API
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/ftdi_host.c
+	# Custom transceiver RX helpers
+	${PATH_HACKRF_FIRMWARE}/tinyusb_port/custom_transceiver.c
 )
 
 # Add TinyUSB sources to M4 build

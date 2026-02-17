@@ -34,6 +34,11 @@ bool ftdi_host_ready(void) {
 }
 
 uint32_t ftdi_host_write(const void *buffer, uint32_t len) {
+  tusb_uart_printf("ftdi_host_write sent %d bytes: ", len);
+  for (int i = 0; i < len; i++) {
+    tusb_uart_printf("%02X ", ((uint8_t *)buffer)[i]);
+  }
+  tusb_uart_printf("\n");
   if (!ftdi_host_ready()) return 0;
   uint32_t n = tuh_cdc_write((uint8_t)s_cdc_idx, buffer, len);
   if (n > 0) {

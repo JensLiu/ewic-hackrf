@@ -31,7 +31,6 @@
 
 #include "clkin.h"
 #include "cpld_xc2c.h"
-#include "fpga.h"
 #include "hackrf_ui.h"
 #include "operacake.h"
 #include "platform_detect.h"
@@ -39,6 +38,7 @@
 #include "selftest.h"
 
 #include "ci_hs_hackrf.h"
+#include "custom_transceiver.h"
 #include "ftdi_host.h"
 #include "tinyusb_port.h"
 #include "tusb_config.h" /* for tusb_uart_printf */
@@ -118,6 +118,7 @@ int main(void) {
   /* Wake the M0 */
   ipc_halt_m0();
   ipc_start_m0((uint32_t)&__ram_m0_start__);
+  uart_send_str("[M0] Start requested\r\n");
 
 #ifndef PRALINE
   if (!cpld_jtag_sram_load(&jtag_cpld)) {
@@ -169,54 +170,61 @@ int main(void) {
   uint32_t last_write_time = 0;
   bool ftdi_was_ready = false;
 
-  int i = 0;
+  custom_transceiver_receive_init();
+  custom_transceiver_receive_begin();
 
   while (true) {
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
     __asm__ volatile("dsb" ::: "memory");
+    /* Always run tuh_task so host events are processed */
+    // tuh_task();
 
-    /* Always run tuh_task so host events are processed. */
-    tuh_task();
+    // // FTDI check
+    // const bool ftdi_ready = ftdi_host_ready();
+    // if (ftdi_ready != ftdi_was_ready) {
+    //   if (ftdi_ready) {
+    //     tusb_uart_printf("[MAIN] FTDI connected and ready!\r\n");
+    //   } else {
+    //     tusb_uart_printf("[MAIN] FTDI disconnected\r\n");
+    //   }
+    //   ftdi_was_ready = ftdi_ready;
+    // }
 
-    const char *str = "Hello from HackRF USB host!\n";
-    const bool ftdi_ready = ftdi_host_ready();
-    
-    if (ftdi_ready) {
-      uint32_t now_w = board_millis();
-      if (now_w - last_write_time >= 10) {
-        last_write_time = now_w;
-        const int len = strlen(str);
-        ftdi_host_write(&str[i], 1);
-        tuh_task();
-        tusb_uart_printf("[TX] Sent '%c' to FTDI\r\n",
-                         (str[i] >= 0x20 && str[i] < 0x7f) ? str[i] : '.');
-        char ch;
-        ftdi_host_read(&ch, 1);
-        tuh_task();
-        tusb_uart_printf("[ECHO] Received '%c' from FTDI\r\n",
-                         (ch >= 0x20 && ch < 0x7f) ? ch : '.');
-        i = (i + 1) % len; /* rotate the string by one character each time */
-      }
-    }
+    // if (!ftdi_ready) {
+    //   continue;
+    // }
 
-    if (ftdi_ready != ftdi_was_ready) {
-      if (ftdi_ready) {
-        uart_send_str("[MAIN] FTDI connected and ready!\r\n");
-      } else {
-        uart_send_str("[MAIN] FTDI disconnected\r\n");
-      }
-      ftdi_was_ready = ftdi_ready;
-    }
+    custom_transceiver_receive();
 
-    /* Print status every 5 seconds */
-    uint32_t now = board_millis();
-    if (now - last_status_print >= 5000) {
-      last_status_print = now;
-      uint32_t isr_count = tinyusb_usb_isr_count_get_and_reset();
-      tusb_uart_printf("[USB] t=%lus ISRs=%lu PORTSC1=0x%08lx\r\n",
-                       (unsigned long)(now / 1000), (unsigned long)isr_count,
-                       (unsigned long)CI_HS_REG(0)->PORTSC1);
-    }
+    // read from FTDI to see if we receive anything
+    // {
+    //   static uint8_t read_buf[256];
+    //   uint32_t read_len = ftdi_host_read(read_buf, sizeof(read_buf));
+    //   if (read_len > 0) {
+    //     tusb_uart_printf("[MAIN] FTDI received %lu bytes\r\n", read_len);
+    //     tusb_uart_printf("[MAIN] Data: ");
+    //     for (uint32_t i = 0; i < read_len; i++) {
+    //       tusb_uart_printf("%02X ", read_buf[i]);
+    //     }
+    //     tusb_uart_printf("\n");
+    //   }
+    // }
+
+    // /* Print status every 5 seconds */
+    // uint32_t now = board_millis();
+    // if (now - last_status_print >= 5000) {
+    //   last_status_print = now;
+    //   uint32_t isr_count = tinyusb_usb_isr_count_get_and_reset();
+    //   tusb_uart_printf("[USB] t=%lus ISRs=%lu PORTSC1=0x%08lx\r\n",
+    //                    (unsigned long)(now / 1000), (unsigned long)isr_count,
+    //                    (unsigned long)CI_HS_REG(0)->PORTSC1);
+    //   tusb_uart_printf("[M0] req=%lu act=%lu m0=%lu m4=%lu err=%lu\r\n",
+    //                    (unsigned long)m0_state.requested_mode,
+    //                    (unsigned long)m0_state.active_mode,
+    //                    (unsigned long)m0_state.m0_count,
+    //                    (unsigned long)m0_state.m4_count,
+    //                    (unsigned long)m0_state.error);
+    // }
   }
 
   return 0;

@@ -55,21 +55,23 @@ void transceiver_startup(const transceiver_mode_t mode) {
 
 // Borrowed from Ezgi
 #define USB_TRANSFER_SIZE 256
-#define SAMPLE_RATE 10000000 // 10 MHz sample rate for better quality
-#define SINE_FREQ 200000     // 200 kHz sine wave
-#define FREQ 915000000       // 915 MHz
+#define SAMPLE_RATE 7200000 // 10 Msps sample rate for better quality
+#define SINE_FREQ 200000    // 200 kHz sine wave
+#define FREQ 915000000      // 915 MHz
 #define BIT_PACKET_SIZE 4
 
-const uint32_t BIT_SAMPLES = SAMPLE_RATE * 0.5;
+const uint32_t BIT_SAMPLES = SAMPLE_RATE * 0.1;
 
 uint32_t receive_sample_count = 0;
 uint32_t receive_high_samples = 0;
 uint32_t receive_usb_count = 0;
 // Constants matching the transmitter
-bool receive_current_bit = false;
 bool receive_prev_bit = false;
 uint8_t bit_buffer[USB_TRANSFER_SIZE]; // Buffer to store detected bits
 uint32_t receive_bit_buffer_index = 0;
+uint64_t receive_mag2_sum = 0;  // IMPORTANT: 64-bit to avoid overflow when summing many samples
+uint32_t receive_rep3_sum = 0;
+uint32_t receive_rep3_count = 0;
 
 void custom_transceiver_receive_init() {
   sample_rate_frac_set(SAMPLE_RATE, 1);
@@ -86,10 +88,13 @@ void custom_transceiver_receive_begin() {
   baseband_streaming_enable(&sgpio_config);
   led_on(LED2);
   tusb_uart_printf("Custom transceiver receive started\n");
-  receive_sample_count = 0;
-  receive_high_samples = 0;
   receive_usb_count = 0;
+  receive_sample_count = 0;
+  receive_mag2_sum = 0;
+  receive_high_samples = 0;
   receive_bit_buffer_index = 0;
+  receive_rep3_sum = 0;
+  receive_rep3_count = 0;
   // memset(bit_buffer, 0, sizeof(bit_buffer));
   // memset(tx_buffer, 0, sizeof(tx_buffer));
 }
@@ -97,92 +102,168 @@ void custom_transceiver_receive_begin() {
 void custom_transceiver_receive_end() {
   transceiver_shutdown();
   tusb_uart_printf("Custom transceiver receive stopped\n");
-  receive_sample_count = 0;
-  receive_high_samples = 0;
   receive_usb_count = 0;
+  receive_sample_count = 0;
+  receive_mag2_sum = 0;
+  receive_high_samples = 0;
   receive_bit_buffer_index = 0;
+  receive_rep3_sum = 0;
+  receive_rep3_count = 0;
 }
 
 void custom_transceiver_receive() {
 
-  static uint32_t iteration_counter = 0;
   static uint32_t last_print_ms = 0;
-
+  const uint32_t MAG2_THRESHOLD = 2500; // Adjust as needed
   if ((m0_state.m0_count - receive_usb_count) >= USB_TRANSFER_SIZE) {
-    // tusb_uart_printf("Processing samples: %lu\n", m0_state.m0_count);
-    uint8_t *buffer =
+    const uint8_t *buffer =
         &usb_bulk_buffer[receive_usb_count & USB_BULK_BUFFER_MASK];
 
-    // Process each sample in the buffer
     for (uint32_t i = 0; i < USB_TRANSFER_SIZE; i += 2) {
-      iteration_counter++;
-      // tusb_uart_printf("Processing: i = %d\n", i);
-      int32_t I = (int8_t)buffer[i];
-      int32_t Q = (int8_t)buffer[i + 1];
-      // Calculate magnitude squared
-      uint32_t mag2 = I * I + Q * Q;
-      // tusb_uart_printf("mag=%d (I=%d, Q=%d)\n", mag2, I, Q);
-      // Check if we have a sine wave (high magnitude) or zero (low magnitude)
-      bool sample_high = (mag2 > 10000); // Adjust threshold as needed
+      const int32_t I = (int8_t)buffer[i];
+      const int32_t Q = (int8_t)buffer[i + 1];
 
-      if (sample_high) {
-        // tusb_uart_printf("sample high\n");
-        receive_high_samples++;
-      }
-
-      // Count samples for current bit
+      const uint32_t mag2 = (uint32_t)(I * I + Q * Q);
+      receive_mag2_sum += mag2;
       receive_sample_count++;
-      // tusb_uart_printf("receive_sample_count=%d, BIT_SAMPLES=%d\n",
-      // receive_sample_count, BIT_SAMPLES); After BIT_SAMPLES, determine if it
-      // was a 1 or 0
+
       if (receive_sample_count >= BIT_SAMPLES) {
-        // tusb_uart_printf("Determining bit: high_samples = %lu\n",
-        // high_samples); If more than 50% of samples were high, consider it a 1
-        receive_current_bit = (receive_high_samples > BIT_SAMPLES / 2);
-        // tusb_uart_printf("high_samples=%lu, current_bit = %lu\n",
-        // receive_high_samples,
-        //                  receive_current_bit);
+        const uint32_t mag2_avg = (uint32_t)(receive_mag2_sum / BIT_SAMPLES);
+        const bool current_bit = (mag2_avg > MAG2_THRESHOLD);
 
-        // Store the detected bit in our buffer
-        bit_buffer[receive_bit_buffer_index++] = receive_current_bit ? 1 : 0;
+        // ---- REP3 ECC majority vote ----
+        receive_rep3_sum += current_bit ? 1u : 0u;
+        receive_rep3_count += 1u;
 
-        // If we've filled our buffer, send it to the host
-        if (receive_bit_buffer_index >= BIT_PACKET_SIZE) {
-          // tusb_uart_printf("bit_buffer_index = %d\n",
-          // receive_bit_buffer_index); Send through USB
-          uint32_t now_ms = board_millis();
-          uint32_t delta_ms = now_ms - last_print_ms;
-          last_print_ms = now_ms;
-          tusb_uart_printf("Num Iterations: %0lu, dt=%lu ms\n",
-                           (unsigned long)iteration_counter,
-                           (unsigned long)delta_ms);
-          iteration_counter = 0;
-          ftdi_host_write(bit_buffer, BIT_PACKET_SIZE);
-          tuh_task();
+        if (receive_rep3_count == 3u) {
+          const uint8_t corrected_bit = (receive_rep3_sum >= 2u) ? 1u : 0u;
 
-          receive_bit_buffer_index = 0;
+          // Emit ONE corrected bit for each trio
+          bit_buffer[receive_bit_buffer_index++] = corrected_bit;
+
+          // Packetization unchanged
+          if (receive_bit_buffer_index >= BIT_PACKET_SIZE) {
+            // tusb_uart_printf("bit_buffer_index = %d\n",
+            // receive_bit_buffer_index); Send through USB
+            const uint32_t now_ms = board_millis();
+            const uint32_t delta_ms = now_ms - last_print_ms;
+            last_print_ms = now_ms;
+            tusb_uart_printf("Decode: dt=%lu ms\n", (unsigned long)delta_ms);
+            ftdi_host_write(bit_buffer, BIT_PACKET_SIZE);
+            tuh_task();
+            receive_bit_buffer_index = 0;
+          }
+
+          // reset trio
+          receive_rep3_sum = 0;
+          receive_rep3_count = 0;
         }
+        // ---------------------------------
 
-        // if (current_bit) {
-        //   led_on(LED3);
-        // } else {
-        //   led_off(LED3);
-        // }
-        // Reset for next bit
+        // Reset window accumulators
         receive_sample_count = 0;
-        receive_high_samples = 0;
+        receive_mag2_sum = 0;
       }
     }
 
     receive_usb_count += USB_TRANSFER_SIZE;
-    m0_state.m4_count += USB_TRANSFER_SIZE; // inform m0 of the consumption
-
+    m0_state.m4_count += USB_TRANSFER_SIZE;
+    m0_state.m0_count += USB_TRANSFER_SIZE;
   } else {
     // tusb_uart_printf(
     //     "Waiting for more samples... (m0_count=%lu,
     //     receive_usb_count=%lu)\n", m0_state.m0_count, receive_usb_count);
   }
 }
+
+// void rx_mode() {
+//   sample_rate_frac_set(SAMPLE_RATE, 1);
+//   baseband_filter_bandwidth_set(15000000);
+//   set_freq(FREQ);
+//   max283x_set_lna_gain(&max283x, 40);
+//   rf_path_set_lna(&rf_path, 1);
+//   rf_path_set_antenna(&rf_path, 1);
+
+//   uint32_t usb_count = 0;
+//   transceiver_startup(TRANSCEIVER_MODE_RX);
+//   baseband_streaming_enable(&sgpio_config);
+
+//   // Constants matching the transmitter
+//   uint32_t sample_count = 0;
+//   uint64_t mag2_sum = 0; // Sum of magnitude squared
+//   bool current_bit = false;
+
+//   // Output buffer (one byte per bit: 0 or 1)
+//   uint8_t bit_buffer[USB_TRANSFER_SIZE];
+//   uint32_t bit_buffer_index = 0;
+//   uint8_t tx_buffer[USB_TRANSFER_SIZE];
+
+//   const uint32_t MAG2_THRESHOLD = 2500; // Adjust as needed
+
+//   // === REP3 ECC state ===
+//   uint32_t rep3_sum = 0;   // how many '1's seen in the current trio
+//   uint32_t rep3_count = 0; // how many bits collected in current trio
+
+//   while (1) {
+//     if ((m0_state.m0_count - usb_count) >= USB_TRANSFER_SIZE) {
+//       uint8_t *buffer = &usb_bulk_buffer[usb_count & USB_BULK_BUFFER_MASK];
+
+//       for (uint32_t i = 0; i < USB_TRANSFER_SIZE; i += 2) {
+//         int32_t I = (int8_t)buffer[i];
+//         int32_t Q = (int8_t)buffer[i + 1];
+
+//         uint32_t mag2 = (uint32_t)(I * I + Q * Q);
+//         mag2_sum += mag2;
+//         sample_count++;
+
+//         if (sample_count >= BIT_SAMPLES) {
+//           uint32_t mag2_avg = (uint32_t)(mag2_sum / BIT_SAMPLES);
+//           current_bit = (mag2_avg > MAG2_THRESHOLD);
+
+//           // ---- REP3 ECC majority vote ----
+//           rep3_sum += current_bit ? 1u : 0u;
+//           rep3_count += 1u;
+
+//           if (rep3_count == 3u) {
+//             uint8_t corrected_bit = (rep3_sum >= 2u) ? 1u : 0u;
+
+//             // LED shows corrected decision (steadier)
+//             if (corrected_bit) {
+//               led_on(LED3);
+//             } else {
+//               led_off(LED3);
+//             }
+
+//             // Emit ONE corrected bit for each trio
+//             bit_buffer[bit_buffer_index++] = corrected_bit;
+
+//             // Packetization unchanged
+//             if (bit_buffer_index >= BIT_PACKET_SIZE) {
+//               ftdi_host_write(bit_buffer, BIT_PACKET_SIZE);
+//               tuh_task();
+//               bit_buffer_index = 0;
+//             }
+
+//             // reset trio
+//             rep3_sum = 0;
+//             rep3_count = 0;
+//           }
+//           // ---------------------------------
+
+//           // Reset window accumulators
+//           sample_count = 0;
+//           mag2_sum = 0;
+//         }
+//       }
+
+//       usb_count += USB_TRANSFER_SIZE;
+//       m0_state.m4_count += USB_TRANSFER_SIZE;
+//       m0_state.m0_count += USB_TRANSFER_SIZE;
+//     }
+//   }
+
+//   transceiver_shutdown();
+// }
 
 void custom_transceiver_send_begin() {
   transceiver_startup(TRANSCEIVER_MODE_TX);

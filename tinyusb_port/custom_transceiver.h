@@ -11,3 +11,6 @@ void custom_transceiver_receive_init();
 void custom_transceiver_receive_begin();
 void custom_transceiver_receive();
 void custom_transceiver_receive_end();
+
+void rx_mode();
+void tx_mode();

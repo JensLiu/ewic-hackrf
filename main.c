@@ -194,7 +194,8 @@ int main(void) {
     //   continue;
     // }
 
-    custom_transceiver_receive();
+    // custom_transceiver_receive();
+    rx_mode();
 
     // read from FTDI to see if we receive anything
     // {

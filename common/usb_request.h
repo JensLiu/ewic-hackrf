@@ -62,7 +62,4 @@ void usb_control_in_complete(usb_endpoint_t* const endpoint);
 
 void usb_control_out_complete(usb_endpoint_t* const endpoint);
 
-/* Called by TinyUSB bridge to dispatch vendor control requests */
-usb_request_status_t usb_vendor_request(usb_endpoint_t* endpoint, usb_transfer_stage_t stage);
-
 #endif //__USB_REQUEST_H__

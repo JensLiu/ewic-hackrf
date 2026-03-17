@@ -67,7 +67,7 @@ static uint_fast8_t usb_endpoint_number(const uint_fast8_t endpoint_address)
 	return (endpoint_address & 0xF);
 }
 
-void usb_peripheral_reset()
+void usb_peripheral_reset(void)
 {
 	RESET_CTRL0 = RESET_CTRL0_USB0_RST;
 	RESET_CTRL0 = 0;
@@ -75,7 +75,7 @@ void usb_peripheral_reset()
 	while ((RESET_ACTIVE_STATUS0 & RESET_CTRL0_USB0_RST) == 0) {}
 }
 
-void usb_phy_enable()
+void usb_phy_enable(void)
 {
 	CREG_CREG0 &= ~CREG_CREG0_USB0PHY;
 }
@@ -538,10 +538,14 @@ void usb_endpoint_init(const usb_endpoint_t* const endpoint, const bool enable_z
 	// descriptor.
 	usb_queue_head_t* const qh = usb_queue_head(endpoint->address);
 	qh->capabilities = USB_QH_CAPABILITIES_MULT(0) |
-		(enable_zlp ? 0 : USB_QH_CAPABILITIES_ZLT) |
 		USB_QH_CAPABILITIES_MPL(max_packet_size) |
 		((transfer_type == USB_TRANSFER_TYPE_CONTROL) ? USB_QH_CAPABILITIES_IOS :
 								0);
+	if (enable_zlp) {
+		qh->capabilities &= ~USB_QH_CAPABILITIES_ZLT;
+	} else {
+		qh->capabilities |= USB_QH_CAPABILITIES_ZLT;
+	}
 	qh->current_dtd_pointer = 0;
 	qh->next_dtd_pointer = USB_TD_NEXT_DTD_POINTER_TERMINATE;
 	qh->total_bytes = USB_TD_DTD_TOKEN_TOTAL_BYTES(0) | USB_TD_DTD_TOKEN_MULTO(0);
@@ -630,7 +634,7 @@ static void usb_check_for_transfer_events(void)
 	}
 }
 
-void usb0_isr()
+void usb0_isr(void)
 {
 	const uint32_t status = usb_get_status();
 

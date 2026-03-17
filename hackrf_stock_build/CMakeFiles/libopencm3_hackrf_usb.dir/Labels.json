@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/libopencm3_hackrf_usb"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/libopencm3_hackrf_usb.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/libopencm3_hackrf_usb-complete.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-build.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-configure.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-download.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-install.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-mkdir.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-patch.rule"
+		},
+		{
+			"file" : "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/libopencm3_hackrf_usb-prefix/src/libopencm3_hackrf_usb-stamp/libopencm3_hackrf_usb-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"libopencm3_hackrf_usb"
+		],
+		"name" : "libopencm3_hackrf_usb"
+	}
+}

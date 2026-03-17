@@ -12,11 +12,11 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; see the file COPYING. If not, write to
+ * along with this program; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 51 Franklin Street,
  * Boston, MA 02110-1301, USA.
  */
@@ -93,10 +93,10 @@ typedef struct {
 } radio_gain_t;
 
 typedef struct {
-	uint64_t hz;     // desired frequency
-	uint64_t if_hz;  // intermediate frequency
-	uint64_t lo_hz;  // front-end local oscillator frequency
-	uint8_t path;    // image rejection filter path
+	uint64_t hz;    // desired frequency
+	uint64_t if_hz; // intermediate frequency
+	uint64_t lo_hz; // front-end local oscillator frequency
+	uint8_t path;   // image rejection filter path
 } radio_frequency_t;
 
 typedef struct {
@@ -124,14 +124,14 @@ typedef enum {
 	TRANSCEIVER_MODE_RX_SWEEP = 5,
 } transceiver_mode_t;
 
-#define RADIO_CHANNEL_COUNT      1
-#define RADIO_SAMPLE_RATE_COUNT  1
-#define RADIO_FILTER_COUNT       1
-#define RADIO_FREQUENCY_COUNT    4
-#define RADIO_GAIN_COUNT         4
-#define RADIO_ANTENNA_COUNT      1
-#define RADIO_CLOCK_COUNT        2
-#define RADIO_MODE_COUNT         6
+#define RADIO_CHANNEL_COUNT     1
+#define RADIO_SAMPLE_RATE_COUNT 1
+#define RADIO_FILTER_COUNT      1
+#define RADIO_FREQUENCY_COUNT   4
+#define RADIO_GAIN_COUNT        4
+#define RADIO_ANTENNA_COUNT     1
+#define RADIO_CLOCK_COUNT       2
+#define RADIO_MODE_COUNT        6
 
 typedef struct {
 	// sample rate elements
@@ -188,8 +188,8 @@ typedef struct radio_t {
  *     be updated, the hardware state will remain unaffected.
  *   - if the channel is something other than TRANSCEIVER_MODE_OFF both the
  *     configuration and hardware state will be updated.
- *   - this makes it possible to maintain multiple channel configurations and
- *     switch between them with a single call to radio_switch_mode()
+ * - this makes it possible to maintain multiple channel configurations and
+ *   switch between them with a single call to radio_switch_mode()
  */
 
 radio_error_t radio_set_sample_rate(

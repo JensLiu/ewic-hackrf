@@ -1,0 +1,36 @@
+CMakeFiles/hackrf_usb_ram_objects.dir/usb_api_selftest.c.obj: \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/usb_api_selftest.c \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/stdio.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_ansi.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/newlib.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_newlib_version.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/config.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/ieeefp.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/features.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/cdefs.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/_default_types.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stddef.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdarg.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/reent.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_ansi.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_types.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/_types.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/lock.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/stdio.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_queue.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/lpc43xx/usb.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/cm3/common.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_intsup.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_stdint.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdbool.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/lpc43xx/memorymap.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_type.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/lpc43xx/creg.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/lpc43xx/cgu.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/usb_api_selftest.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_type.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_request.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/selftest.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/platform_detect.h

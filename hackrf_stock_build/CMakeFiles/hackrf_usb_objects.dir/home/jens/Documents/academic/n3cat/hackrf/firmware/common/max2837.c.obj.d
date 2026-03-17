@@ -1,0 +1,30 @@
+CMakeFiles/hackrf_usb_objects.dir/home/jens/Documents/academic/n3cat/hackrf/firmware/common/max2837.c.obj: \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/max2837.c \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/_default_types.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/features.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_newlib_version.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_intsup.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/string.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_ansi.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/newlib.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/config.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/ieeefp.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/reent.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_ansi.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stddef.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/cdefs.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_types.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/_types.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/lock.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_locale.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/strings.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/string.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/max2837.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdbool.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/gpio.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/spi_bus.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/max2837_regs.def \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/selftest.h

@@ -33,17 +33,17 @@ void max2837_target_init(max2837_driver_t* const drv)
 	scu_pinmux(SCU_SSP1_COPI, (SCU_SSP_IO | SCU_CONF_FUNCTION5));
 	scu_pinmux(SCU_SSP1_SCK, (SCU_SSP_IO | SCU_CONF_FUNCTION1));
 
-	scu_pinmux(SCU_XCVR_CS, SCU_GPIO_FAST);
+	scu_pinmux(SCU_XCVR_CS, SCU_XCVR_CS_PINCFG);
 
 	/* Configure XCVR_CTL GPIO pins. */
-	scu_pinmux(SCU_XCVR_ENABLE, SCU_GPIO_FAST);
-	scu_pinmux(SCU_XCVR_RXENABLE, SCU_GPIO_FAST);
-	scu_pinmux(SCU_XCVR_TXENABLE, SCU_GPIO_FAST);
+	scu_pinmux(SCU_XCVR_ENABLE, SCU_XCVR_ENABLE_PINCFG);
+	scu_pinmux(SCU_XCVR_RXENABLE, SCU_XCVR_RXENABLE_PINCFG);
+	scu_pinmux(SCU_XCVR_TXENABLE, SCU_XCVR_TXENABLE_PINCFG);
 
 	/* Set GPIO pins as outputs. */
-	hackrf_gpio_output(drv->gpio_enable);
-	hackrf_gpio_output(drv->gpio_rx_enable);
-	hackrf_gpio_output(drv->gpio_tx_enable);
+	gpio_output(drv->gpio_enable);
+	gpio_output(drv->gpio_rx_enable);
+	gpio_output(drv->gpio_tx_enable);
 }
 
 void max2837_target_set_mode(max2837_driver_t* const drv, const max2837_mode_t new_mode)
@@ -70,8 +70,8 @@ void max2837_target_set_mode(max2837_driver_t* const drv, const max2837_mode_t n
 	 * outputs. The slow- charging Tx circuits are in a precharged “idle-off”
 	 * state for fast Rx-to-Tx turnaround time.
 	 */
-	hackrf_gpio_write(drv->gpio_enable, new_mode != MAX2837_MODE_SHUTDOWN);
-	hackrf_gpio_write(drv->gpio_rx_enable, new_mode == MAX2837_MODE_RX);
-	hackrf_gpio_write(drv->gpio_tx_enable, new_mode == MAX2837_MODE_TX);
+	gpio_write(drv->gpio_enable, new_mode != MAX2837_MODE_SHUTDOWN);
+	gpio_write(drv->gpio_rx_enable, new_mode == MAX2837_MODE_RX);
+	gpio_write(drv->gpio_tx_enable, new_mode == MAX2837_MODE_TX);
 	drv->mode = new_mode;
 }

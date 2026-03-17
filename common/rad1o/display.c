@@ -2,6 +2,7 @@
 
 #include "gpio_lpc.h"
 #include "hackrf_core.h"
+#include "delay.h"
 
 #include <libopencm3/lpc43xx/scu.h>
 #include <libopencm3/lpc43xx/ssp.h>
@@ -30,7 +31,7 @@ static uint8_t lcdBuffer[RESX * RESY];
 
 static bool isTurned;
 
-static void select()
+static void select(void)
 {
 	/*
      * The LCD requires 9-Bit frames
@@ -55,12 +56,12 @@ static void select()
 		SSP_MASTER,
 		SSP_SLAVE_OUT_ENABLE);
 
-	hackrf_gpio_clear(&gpio_lcd_cs);
+	gpio_clear(&gpio_lcd_cs);
 }
 
-static void deselect()
+static void deselect(void)
 {
-	hackrf_gpio_set(&gpio_lcd_cs);
+	gpio_set(&gpio_lcd_cs);
 }
 
 static void write(uint8_t cd, uint8_t data)
@@ -75,18 +76,18 @@ static void write(uint8_t cd, uint8_t data)
 
 void rad1o_lcdInit(void)
 {
-	hackrf_gpio_output(&gpio_lcd_bl_en);
-	hackrf_gpio_output(&gpio_lcd_reset);
-	hackrf_gpio_output(&gpio_lcd_cs);
+	gpio_output(&gpio_lcd_bl_en);
+	gpio_output(&gpio_lcd_reset);
+	gpio_output(&gpio_lcd_cs);
 
 	/* prepare SPI */
 	SETUPpin(LCD_DI);
 	SETUPpin(LCD_SCK);
 
 	// Reset the display
-	hackrf_gpio_clear(&gpio_lcd_reset);
+	gpio_clear(&gpio_lcd_reset);
 	delayms(100);
-	hackrf_gpio_set(&gpio_lcd_reset);
+	gpio_set(&gpio_lcd_reset);
 	delayms(100);
 
 	select();
@@ -126,12 +127,12 @@ void rad1o_lcdInit(void)
 	rad1o_lcdFill(0xff); /* Clear display buffer */
 	rotate();
 
-	hackrf_gpio_set(&gpio_lcd_bl_en);
+	gpio_set(&gpio_lcd_bl_en);
 }
 
 void rad1o_lcdDeInit(void)
 {
-	hackrf_gpio_clear(&gpio_lcd_bl_en);
+	gpio_clear(&gpio_lcd_bl_en);
 	rad1o_lcdFill(0xff);
 	rad1o_lcdDisplay();
 }

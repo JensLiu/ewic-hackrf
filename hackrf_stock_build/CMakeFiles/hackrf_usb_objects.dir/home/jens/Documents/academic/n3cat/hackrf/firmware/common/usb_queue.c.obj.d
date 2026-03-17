@@ -1,0 +1,26 @@
+CMakeFiles/hackrf_usb_objects.dir/home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_queue.c.obj: \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_queue.c \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/stdint.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/_default_types.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/features.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_newlib_version.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_intsup.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/_stdint.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stdbool.h \
+ /home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include/stddef.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/assert.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/_ansi.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/newlib.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/sys/config.h \
+ /home/jens/Applications/arm-toolchain/arm-none-eabi/include/machine/ieeefp.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/cm3/cortex.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/locking.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/cm3/sync.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/cm3/common.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/lpc43xx/usb.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/cm3/common.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/libopencm3/include/libopencm3/lpc43xx/memorymap.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_type.h \
+ /home/jens/Documents/academic/n3cat/hackrf/firmware/common/usb_queue.h

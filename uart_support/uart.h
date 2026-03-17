@@ -17,3 +17,4 @@ void uart_send_str(const char *a);
 void delay_1us(const uint32_t num_1us);
 void rf_uart_send(const char *data, const int len);
 bool rf_uart_receive(char *data, const int max_len);
+int uart_printf(const char *format, ...);

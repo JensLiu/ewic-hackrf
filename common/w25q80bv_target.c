@@ -59,10 +59,10 @@ void w25q80bv_target_init(w25q80bv_driver_t* const drv)
 	scu_pinmux(SCU_SSP0_CS, (SCU_GPIO_FAST | SCU_CONF_FUNCTION4));
 
 	/* drive CS, HOLD, and WP pins high */
-	hackrf_gpio_set(drv->gpio_hold);
-	hackrf_gpio_set(drv->gpio_wp);
+	gpio_set(drv->gpio_hold);
+	gpio_set(drv->gpio_wp);
 
 	/* Set GPIO pins as outputs. */
-	hackrf_gpio_output(drv->gpio_hold);
-	hackrf_gpio_output(drv->gpio_wp);
+	gpio_output(drv->gpio_hold);
+	gpio_output(drv->gpio_wp);
 }

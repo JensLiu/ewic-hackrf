@@ -43,6 +43,7 @@
 #include "tinyusb_port.h"
 #include "tusb_config.h" /* for tusb_uart_printf */
 #include "uart.h"
+#include "delay.h"
 
 extern uint32_t __m0_start__;
 extern uint32_t __m0_end__;
@@ -170,32 +171,30 @@ int main(void) {
   uint32_t last_write_time = 0;
   bool ftdi_was_ready = false;
 
-  custom_transceiver_receive_init();
   custom_transceiver_receive_begin();
 
   while (true) {
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
     __asm__ volatile("dsb" ::: "memory");
     /* Always run tuh_task so host events are processed */
-    // tuh_task();
+    tuh_task();
 
     // // FTDI check
-    // const bool ftdi_ready = ftdi_host_ready();
-    // if (ftdi_ready != ftdi_was_ready) {
-    //   if (ftdi_ready) {
-    //     tusb_uart_printf("[MAIN] FTDI connected and ready!\r\n");
-    //   } else {
-    //     tusb_uart_printf("[MAIN] FTDI disconnected\r\n");
-    //   }
-    //   ftdi_was_ready = ftdi_ready;
-    // }
+    const bool ftdi_ready = ftdi_host_ready();
+    if (ftdi_ready != ftdi_was_ready) {
+      if (ftdi_ready) {
+        tusb_uart_printf("[MAIN] FTDI connected and ready!\r\n");
+      } else {
+        tusb_uart_printf("[MAIN] FTDI disconnected\r\n");
+      }
+      ftdi_was_ready = ftdi_ready;
+    }
 
-    // if (!ftdi_ready) {
-    //   continue;
-    // }
+    if (!ftdi_ready) {
+      continue;
+    }
 
-    // custom_transceiver_receive();
-    rx_mode();
+    custom_transceiver_receive();
 
     // read from FTDI to see if we receive anything
     // {

@@ -1,4 +1,5 @@
 #include "uart.h"
+#include <stdarg.h>
 
 char uart_read_char(void) { return (char)uart_read(UART0); }
 
@@ -100,6 +101,16 @@ void uart_setup() {
   // Explicitly Enable FIFO
   UART_FCR(UART0) =
       UART_FCR_FIFO_EN | UART_FCR_RX_RS | UART_FCR_TX_RS | UART_FCR_TRG_LEV0;
+}
+
+int uart_printf(const char *format, ...) {
+  va_list args;
+  va_start(args, format);
+  int n = vsnprintf(DISPLAY_BUFFER, sizeof(DISPLAY_BUFFER), format, args);
+  va_end(args);
+  if (n > 0)
+    uart_send_str(DISPLAY_BUFFER);
+  return n;
 }
 
 char DISPLAY_BUFFER[512];

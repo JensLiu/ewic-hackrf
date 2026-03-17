@@ -1,0 +1,618 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineSystem.cmake:200 (message)"
+      - "CMakeLists.txt:24 (project)"
+    message: |
+      The target system is: Generic - 1 - arm
+      The host system is: Linux - 6.18.13-200.fc43.x86_64 - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:24 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" failed.
+      Compiler: /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-exit.o): in function `exit':
+      exit.c:(.text.exit+0x28): undefined reference to `_exit'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-closer.o): in function `_close_r':
+      closer.c:(.text._close_r+0x18): undefined reference to `_close'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-lseekr.o): in function `_lseek_r':
+      lseekr.c:(.text._lseek_r+0x24): undefined reference to `_lseek'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-readr.o): in function `_read_r':
+      readr.c:(.text._read_r+0x24): undefined reference to `_read'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-writer.o): in function `_write_r':
+      writer.c:(.text._write_r+0x24): undefined reference to `_write'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-sbrkr.o): in function `_sbrk_r':
+      sbrkr.c:(.text._sbrk_r+0x18): undefined reference to `_sbrk'
+      collect2: error: ld returned 1 exit status
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:24 (project)"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc 
+      Build flags: 
+      Id flags: -c 
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
+      
+      The C compiler identification is GNU, found in:
+        /home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/3.31.10/CompilerIdC/CMakeCCompilerId.o
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:24 (project)"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5"
+      binary: "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: "--specs=nosys.specs"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e1b7b/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_e1b7b.dir/build.make CMakeFiles/cmTC_e1b7b.dir/build
+        gmake[1]: Entering directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5'
+        Building C object CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj
+        /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc   -v -o CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc
+        Target: arm-none-eabi
+        Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)'
+        Thread model: single
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_e1b7b.dir/'
+         /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/cc1 -quiet -v -iprefix /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/ -isysroot /home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_e1b7b.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /tmp/ccab5vHZ.s
+        GNU C17 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) version 14.3.1 20250623 (arm-none-eabi)
+        	compiled by GNU C version 9.2.1 20191120 (Red Hat 9.2.1-2), GMP version 6.2.1, MPFR version 3.1.6, MPC version 1.0.3, isl version isl-0.15-1-g835ea3a-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include"
+        ignoring nonexistent directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/usr/local/include"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include-fixed"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include
+        End of search list.
+        Compiler executable checksum: f1c6d1095e4a9f51a2e062da29cb95b2
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_e1b7b.dir/'
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj /tmp/ccab5vHZ.s
+        GNU assembler version 2.44.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 2.44.0.20250616
+        COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/
+        LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.'
+        Linking C executable cmTC_e1b7b
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e1b7b.dir/link.txt --verbose=1
+        Using built-in specs.
+        Reading specs from /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/nosys.specs
+        rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence
+        COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc
+        COLLECT_LTO_WRAPPER=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper
+        Target: arm-none-eabi
+        Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)'
+        Thread model: single
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 
+        COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/
+        LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_e1b7b' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_e1b7b.'
+         /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/collect2 -plugin /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/liblto_plugin.so -plugin-opt=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/cc0Punog.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys --sysroot=/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -X -o cmTC_e1b7b /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1 -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib -L/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj --start-group -lgcc -lc --end-group --start-group -lgcc -lc -lnosys --end-group /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-closer.o): in function `_close_r':
+        closer.c:(.text._close_r+0x18): warning: _close is not implemented and will always fail
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-lseekr.o): in function `_lseek_r':
+        lseekr.c:(.text._lseek_r+0x24): warning: _lseek is not implemented and will always fail
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-readr.o): in function `_read_r':
+        readr.c:(.text._read_r+0x24): warning: _read is not implemented and will always fail
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-writer.o): in function `_write_r':
+        writer.c:(.text._write_r+0x24): warning: _write is not implemented and will always fail
+        COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_e1b7b' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_e1b7b.'
+        /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc --specs=nosys.specs -v CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj -o cmTC_e1b7b
+        gmake[1]: Leaving directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:24 (project)"
+    message: |
+      Parsed C implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include]
+        end of search list found
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include-fixed]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/include]
+        implicit include dirs: [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include-fixed;/home/jens/Applications/arm-toolchain/arm-none-eabi/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:24 (project)"
+    message: |
+      Parsed C implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?))("|,| |$)]
+        ignore line: [Change Dir: '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_e1b7b/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_e1b7b.dir/build.make CMakeFiles/cmTC_e1b7b.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5']
+        ignore line: [Building C object CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc   -v -o CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj -c /usr/share/cmake/Modules/CMakeCCompilerABI.c]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc]
+        ignore line: [Target: arm-none-eabi]
+        ignore line: [Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)']
+        ignore line: [Thread model: single]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_e1b7b.dir/']
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/cc1 -quiet -v -iprefix /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/ -isysroot /home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake/Modules/CMakeCCompilerABI.c -quiet -dumpdir CMakeFiles/cmTC_e1b7b.dir/ -dumpbase CMakeCCompilerABI.c.c -dumpbase-ext .c -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /tmp/ccab5vHZ.s]
+        ignore line: [GNU C17 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) version 14.3.1 20250623 (arm-none-eabi)]
+        ignore line: [	compiled by GNU C version 9.2.1 20191120 (Red Hat 9.2.1-2)  GMP version 6.2.1  MPFR version 3.1.6  MPC version 1.0.3  isl version isl-0.15-1-g835ea3a-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include"]
+        ignore line: [ignoring nonexistent directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/usr/local/include"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include-fixed"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: f1c6d1095e4a9f51a2e062da29cb95b2]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_e1b7b.dir/']
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj /tmp/ccab5vHZ.s]
+        ignore line: [GNU assembler version 2.44.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 2.44.0.20250616]
+        ignore line: [COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/]
+        ignore line: [LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.']
+        ignore line: [Linking C executable cmTC_e1b7b]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_e1b7b.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [Reading specs from /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/nosys.specs]
+        ignore line: [rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence]
+        ignore line: [COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc]
+        ignore line: [COLLECT_LTO_WRAPPER=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper]
+        ignore line: [Target: arm-none-eabi]
+        ignore line: [Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)']
+        ignore line: [Thread model: single]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) ]
+        ignore line: [COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/]
+        ignore line: [LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_e1b7b' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_e1b7b.']
+        link line: [ /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/collect2 -plugin /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/liblto_plugin.so -plugin-opt=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/cc0Punog.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys --sysroot=/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -X -o cmTC_e1b7b /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1 -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib -L/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj --start-group -lgcc -lc --end-group --start-group -lgcc -lc -lnosys --end-group /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/cc0Punog.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lnosys] ==> ignore
+          arg [--sysroot=/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi] ==> ignore
+          arg [-X] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_e1b7b] ==> ignore
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1] ==> dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../lib/gcc] ==> dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib] ==> dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib] ==> dir [/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib]
+          arg [CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj] ==> ignore
+          arg [--start-group] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [--end-group] ==> ignore
+          arg [--start-group] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lnosys] ==> lib [nosys]
+          arg [--end-group] ==> ignore
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-closer.o): in function `_close_r':]
+        ignore line: [closer.c:(.text._close_r+0x18): warning: _close is not implemented and will always fail]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-lseekr.o): in function `_lseek_r':]
+        ignore line: [lseekr.c:(.text._lseek_r+0x24): warning: _lseek is not implemented and will always fail]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-readr.o): in function `_read_r':]
+        ignore line: [readr.c:(.text._read_r+0x24): warning: _read is not implemented and will always fail]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-writer.o): in function `_write_r':]
+        ignore line: [writer.c:(.text._write_r+0x24): warning: _write is not implemented and will always fail]
+        ignore line: [COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_e1b7b' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_e1b7b.']
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-gcc --specs=nosys.specs -v CMakeFiles/cmTC_e1b7b.dir/CMakeCCompilerABI.c.obj -o cmTC_e1b7b]
+        ignore line: [gmake[1]: Leaving directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-WJJcz5']
+        ignore line: []
+        ignore line: []
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crti.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtbegin.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/lib/crt0.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtend.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc] ==> [/home/jens/Applications/arm-toolchain/lib/gcc]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/lib]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/lib]
+        implicit libs: [gcc;c;gcc;c;nosys]
+        implicit objs: [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crti.o;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtbegin.o;/home/jens/Applications/arm-toolchain/arm-none-eabi/lib/crt0.o;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtend.o;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+        implicit dirs: [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1;/home/jens/Applications/arm-toolchain/lib/gcc;/home/jens/Applications/arm-toolchain/arm-none-eabi/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf-common.cmake:28 (enable_language)"
+      - "CMakeLists.txt:26 (include)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+      Compiler: /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      1
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-exit.o): in function `exit':
+      exit.c:(.text.exit+0x28): undefined reference to `_exit'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-closer.o): in function `_close_r':
+      closer.c:(.text._close_r+0x18): undefined reference to `_close'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-lseekr.o): in function `_lseek_r':
+      lseekr.c:(.text._lseek_r+0x24): undefined reference to `_lseek'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-readr.o): in function `_read_r':
+      readr.c:(.text._read_r+0x24): undefined reference to `_read'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-writer.o): in function `_write_r':
+      writer.c:(.text._write_r+0x24): undefined reference to `_write'
+      /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-sbrkr.o): in function `_sbrk_r':
+      sbrkr.c:(.text._sbrk_r+0x18): undefined reference to `_sbrk'
+      collect2: error: ld returned 1 exit status
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf-common.cmake:28 (enable_language)"
+      - "CMakeLists.txt:26 (include)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++ 
+      Build flags: 
+      Id flags: -c 
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
+      
+      The CXX compiler identification is GNU, found in:
+        /home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/3.31.10/CompilerIdCXX/CMakeCXXCompilerId.o
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake:1238 (message)"
+      - "/usr/share/cmake/Modules/CMakeDetermineASMCompiler.cmake:135 (CMAKE_DETERMINE_COMPILER_ID_VENDOR)"
+      - "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf-common.cmake:28 (enable_language)"
+      - "CMakeLists.txt:26 (include)"
+    message: |
+      Checking whether the ASM compiler is GNU using "--version" matched "(GNU assembler)|(GCC)|(Free Software Foundation)":
+      arm-none-eabi-gcc (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 14.3.1 20250623
+      Copyright (C) 2024 Free Software Foundation, Inc.
+      This is free software; see the source for copying conditions.  There is NO
+      warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf-common.cmake:28 (enable_language)"
+      - "CMakeLists.txt:26 (include)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV"
+      binary: "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: "--specs=nosys.specs"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV'
+        
+        Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d4220/fast
+        /usr/bin/gmake  -f CMakeFiles/cmTC_d4220.dir/build.make CMakeFiles/cmTC_d4220.dir/build
+        gmake[1]: Entering directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV'
+        Building CXX object CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj
+        /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++   -v -o CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp
+        Using built-in specs.
+        COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++
+        Target: arm-none-eabi
+        Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)'
+        Thread model: single
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_d4220.dir/'
+         /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/cc1plus -quiet -v -iprefix /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/ -isysroot /home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_d4220.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /tmp/cccVJDvY.s
+        GNU C++17 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) version 14.3.1 20250623 (arm-none-eabi)
+        	compiled by GNU C version 9.2.1 20191120 (Red Hat 9.2.1-2), GMP version 6.2.1, MPFR version 3.1.6, MPC version 1.0.3, isl version isl-0.15-1-g835ea3a-GMP
+        
+        GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/arm-none-eabi"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/backward"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include"
+        ignoring nonexistent directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/usr/local/include"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include-fixed"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include"
+        ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/include"
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/arm-none-eabi
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/backward
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include
+        End of search list.
+        Compiler executable checksum: 533e33c5ce831fccacfca7f53cae5699
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_d4220.dir/'
+         /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj /tmp/cccVJDvY.s
+        GNU assembler version 2.44.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 2.44.0.20250616
+        COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/
+        LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.'
+        Linking CXX executable cmTC_d4220
+        /usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d4220.dir/link.txt --verbose=1
+        Using built-in specs.
+        Reading specs from /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/nosys.specs
+        rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence
+        COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++
+        COLLECT_LTO_WRAPPER=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper
+        Target: arm-none-eabi
+        Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)'
+        Thread model: single
+        Supported LTO compression algorithms: zlib zstd
+        gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 
+        COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/
+        LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/
+        COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_d4220' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_d4220.'
+         /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/collect2 -plugin /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/liblto_plugin.so -plugin-opt=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccW4hye5.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys --sysroot=/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -X -o cmTC_d4220 /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1 -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib -L/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm --start-group -lgcc -lc --end-group --start-group -lgcc -lc -lnosys --end-group /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-closer.o): in function `_close_r':
+        closer.c:(.text._close_r+0x18): warning: _close is not implemented and will always fail
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-lseekr.o): in function `_lseek_r':
+        lseekr.c:(.text._lseek_r+0x24): warning: _lseek is not implemented and will always fail
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-readr.o): in function `_read_r':
+        readr.c:(.text._read_r+0x24): warning: _read is not implemented and will always fail
+        /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-writer.o): in function `_write_r':
+        writer.c:(.text._write_r+0x24): warning: _write is not implemented and will always fail
+        COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_d4220' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_d4220.'
+        /home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++ --specs=nosys.specs -v CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_d4220
+        gmake[1]: Leaving directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf-common.cmake:28 (enable_language)"
+      - "CMakeLists.txt:26 (include)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/arm-none-eabi]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/backward]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed]
+          add: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include]
+        end of search list found
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/include/c++/14.3.1]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/arm-none-eabi] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/include/c++/14.3.1/arm-none-eabi]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/backward] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/include/c++/14.3.1/backward]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include-fixed]
+        collapse include dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/include]
+        implicit include dirs: [/home/jens/Applications/arm-toolchain/arm-none-eabi/include/c++/14.3.1;/home/jens/Applications/arm-toolchain/arm-none-eabi/include/c++/14.3.1/arm-none-eabi;/home/jens/Applications/arm-toolchain/arm-none-eabi/include/c++/14.3.1/backward;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/include-fixed;/home/jens/Applications/arm-toolchain/arm-none-eabi/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf-common.cmake:28 (enable_language)"
+      - "CMakeLists.txt:26 (include)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?))("|,| |$)]
+        ignore line: [Change Dir: '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV']
+        ignore line: []
+        ignore line: [Run Build Command(s): /usr/bin/cmake -E env VERBOSE=1 /usr/bin/gmake -f Makefile cmTC_d4220/fast]
+        ignore line: [/usr/bin/gmake  -f CMakeFiles/cmTC_d4220.dir/build.make CMakeFiles/cmTC_d4220.dir/build]
+        ignore line: [gmake[1]: Entering directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV']
+        ignore line: [Building CXX object CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++   -v -o CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj -c /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Using built-in specs.]
+        ignore line: [COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++]
+        ignore line: [Target: arm-none-eabi]
+        ignore line: [Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)']
+        ignore line: [Thread model: single]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) ]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_d4220.dir/']
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/cc1plus -quiet -v -iprefix /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/ -isysroot /home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -D__USES_INITFINI__ /usr/share/cmake/Modules/CMakeCXXCompilerABI.cpp -quiet -dumpdir CMakeFiles/cmTC_d4220.dir/ -dumpbase CMakeCXXCompilerABI.cpp.cpp -dumpbase-ext .cpp -mcpu=arm7tdmi -mfloat-abi=soft -marm -mlibarch=armv4t -march=armv4t -version -o /tmp/cccVJDvY.s]
+        ignore line: [GNU C++17 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) version 14.3.1 20250623 (arm-none-eabi)]
+        ignore line: [	compiled by GNU C version 9.2.1 20191120 (Red Hat 9.2.1-2)  GMP version 6.2.1  MPFR version 3.1.6  MPC version 1.0.3  isl version isl-0.15-1-g835ea3a-GMP]
+        ignore line: []
+        ignore line: [GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/arm-none-eabi"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/backward"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include"]
+        ignore line: [ignoring nonexistent directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/usr/local/include"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/include-fixed"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../lib/gcc/../../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include"]
+        ignore line: [ignoring duplicate directory "/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/include"]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/arm-none-eabi]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include/c++/14.3.1/backward]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/include-fixed]
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/include]
+        ignore line: [End of search list.]
+        ignore line: [Compiler executable checksum: 533e33c5ce831fccacfca7f53cae5699]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_d4220.dir/']
+        ignore line: [ /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/as -v -march=armv4t -mfloat-abi=soft -meabi=5 -o CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj /tmp/cccVJDvY.s]
+        ignore line: [GNU assembler version 2.44.0 (arm-none-eabi) using BFD version (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) 2.44.0.20250616]
+        ignore line: [COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/]
+        ignore line: [LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-v' '-o' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj' '-c' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.']
+        ignore line: [Linking CXX executable cmTC_d4220]
+        ignore line: [/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d4220.dir/link.txt --verbose=1]
+        ignore line: [Using built-in specs.]
+        ignore line: [Reading specs from /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/nosys.specs]
+        ignore line: [rename spec link_gcc_c_sequence to nosys_link_gcc_c_sequence]
+        ignore line: [COLLECT_GCC=/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++]
+        ignore line: [COLLECT_LTO_WRAPPER=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper]
+        ignore line: [Target: arm-none-eabi]
+        ignore line: [Configured with: /data/jenkins/workspace/GNU-toolchain/arm-14/src/gcc/configure --target=arm-none-eabi --prefix=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install --with-gmp=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpfr=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-mpc=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --with-isl=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/host-tools --disable-shared --disable-nls --disable-threads --disable-tls --enable-checking=release --enable-languages=c,c++,fortran --with-newlib --with-gnu-as --with-headers=yes --with-gnu-ld --with-native-system-header-dir=/include --with-sysroot=/data/jenkins/workspace/GNU-toolchain/arm-14/build-arm-none-eabi/install/arm-none-eabi --with-bugurl=https://bugs.linaro.org/ --with-multilib-list=aprofile,rmprofile --with-pkgversion='Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)']
+        ignore line: [Thread model: single]
+        ignore line: [Supported LTO compression algorithms: zlib zstd]
+        ignore line: [gcc version 14.3.1 20250623 (Arm GNU Toolchain 14.3.Rel1 (Build arm-14.174)) ]
+        ignore line: [COMPILER_PATH=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/]
+        ignore line: [LIBRARY_PATH=/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/:/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/:/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib/]
+        ignore line: [COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_d4220' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_d4220.']
+        link line: [ /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/collect2 -plugin /home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/liblto_plugin.so -plugin-opt=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper -plugin-opt=-fresolution=/tmp/ccW4hye5.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lnosys --sysroot=/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi -X -o cmTC_d4220 /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1 -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc -L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib -L/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj -lstdc++ -lm --start-group -lgcc -lc --end-group --start-group -lgcc -lc -lnosys --end-group /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/collect2] ==> ignore
+          arg [-plugin] ==> ignore
+          arg [/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/liblto_plugin.so] ==> ignore
+          arg [-plugin-opt=/home/jens/Applications/arm-toolchain/bin/../libexec/gcc/arm-none-eabi/14.3.1/lto-wrapper] ==> ignore
+          arg [-plugin-opt=-fresolution=/tmp/ccW4hye5.res] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lgcc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lc] ==> ignore
+          arg [-plugin-opt=-pass-through=-lnosys] ==> ignore
+          arg [--sysroot=/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi] ==> ignore
+          arg [-X] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_d4220] ==> ignore
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1] ==> dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../lib/gcc] ==> dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib] ==> dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib]
+          arg [-L/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib] ==> dir [/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib]
+          arg [CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj] ==> ignore
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-lm] ==> lib [m]
+          arg [--start-group] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [--end-group] ==> ignore
+          arg [--start-group] ==> ignore
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lnosys] ==> lib [nosys]
+          arg [--end-group] ==> ignore
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o]
+          arg [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o] ==> obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-closer.o): in function `_close_r':]
+        ignore line: [closer.c:(.text._close_r+0x18): warning: _close is not implemented and will always fail]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-lseekr.o): in function `_lseek_r':]
+        ignore line: [lseekr.c:(.text._lseek_r+0x24): warning: _lseek is not implemented and will always fail]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-readr.o): in function `_read_r':]
+        ignore line: [readr.c:(.text._read_r+0x24): warning: _read is not implemented and will always fail]
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/bin/ld: /home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/libc.a(libc_a-writer.o): in function `_write_r':]
+        ignore line: [writer.c:(.text._write_r+0x24): warning: _write is not implemented and will always fail]
+        ignore line: [COLLECT_GCC_OPTIONS='-specs=nosys.specs' '-v' '-o' 'cmTC_d4220' '-mcpu=arm7tdmi' '-mfloat-abi=soft' '-marm' '-mlibarch=armv4t' '-march=armv4t' '-dumpdir' 'cmTC_d4220.']
+        ignore line: [/home/jens/Applications/arm-toolchain/bin/arm-none-eabi-g++ --specs=nosys.specs -v CMakeFiles/cmTC_d4220.dir/CMakeCXXCompilerABI.cpp.obj -o cmTC_d4220]
+        ignore line: [gmake[1]: Leaving directory '/home/jens/Documents/academic/n3cat/hackrf/firmware/hackrf_usb/build/CMakeFiles/CMakeScratch/TryCompile-8l9svV']
+        ignore line: []
+        ignore line: []
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crti.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crti.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtbegin.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtbegin.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib/crt0.o] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/lib/crt0.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtend.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtend.o]
+        collapse obj [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/crtn.o] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1] ==> [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc] ==> [/home/jens/Applications/arm-toolchain/lib/gcc]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../lib/gcc/arm-none-eabi/14.3.1/../../../../arm-none-eabi/lib] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/lib]
+        collapse library dir [/home/jens/Applications/arm-toolchain/bin/../arm-none-eabi/lib] ==> [/home/jens/Applications/arm-toolchain/arm-none-eabi/lib]
+        implicit libs: [stdc++;m;gcc;c;gcc;c;nosys]
+        implicit objs: [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crti.o;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtbegin.o;/home/jens/Applications/arm-toolchain/arm-none-eabi/lib/crt0.o;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtend.o;/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1/crtn.o]
+        implicit dirs: [/home/jens/Applications/arm-toolchain/lib/gcc/arm-none-eabi/14.3.1;/home/jens/Applications/arm-toolchain/lib/gcc;/home/jens/Applications/arm-toolchain/arm-none-eabi/lib]
+        implicit fwks: []
+      
+      
+...

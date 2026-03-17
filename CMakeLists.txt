@@ -37,13 +37,14 @@ add_custom_command(
 # TinyUSB directory
 set(TINYUSB_DIR ${PATH_HACKRF_FIRMWARE}/lib/tinyusb)
 
-# Include directories (tinyusb_port for ci_hs_hackrf.h; ci_hs for ci_hs_type.h; host for usbh.h)
+# Include directories
 include_directories(
 	${PATH_HACKRF_FIRMWARE_COMMON}
 	${PATH_HACKRF_FIRMWARE}/lib/hackrf_usb
 	${PATH_HACKRF_FIRMWARE}/lib/libopencm3/include
 	${PATH_HACKRF_FIRMWARE}/uart_support
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port
+	${PATH_HACKRF_FIRMWARE}/transceiver
 	${TINYUSB_DIR}/src
 	${TINYUSB_DIR}/src/common
 	${TINYUSB_DIR}/src/host
@@ -74,6 +75,8 @@ set(SRC_M4
 	"${PATH_HACKRF_FIRMWARE_COMMON}/rom_iap.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/operacake.c"
 	"${PATH_HACKRF_FIRMWARE_COMMON}/operacake_sctimer.c"
+	"${PATH_HACKRF_FIRMWARE_COMMON}/delay.c"
+	"${PATH_HACKRF_FIRMWARE_COMMON}/adc.c"
 )
 
 set(SRC_M0 sgpio_m0.s)
@@ -88,7 +91,7 @@ set(TINYUSB_SRC
 	# Host stack
 	${TINYUSB_DIR}/src/host/usbh.c
 	${TINYUSB_DIR}/src/host/hub.c
-	# CDC host class (includes built-in FTDI serial sub-driver)
+# CDC host class (includes built-in FTDI serial sub-driver)
 	${TINYUSB_DIR}/src/class/cdc/cdc_host.c
 	# EHCI host controller
 	${TINYUSB_DIR}/src/portable/ehci/ehci.c
@@ -98,8 +101,10 @@ set(TINYUSB_SRC
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/tinyusb_port.c
 	# FTDI host: CDC callbacks + public API
 	${PATH_HACKRF_FIRMWARE}/tinyusb_port/ftdi_host.c
-	# Custom transceiver RX helpers
-	${PATH_HACKRF_FIRMWARE}/tinyusb_port/custom_transceiver.c
+	# transceiver code
+	${PATH_HACKRF_FIRMWARE}/transceiver/custom_transceiver.c
+	${PATH_HACKRF_FIRMWARE}/transceiver/gr_lib.c
+	${PATH_HACKRF_FIRMWARE}/transceiver/sine_table.c
 )
 
 # Add TinyUSB sources to M4 build

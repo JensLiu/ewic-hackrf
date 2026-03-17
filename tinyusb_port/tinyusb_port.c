@@ -46,7 +46,7 @@ void tinyusb_hardware_init(void) {
 
   /* 3. Enable USB0 PHY (LPC43xx: bit 5 = 0 enables) */
   CREG_CREG0 &= ~CREG_CREG0_USB0PHY;
-  delay(10000);
+  // delay(10000);
 }
 
 /*---------------------------------------------------------------------------*/

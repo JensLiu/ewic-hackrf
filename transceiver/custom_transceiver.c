@@ -100,7 +100,7 @@ void custom_transceiver_receive() {
         const uint32_t adaptive_threshold =
             rx_noise_floor + RX_THRESHOLD_MARGIN;
         rx_current_bit = (mag2_avg > adaptive_threshold);
-        // uart_printf("(%d)", rx_current_bit);
+        uart_printf("(%d)", rx_current_bit);
 
 #ifdef RX_FTDI_SEND_IN_BATCH
         {
@@ -128,8 +128,8 @@ void custom_transceiver_receive() {
             }
             uart_printf("\r\n");
 #endif
-            const uint32_t write_count = ftdi_host_write_blocking(rx_bit_buffer, RX_BIT_PACKET_SIZE / 8,
-                                     FTDI_IO_TIMEOUT_MS);
+            const uint32_t write_count = ftdi_host_write_blocking(
+                rx_bit_buffer, RX_BIT_PACKET_SIZE / 8, FTDI_IO_TIMEOUT_MS);
             if (write_count == RX_BIT_PACKET_SIZE / 8) {
               uart_printf(".");
             } else {
@@ -155,6 +155,18 @@ void custom_transceiver_receive() {
 #endif
           }
         }
+#else
+      {
+        const uint8_t send_byte = rx_current_bit ? 1u : 0u;
+        ftdi_host_write_blocking(&send_byte, 1, FTDI_IO_TIMEOUT_MS);
+        uint8_t echo_byte;
+        const uint32_t read_count = ftdi_host_read_blocking(&echo_byte, 1, FTDI_IO_TIMEOUT_MS);
+        if (read_count == 1) {
+          uart_printf("%d\r\n", echo_byte);
+        } else {
+          uart_printf("Failed to read echo from FTDI\r\n");
+        }
+      }
 #endif
 #ifdef DEBUG_RX_FTDI_READ_AFTER_SEND
         {

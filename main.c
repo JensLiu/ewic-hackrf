@@ -38,12 +38,12 @@
 #include "selftest.h"
 
 #include "ci_hs_hackrf.h"
+#include "custom_config.h"
 #include "custom_transceiver.h"
+#include "delay.h"
 #include "ftdi_host.h"
 #include "tinyusb_port.h"
-#include "tusb_config.h" /* for tusb_uart_printf */
 #include "uart.h"
-#include "delay.h"
 
 extern uint32_t __m0_start__;
 extern uint32_t __m0_end__;
@@ -136,11 +136,11 @@ int main(void) {
   portapack_init();
 #endif
 
-  uart_send_str("\r\nHackRF USB Host starting...\r\n");
+  uart_send_str("[MAIN] HackRF USB Host starting...\r\n");
 
   /* Initialize USB host stack */
   if (!tinyusb_host_init()) {
-    uart_send_str("ERROR: Host init failed!\r\n");
+    uart_send_str("[MAIN] ERROR: Host init failed!\r\n");
   }
 
   nvic_set_priority(NVIC_USB0_IRQ, 255);
@@ -165,12 +165,13 @@ int main(void) {
     clkin_detect_init();
   }
 
-  uart_send_str("[USB] Waiting for device...\r\n");
+  uart_send_str("[MAIN] Waiting for device...\r\n");
 
   bool ftdi_was_ready = false;
 
+#ifndef DEBUG_FTDI_ECHO_WORKS
   custom_transceiver_receive_begin();
-
+#endif
   while (true) {
     /* Ensure ISR-written queue data is visible before we drain (ARM DSB). */
     __asm__ volatile("dsb" ::: "memory");
@@ -181,9 +182,13 @@ int main(void) {
     const bool ftdi_ready = ftdi_host_ready();
     if (ftdi_ready != ftdi_was_ready) {
       if (ftdi_ready) {
-        tusb_uart_printf("FTDI connected and ready!\r\n");
+        // DEBUG: wait a little bit
+        for (int i = 0; i < 1000000; i++) {
+          tuh_task();
+        }
+        tusb_uart_printf("[MAIN] FTDI connected and ready!\r\n");
       } else {
-        tusb_uart_printf("FTDI disconnected\r\n");
+        tusb_uart_printf("[MAIN] FTDI disconnected\r\n");
       }
       ftdi_was_ready = ftdi_ready;
     }
@@ -192,22 +197,48 @@ int main(void) {
       continue;
     }
 
+#ifndef DEBUG_FTDI_ECHO_WORKS
     custom_transceiver_receive();
-
-    // read from FTDI to see if we receive anything
-    // {
-    //   static uint8_t read_buf[256];
-    //   uint32_t read_len = ftdi_host_read(read_buf, sizeof(read_buf));
-    //   if (read_len > 0) {
-    //     tusb_uart_printf("[MAIN] FTDI received %lu bytes\r\n", read_len);
-    //     tusb_uart_printf("[MAIN] Data: ");
-    //     for (uint32_t i = 0; i < read_len; i++) {
-    //       tusb_uart_printf("%02X ", read_buf[i]);
-    //     }
-    //     tusb_uart_printf("\n");
-    //   }
-    // }
-
+#else
+    {
+      static char send_buf[] = "Hello, FTDI!";
+#ifdef DEBUG_FTDI_ECHO_PER_BYTE
+      for (size_t i = 0; i < sizeof(send_buf); i++) {
+        const char byte_to_send = send_buf[i];
+        ftdi_host_write_blocking(&byte_to_send, 1, FTDI_IO_TIMEOUT_MS);
+        char read_byte;
+        const uint32_t read_count =
+            ftdi_host_read_blocking(&read_byte, 1, FTDI_IO_TIMEOUT_MS);
+        if (read_count == 1) {
+          uart_printf("[MAIN] Sent '%c', received '%c'\r\n", byte_to_send,
+                      read_byte);
+        } else {
+          uart_printf("[MAIN] Sent '%c', but failed to receive echo\r\n",
+                      byte_to_send);
+        }
+      }
+#else
+      const uint32_t send_len = ftdi_host_write_blocking(
+          send_buf, sizeof(send_buf), FTDI_IO_TIMEOUT_MS);
+      if (send_len == sizeof(send_buf)) {
+        uart_printf("[MAIN] Sent '%s' to FTDI\r\n", send_buf);
+      } else {
+        uart_printf("[MAIN] Failed to send to FTDI\r\n");
+      }
+      static uint8_t read_buf[256];
+      uint32_t read_len = ftdi_host_read_blocking(read_buf, sizeof(read_buf),
+                                                  FTDI_IO_TIMEOUT_MS);
+      if (read_len > 0) {
+        uart_printf("[MAIN] FTDI received %lu bytes\r\n", read_len);
+        uart_printf("[MAIN] Data: ");
+        for (uint32_t i = 0; i < read_len; i++) {
+          uart_printf("%c", read_buf[i]);
+        }
+        uart_printf("\n");
+      }
+#endif
+    }
+#endif
     // /* Print status every 5 seconds */
     // uint32_t now = board_millis();
     // if (now - last_status_print >= 5000) {

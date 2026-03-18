@@ -27,14 +27,14 @@ void rx_set_if_gain(const uint32_t gain)
 	//	in-between ranges, clip to nearest
 	const uint32_t clip_gain = (gain >= 40) ? 40 : ((uint32_t) (round(gain / 8))) * 8;
 	const uint8_t value = (uint8_t) clip_gain;
-	uart_printf("set rx if gain: %d -> %d\n", gain, value);
+	uart_printf("set rx if gain: %d -> %d\r\n", gain, value);
 	if (RADIO_OK !=
 	    radio_set_gain(
 		    &radio,
 		    RADIO_CHANNEL0,
 		    RADIO_GAIN_RX_LNA,
 		    (radio_gain_t) {.db = value})) {
-		uart_printf("standalone RX setup failed: IF gain\n");
+		uart_printf("standalone RX setup failed: IF gain\r\n");
 	}
 }
 
@@ -44,14 +44,14 @@ void rx_set_rf_gain(const uint32_t gain)
 	//		return osmosdr::gain_range_t( 0, 14, 14 );
 	//	}
 	const uint8_t value = (gain >= 14) ? 1 : 0;
-	uart_printf("set rx rf gain: %d -> value=%u\n", gain, value);
+	uart_printf("set rx rf gain: %d -> value=%u\r\n", gain, value);
 	if (RADIO_OK !=
 	    radio_set_gain(
 		    &radio,
 		    RADIO_CHANNEL0,
 		    RADIO_GAIN_RF_AMP,
 		    (radio_gain_t) {.enable = value})) {
-		uart_printf("standalone RX setup failed: RF Gain\n");
+		uart_printf("standalone RX setup failed: RF Gain\r\n");
 	}
 }
 
@@ -63,14 +63,14 @@ void rx_set_bb_gain(const double gain)
 	const uint32_t clip_gain =
 		(gain >= 62) ? 62 : ((uint32_t) ((round((double) gain / 2))) * 2);
 	const uint8_t value = (uint8_t) clip_gain;
-	uart_printf("set rx bb gain: %d -> %d\n", gain, value);
+	uart_printf("set rx bb gain: %d -> %d\r\n", gain, value);
 	if (RADIO_OK !=
 	    radio_set_gain(
 		    &radio,
 		    RADIO_CHANNEL0,
 		    RADIO_GAIN_RX_VGA,
 		    (radio_gain_t) {.db = value})) {
-		uart_printf("standalone RX setup failed: BB Gain\n");
+		uart_printf("standalone RX setup failed: BB Gain\r\n");
 	}
 }
 
@@ -80,14 +80,14 @@ void tx_set_rf_gain(const uint32_t gain)
 	// 		return osmosdr::gain_range_t( 0, 14, 14 );
 	// 	}
 	const uint8_t value = (gain >= 14) ? 1 : 0;
-	uart_printf("set tx rf gain: %d -> %d\n", gain, value);
+	uart_printf("set tx rf gain: %d -> %d\r\n", gain, value);
 	if (RADIO_OK !=
 	    radio_set_gain(
 		    &radio,
 		    RADIO_CHANNEL0,
 		    RADIO_GAIN_RF_AMP,
 		    (radio_gain_t) {.db = value})) {
-		uart_printf("standalone TX setup failed: RF Gain\n");
+		uart_printf("standalone TX setup failed: RF Gain\r\n");
 	}
 }
 
@@ -97,7 +97,7 @@ void tx_set_if_gain(const double gain)
 	// 	return osmosdr::gain_range_t( 0, 47, 1 );
 	// }
 	const uint8_t value = (gain >= 47) ? 47 : gain;
-	uart_printf("set tx if gain: %d -> %d\n", gain, value);
+	uart_printf("set tx if gain: %d -> %d\r\n", gain, value);
 	if (radio_set_gain(
 		    &radio,
 		    RADIO_CHANNEL0,
@@ -181,7 +181,7 @@ uint32_t _bandwidth_clip(const double bandwidth)
 		}
 	}
 
-	uart_printf("baseband clip: %f -> %u\n", bandwidth, closest);
+	uart_printf("baseband clip: %f -> %u\r\n", bandwidth, closest);
 	return closest;
 }
 
@@ -211,7 +211,7 @@ void set_baseband_filter_bandwidth(const double bandwidth)
 		    RADIO_CHANNEL0,
 		    RADIO_FILTER_BASEBAND,
 		    (radio_filter_t) {.hz = bandwidth})) {
-		uart_printf("standalone RX setup failed: baseband filter\n");
+		uart_printf("standalone RX setup failed: baseband filter\r\n");
 	}
 }
 
@@ -297,11 +297,11 @@ void set_sample_rate(const double freq)
 			    .num = freq_hz * 2,
 			    .div = divider,
 		    })) {
-		uart_printf("standalone setup failed: set sample rate");
+		uart_printf("standalone setup failed: set sample rate\r\n");
 	}
 	const uint32_t bw = _hackrf_compute_baseband_filter_bw(0.75 * freq_hz / divider);
 	uart_printf(
-		"set_sample_rate(%f) -> freq_hz=%u divider=%u, setting baseband filter bw to %u\n",
+		"set_sample_rate(%f) -> freq_hz=%u divider=%u, setting baseband filter bw to %u\r\n",
 		freq,
 		freq_hz,
 		divider,
@@ -312,7 +312,7 @@ void set_sample_rate(const double freq)
 		    RADIO_CHANNEL0,
 		    RADIO_FILTER_BASEBAND,
 		    (radio_filter_t) {.hz = bw})) {
-		uart_printf("standalone setup failed: set baseband filter\n");
+		uart_printf("standalone setup failed: set baseband filter\r\n");
 	}
 }
 
@@ -327,7 +327,7 @@ void set_sample_rate_direct(const double freq, const double divider)
 			    .num = freq,
 			    .div = divider,
 		    })) {
-		uart_printf("standalone setup failed: set sample rate");
+		uart_printf("standalone setup failed: set sample rate\r\n");
 	}
 }
 
@@ -337,14 +337,14 @@ void set_centre_frequency(const double freq)
 	const double _freq_corr = 0;
 	const uint64_t corr_freq = (uint64_t) (APPLY_PPM_CORR(freq, _freq_corr));
 	// hackrf_set_freq(freq_hz)
-	uart_printf("set frequency: %llu\n", (unsigned long long) corr_freq);
+	uart_printf("set frequency: %llu\r\n", (unsigned long long) corr_freq);
 	if (RADIO_OK !=
 	    radio_set_frequency(
 		    &radio,
 		    RADIO_CHANNEL0,
 		    RADIO_FREQUENCY_RF,
 		    (radio_frequency_t) {.hz = corr_freq})) {
-		uart_printf("standalone setup failed: set centre frequency\n");
+		uart_printf("standalone setup failed: set centre frequency\r\n");
 	}
 }
 
@@ -356,7 +356,7 @@ void set_antenna_enable(const bool enable)
 		    RADIO_CHANNEL0,
 		    RADIO_ANTENNA_BIAS_TEE,
 		    (radio_antenna_t) {.enable = enable})) {
-		uart_printf("standalone RX setup failed: antenna enable\n");
+		uart_printf("standalone RX setup failed: antenna enable\r\n");
 	}
 }
 

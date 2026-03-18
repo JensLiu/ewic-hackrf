@@ -90,6 +90,7 @@ uint32_t ftdi_host_write_blocking(const void *buffer, uint32_t len,
       break;
     }
 #endif
+    tusb_uart_printf("total=%lu, n=%lu\r\n", (unsigned long)total, (unsigned long)n);
   }
 
   if (total > 0) {

@@ -13,17 +13,24 @@
  * for the rest of the firmware.
  */
 
-#include "tusb.h"
 #include "ftdi_host.h"
+#include "custom_config.h"
+#include "tinyusb_port.h"
+#include "tusb.h"
+#include "uart.h"
 
 /* Target interface: 0->ttyUSB0, 1->ttyUSB1, 2->ttyUSB2, 3->ttyUSB3.
  * We use interface 2 for data transfer.  The CDC driver assigns each
  * FTDI interface an "idx" in mount order; we find ours by matching
  * the interface number. */
-#define FTDI_TARGET_INTERFACE  2
+#define FTDI_TARGET_INTERFACE 2
 
 /* CDC interface index of the target channel, set in tuh_cdc_mount_cb(). */
-static int8_t  s_cdc_idx  = -1;   /* -1 = not yet mounted */
+static int8_t s_cdc_idx = -1; /* -1 = not yet mounted */
+
+static bool timeout_expired(uint32_t start_ms, uint32_t timeout_ms) {
+  return (uint32_t)(board_millis() - start_ms) >= timeout_ms;
+}
 
 //--------------------------------------------------------------------+
 // Public API – data transfer
@@ -34,12 +41,15 @@ bool ftdi_host_ready(void) {
 }
 
 uint32_t ftdi_host_write(const void *buffer, uint32_t len) {
-  tusb_uart_printf("ftdi_host_write sent %d bytes: ", len);
-  for (int i = 0; i < len; i++) {
-    tusb_uart_printf("%02X ", ((uint8_t *)buffer)[i]);
-  }
-  tusb_uart_printf("\n");
-  if (!ftdi_host_ready()) return 0;
+  // tusb_uart_printf("ftdi_host_write sent %d bytes: ", len);
+  // for (int i = 0; i < len; i++) {
+  //   tusb_uart_printf("%02X ", ((uint8_t *)buffer)[i]);
+  // }
+  // tusb_uart_printf("\n");
+#ifdef FTDI_IO_SAFETY_CHECKS
+  if (!ftdi_host_ready())
+    return 0;
+#endif
   uint32_t n = tuh_cdc_write((uint8_t)s_cdc_idx, buffer, len);
   if (n > 0) {
     tuh_cdc_write_flush((uint8_t)s_cdc_idx);
@@ -47,13 +57,96 @@ uint32_t ftdi_host_write(const void *buffer, uint32_t len) {
   return n;
 }
 
+uint32_t ftdi_host_write_blocking(const void *buffer, uint32_t len,
+                                  uint32_t timeout_ms) {
+#ifdef FTDI_IO_SAFETY_CHECKS
+  if (!ftdi_host_ready() || (buffer == NULL) || (len == 0))
+    return 0;
+#endif
+  // const uint32_t start_ms = board_millis();
+  const uint8_t *ptr = (const uint8_t *)buffer;
+  uint32_t total = 0;
+
+  while (total < len) {
+#ifdef FTDI_IO_SAFETY_CHECKS
+    if (!ftdi_host_ready()) {
+      break;
+    }
+#endif
+#ifdef FTDI_BLOCKING_IO_CHECK_TIMEOUTS
+    const uint32_t start_ms = board_millis();
+#endif
+    const uint32_t n =
+        tuh_cdc_write((uint8_t)s_cdc_idx, ptr + total, len - total);
+    if (n > 0) {
+      total += n;
+      (void)tuh_cdc_write_flush((uint8_t)s_cdc_idx);
+      continue;
+    }
+
+    tuh_task();
+#ifdef FTDI_BLOCKING_IO_CHECK_TIMEOUTS
+    if (timeout_expired(start_ms, timeout_ms)) {
+      break;
+    }
+#endif
+  }
+
+  if (total > 0) {
+    (void)tuh_cdc_write_flush((uint8_t)s_cdc_idx);
+  }
+
+  return total;
+}
+
 uint32_t ftdi_host_read(void *buffer, uint32_t len) {
-  if (!ftdi_host_ready()) return 0;
+#ifdef FTDI_IO_SAFETY_CHECKS
+  if (!ftdi_host_ready())
+    return 0;
+#endif
   return tuh_cdc_read((uint8_t)s_cdc_idx, buffer, len);
 }
 
+uint32_t ftdi_host_read_blocking(void *buffer, uint32_t len,
+                                 uint32_t timeout_ms) {
+#ifdef FTDI_IO_SAFETY_CHECKS
+  if (!ftdi_host_ready() || (buffer == NULL) || (len == 0))
+    return 0;
+#endif
+#ifdef FTDI_BLOCKING_IO_CHECK_TIMEOUTS
+  const uint32_t start_ms = board_millis();
+#endif
+
+  uint8_t *ptr = (uint8_t *)buffer;
+  uint32_t total = 0;
+
+  while (total < len) {
+    if (!ftdi_host_ready()) {
+      break;
+    }
+
+    const uint32_t n =
+        tuh_cdc_read((uint8_t)s_cdc_idx, ptr + total, len - total);
+    if (n > 0) {
+      total += n;
+      continue;
+    }
+
+    tuh_task();
+#ifdef FTDI_BLOCKING_IO_CHECK_TIMEOUTS
+    if (timeout_expired(start_ms, timeout_ms)) {
+      break;
+    }
+#endif
+    // uart_printf("total=%lu, n=%lu\r\n", (unsigned long)total, (unsigned long)n);
+  }
+
+  return total;
+}
+
 uint32_t ftdi_host_read_available(void) {
-  if (!ftdi_host_ready()) return 0;
+  if (!ftdi_host_ready())
+    return 0;
   return tuh_cdc_read_available((uint8_t)s_cdc_idx);
 }
 
@@ -62,21 +155,24 @@ uint32_t ftdi_host_read_available(void) {
 //--------------------------------------------------------------------+
 
 bool ftdi_host_set_baudrate(uint32_t baudrate) {
-  if (!ftdi_host_ready()) return false;
+  if (!ftdi_host_ready())
+    return false;
   return tuh_cdc_set_baudrate((uint8_t)s_cdc_idx, baudrate, NULL, 0);
 }
 
 bool ftdi_host_set_data_format(uint8_t stop_bits, uint8_t parity,
                                uint8_t data_bits) {
-  if (!ftdi_host_ready()) return false;
-  return tuh_cdc_set_data_format((uint8_t)s_cdc_idx,
-                                 stop_bits, parity, data_bits, NULL, 0);
+  if (!ftdi_host_ready())
+    return false;
+  return tuh_cdc_set_data_format((uint8_t)s_cdc_idx, stop_bits, parity,
+                                 data_bits, NULL, 0);
 }
 
 bool ftdi_host_set_line_state(uint16_t line_state) {
-  if (!ftdi_host_ready()) return false;
-  return tuh_cdc_set_control_line_state((uint8_t)s_cdc_idx,
-                                        line_state, NULL, 0);
+  if (!ftdi_host_ready())
+    return false;
+  return tuh_cdc_set_control_line_state((uint8_t)s_cdc_idx, line_state, NULL,
+                                        0);
 }
 
 //--------------------------------------------------------------------+
@@ -94,12 +190,13 @@ bool ftdi_host_set_line_state(uint16_t line_state) {
  * Blocking calls busy-wait by calling tuh_task(), causing re-entrancy. */
 void tuh_cdc_mount_cb(uint8_t idx) {
   tuh_itf_info_t info;
-  if (!tuh_cdc_itf_get_info(idx, &info)) return;
+  if (!tuh_cdc_itf_get_info(idx, &info))
+    return;
 
   uint8_t itf_num = info.desc.bInterfaceNumber;
 
-  tusb_uart_printf("[FTDI] itf %u mounted (idx=%u)\r\n",
-                   (unsigned)itf_num, (unsigned)idx);
+  tusb_uart_printf("[FTDI] itf %u mounted (idx=%u)\r\n", (unsigned)itf_num,
+                   (unsigned)idx);
 
   if (itf_num == FTDI_TARGET_INTERFACE) {
     s_cdc_idx = (int8_t)idx;
@@ -109,12 +206,12 @@ void tuh_cdc_mount_cb(uint8_t idx) {
     cdc_line_coding_t coding;
     if (tuh_cdc_get_line_coding_local(idx, &coding)) {
       tusb_uart_printf("[FTDI] itf %u ready – %lu baud %u%c%s\r\n",
-                       (unsigned)itf_num,
-                       (unsigned long)coding.bit_rate,
+                       (unsigned)itf_num, (unsigned long)coding.bit_rate,
                        (unsigned)coding.data_bits,
                        "NOEMS"[coding.parity < 5 ? coding.parity : 0],
-                       coding.stop_bits == 0 ? "1" :
-                       coding.stop_bits == 1 ? "1.5" : "2");
+                       coding.stop_bits == 0   ? "1"
+                       : coding.stop_bits == 1 ? "1.5"
+                                               : "2");
     }
   }
 }
@@ -145,6 +242,7 @@ void tuh_umount_cb(uint8_t daddr) {
 /* Invoked when new data is received on a CDC interface.
  * Read it and print the payload with hex dump for diagnostics. */
 void tuh_cdc_rx_cb(uint8_t idx) {
+
   // if ((int8_t)idx != s_cdc_idx) return;
 
   // uint8_t buf[256];
@@ -179,5 +277,5 @@ void tuh_cdc_rx_cb(uint8_t idx) {
 
 /* Invoked when a TX completes and buffer space is available. */
 void tuh_cdc_tx_complete_cb(uint8_t idx) {
-  (void)idx;  /* nothing to do for now */
+  (void)idx; /* nothing to do for now */
 }

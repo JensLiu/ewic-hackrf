@@ -11,6 +11,7 @@
 #include "usb.h"
 #include "usb_queue.h"
 #include "platform_detect.h"
+#include "m0_state.h"
 #include <stddef.h>
 #include "uart.h"
 #include <math.h>
@@ -357,4 +358,44 @@ void set_antenna_enable(const bool enable)
 		    (radio_antenna_t) {.enable = enable})) {
 		uart_printf("standalone RX setup failed: antenna enable\n");
 	}
+}
+
+//  FROM ORIGINAL FIRMWARE
+static volatile uint32_t _tx_underrun_limit;
+static volatile uint32_t _rx_overrun_limit;
+
+void transceiver_shutdown(void) {
+  baseband_streaming_disable(&sgpio_config);
+  operacake_sctimer_reset_state();
+
+  led_off(LED2);
+  led_off(LED3);
+  radio_switch_mode(&radio, RADIO_CHANNEL0, TRANSCEIVER_MODE_OFF);
+  m0_set_mode(M0_MODE_IDLE);
+}
+
+void transceiver_startup(const transceiver_mode_t mode) {
+  radio_switch_mode(&radio, RADIO_CHANNEL0, mode);
+  hackrf_ui()->set_transceiver_mode(mode);
+
+  switch (mode) {
+  case TRANSCEIVER_MODE_RX_SWEEP:
+  case TRANSCEIVER_MODE_RX:
+    led_off(LED3);
+    led_on(LED2);
+    m0_set_mode(M0_MODE_RX);
+    m0_state.shortfall_limit = _rx_overrun_limit;
+    break;
+  case TRANSCEIVER_MODE_TX:
+    led_off(LED2);
+    led_on(LED3);
+    m0_set_mode(M0_MODE_TX_START);
+    m0_state.shortfall_limit = _tx_underrun_limit;
+    break;
+  default:
+    break;
+  }
+
+  activate_best_clock_source();
+  trigger_enable(radio_get_trigger_enable(&radio, RADIO_CHANNEL0));
 }

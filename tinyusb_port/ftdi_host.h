@@ -20,8 +20,20 @@ bool ftdi_host_ready(void);
  * Flushes automatically. */
 uint32_t ftdi_host_write(const void *buffer, uint32_t len);
 
+/* Blocking buffered write.
+ * Attempts to queue and flush up to len bytes before timeout_ms expires.
+ * Returns number of bytes queued. */
+uint32_t ftdi_host_write_blocking(const void *buffer, uint32_t len,
+                                  uint32_t timeout_ms);
+
 /* Buffered read. Returns number of bytes actually read. */
 uint32_t ftdi_host_read(void *buffer, uint32_t len);
+
+/* Blocking buffered read.
+ * Attempts to read up to len bytes before timeout_ms expires.
+ * Returns number of bytes read. */
+uint32_t ftdi_host_read_blocking(void *buffer, uint32_t len,
+                                 uint32_t timeout_ms);
 
 /* Returns number of bytes available to read from the RX FIFO. */
 uint32_t ftdi_host_read_available(void);

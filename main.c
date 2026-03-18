@@ -136,11 +136,11 @@ int main(void) {
   portapack_init();
 #endif
 
-  uart_send_str("\r\n[USB] HackRF USB Host starting...\r\n");
+  uart_send_str("\r\nHackRF USB Host starting...\r\n");
 
   /* Initialize USB host stack */
   if (!tinyusb_host_init()) {
-    uart_send_str("[USB] ERROR: Host init failed!\r\n");
+    uart_send_str("ERROR: Host init failed!\r\n");
   }
 
   nvic_set_priority(NVIC_USB0_IRQ, 255);
@@ -167,8 +167,6 @@ int main(void) {
 
   uart_send_str("[USB] Waiting for device...\r\n");
 
-  uint32_t last_status_print = 0;
-  uint32_t last_write_time = 0;
   bool ftdi_was_ready = false;
 
   custom_transceiver_receive_begin();
@@ -183,9 +181,9 @@ int main(void) {
     const bool ftdi_ready = ftdi_host_ready();
     if (ftdi_ready != ftdi_was_ready) {
       if (ftdi_ready) {
-        tusb_uart_printf("[MAIN] FTDI connected and ready!\r\n");
+        tusb_uart_printf("FTDI connected and ready!\r\n");
       } else {
-        tusb_uart_printf("[MAIN] FTDI disconnected\r\n");
+        tusb_uart_printf("FTDI disconnected\r\n");
       }
       ftdi_was_ready = ftdi_ready;
     }

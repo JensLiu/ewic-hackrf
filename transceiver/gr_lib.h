@@ -13,3 +13,5 @@ void set_sample_rate(double);
 void set_sample_rate_direct(double, double);
 void set_centre_frequency(double);
 void set_antenna_enable(bool);
+void transceiver_shutdown(void);
+void transceiver_startup(const transceiver_mode_t mode);

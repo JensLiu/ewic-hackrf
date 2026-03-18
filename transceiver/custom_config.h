@@ -7,10 +7,14 @@
 #define CUSTOM_BIT_PATTERN {1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0}
 #define RX_BIT_PACKET_SIZE 128
 
-// output methods
-// #define DECODE_PRINT_USB_BATCH
-// #define DECODE_PRINT_UART_EACH
-// #define DECODE_PRINT_UART_BATCH
+// FTDI Performance Options
+// #define FTDI_IO_SAFETY_CHECKS
+// #define FTDI_BLOCKING_IO_CHECK_TIMEOUTS
+#define FTDI_IO_TIMEOUT_MS 5u
+#define RX_FTDI_SEND_IN_BATCH
+// #define DEBUG_RX_FTDI_PRINT_SEND_BITS
+// #define DEBUG_RX_FTDI_READ_AFTER_SEND
+
 
 // RADIO PARAMETERS
 #define UART_WORKING
@@ -51,6 +55,7 @@
 // USB_TRANSFER SIZE
 #if defined CUSTOM_TX_MODE || defined CUSTOM_RX_MODE
 	#define BATCH_SAMPLE_SIZE 256
+	// #define BATCH_SAMPLE_SIZE 1
 #endif
 #ifndef BATCH_SAMPLE_SIZE
 	#define BATCH_SAMPLE_SIZE 0x4000 /* < Original Firmware */

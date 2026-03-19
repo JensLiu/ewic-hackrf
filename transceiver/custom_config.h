@@ -5,15 +5,23 @@
 // #define CUSTOM_BIT_PATTERN {1, 0, 1, 0, 1, 0, 1, 0}
 // #define CUSTOM_BIT_PATTERN {1, 0, 1, 1, 0, 1, 1, 1, 0}
 #define CUSTOM_BIT_PATTERN {1, 0, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0}
-#define RX_BIT_PACKET_SIZE 128
+#define RX_BIT_PACKET_SIZE 256
+
+// consume granularity from M0 in number of samples (2 bytes per sample: I + Q)
+#if defined CUSTOM_TX_MODE || defined CUSTOM_RX_MODE
+	#define BATCH_SAMPLE_SIZE 256
+	// #define BATCH_SAMPLE_SIZE 2
+#endif
 
 // FTDI Performance Options
 // #define DEBUG_FTDI_ECHO_WORKS
-// #define DEBUG_FTDI_ECHO_PER_BYTE
 // #define FTDI_IO_SAFETY_CHECKS
 // #define FTDI_BLOCKING_IO_CHECK_TIMEOUTS
+// #define RX_FTDI_BLOCKING_IO
 #define FTDI_IO_TIMEOUT_MS 5u
 // #define RX_FTDI_SEND_IN_BATCH
+#define DEBUG_RX_PRINT_DECODED_BITS
+
 // #define DEBUG_RX_FTDI_PRINT_SEND_BITS
 // #define DEBUG_RX_FTDI_READ_AFTER_SEND
 
@@ -54,11 +62,6 @@
 	#define RX_ANTENNA_ENABLE   false
 #endif
 
-// USB_TRANSFER SIZE
-#if defined CUSTOM_TX_MODE || defined CUSTOM_RX_MODE
-	#define BATCH_SAMPLE_SIZE 256
-	// #define BATCH_SAMPLE_SIZE 1
-#endif
 #ifndef BATCH_SAMPLE_SIZE
 	#define BATCH_SAMPLE_SIZE 0x4000 /* < Original Firmware */
 #endif

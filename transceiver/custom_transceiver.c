@@ -100,8 +100,10 @@ void custom_transceiver_receive() {
         const uint32_t adaptive_threshold =
             rx_noise_floor + RX_THRESHOLD_MARGIN;
         rx_current_bit = (mag2_avg > adaptive_threshold);
-        uart_printf("(%d)", rx_current_bit);
-
+#ifdef DEBUG_RX_PRINT_DECODED_BITS
+        uart_printf("%d", rx_current_bit);
+        // uart_printf("%d\t%d\r\n", rx_current_bit, mag2_avg);
+#endif
 #ifdef RX_FTDI_SEND_IN_BATCH
         {
           // Start a fresh byte every 8 bits.
@@ -120,6 +122,7 @@ void custom_transceiver_receive() {
           // When RX_BIT_PACKET_SIZE bits are packed, send them
           if (rx_bit_index >= RX_BIT_PACKET_SIZE) {
 #ifdef DEBUG_RX_FTDI_PRINT_SEND_BITS
+            uart_printf("\r\n");
             uart_printf("Sending...\r\n");
             for (uint32_t i = 0; i < RX_BIT_PACKET_SIZE / 8; i++) {
               for (int bit = 7; bit >= 0; bit--) {
@@ -128,6 +131,7 @@ void custom_transceiver_receive() {
             }
             uart_printf("\r\n");
 #endif
+#ifdef RX_FTDI_BLOCKING_IO
             const uint32_t write_count = ftdi_host_write_blocking(
                 rx_bit_buffer, RX_BIT_PACKET_SIZE / 8, FTDI_IO_TIMEOUT_MS);
             if (write_count == RX_BIT_PACKET_SIZE / 8) {
@@ -135,53 +139,45 @@ void custom_transceiver_receive() {
             } else {
               uart_printf("Failed to send batch to FTDI\r\n");
             }
+#else
+            // TODO: NEED MEMCPY THE TRANSFER BUFFER SINCE WE ARE OVERWRITING
+            // THE CURRENT ONE IN PLACE
+            //       THIS WILL CAUSE CORRUPTION (BUT MEMCPY IS EXPENSIVE)
+            const uint32_t write_count =
+                ftdi_host_write(rx_bit_buffer, RX_BIT_PACKET_SIZE / 8);
+#endif
             rx_bit_buffer_index = 0;
             rx_bit_index = 0;
 #ifdef DEBUG_RX_FTDI_READ_AFTER_SEND
-            const uint32_t read_count = ftdi_host_read_blocking(
-                rx_bit_buffer, RX_BIT_PACKET_SIZE / 8, FTDI_IO_TIMEOUT_MS);
-            uart_printf("Reading...\r\n");
-            if (read_count == RX_BIT_PACKET_SIZE / 8) {
-              uart_printf("Received echo:\r\n");
-              for (uint32_t i = 0; i < RX_BIT_PACKET_SIZE / 8; i++) {
-                for (int bit = 7; bit >= 0; bit--) {
-                  uart_printf("%d", (rx_bit_buffer[i] >> bit) & 0x01u);
+            {
+              static uint8_t _rx_bit_buffer[RX_BIT_PACKET_SIZE / 8];
+              const uint32_t read_count = ftdi_host_read_blocking(
+                  _rx_bit_buffer, RX_BIT_PACKET_SIZE / 8, FTDI_IO_TIMEOUT_MS);
+              uart_printf("Reading...\r\n");
+              if (read_count == RX_BIT_PACKET_SIZE / 8) {
+                for (uint32_t i = 0; i < RX_BIT_PACKET_SIZE / 8; i++) {
+                  for (int bit = 7; bit >= 0; bit--) {
+                    uart_printf("%d", (_rx_bit_buffer[i] >> bit) & 0x01u);
+                  }
                 }
+                uart_printf("\r\n");
+              } else {
+                uart_printf("Failed to read from FTDI\r\n");
               }
-              uart_printf("\r\n");
-            } else {
-              uart_printf("Failed to read from FTDI\r\n");
             }
 #endif
-          }
-        }
-#else
-      {
-        const uint8_t send_byte = rx_current_bit ? 1u : 0u;
-        ftdi_host_write_blocking(&send_byte, 1, FTDI_IO_TIMEOUT_MS);
-        uint8_t echo_byte;
-        const uint32_t read_count = ftdi_host_read_blocking(&echo_byte, 1, FTDI_IO_TIMEOUT_MS);
-        if (read_count == 1) {
-          uart_printf("%d\r\n", echo_byte);
-        } else {
-          uart_printf("Failed to read echo from FTDI\r\n");
-        }
-      }
-#endif
-#ifdef DEBUG_RX_FTDI_READ_AFTER_SEND
-        {
-          uint8_t bit_byte = rx_current_bit ? 1u : 0u;
-          ftdi_host_write_blocking(&bit_byte, 1, FTDI_IO_TIMEOUT_MS);
-          if (ftdi_host_read_blocking(&bit_byte, 1, FTDI_IO_TIMEOUT_MS) == 1) {
-            uart_printf("%d", bit_byte);
-          } else {
-            uart_printf("Didn't receive echo\n");
           }
         }
 #endif
         rx_sample_count = 0;
         rx_mag2_sum = 0;
       }
+
+#if defined(RX_FTDI_SEND_IN_BATCH) && !defined(RX_FTDI_BLOCKING_IO)
+      // Yield to allow FTDI write to proceed in parallel with ongoing RX
+      // processing
+      tuh_task();
+#endif
 #ifdef BATCH_SAMPLE_LOOP
     }
 #endif

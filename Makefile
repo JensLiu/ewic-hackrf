@@ -8,5 +8,8 @@ build:
 dfu: build
 	-dfu-util --download hackrf_stock_build/hackrf_usb.dfu
 
-spi: build	
+spi: build
 	hackrf_spiflash -w build/hackrf_usb.bin
+
+terminal:
+	picocom -b 912600 /dev/ttyUSB0

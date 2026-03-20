@@ -102,7 +102,6 @@ void custom_transceiver_receive() {
         rx_current_bit = (mag2_avg > adaptive_threshold);
 #ifdef DEBUG_RX_PRINT_DECODED_BITS
         uart_printf("%d", rx_current_bit);
-        // uart_printf("%d\t%d\r\n", rx_current_bit, mag2_avg);
 #endif
 #ifdef RX_FTDI_SEND_IN_BATCH
         {
@@ -139,33 +138,9 @@ void custom_transceiver_receive() {
             } else {
               uart_printf("Failed to send batch to FTDI\r\n");
             }
-#else
-            // TODO: NEED MEMCPY THE TRANSFER BUFFER SINCE WE ARE OVERWRITING
-            // THE CURRENT ONE IN PLACE
-            //       THIS WILL CAUSE CORRUPTION (BUT MEMCPY IS EXPENSIVE)
-            const uint32_t write_count =
-                ftdi_host_write(rx_bit_buffer, RX_BIT_PACKET_SIZE / 8);
 #endif
             rx_bit_buffer_index = 0;
             rx_bit_index = 0;
-#ifdef DEBUG_RX_FTDI_READ_AFTER_SEND
-            {
-              static uint8_t _rx_bit_buffer[RX_BIT_PACKET_SIZE / 8];
-              const uint32_t read_count = ftdi_host_read_blocking(
-                  _rx_bit_buffer, RX_BIT_PACKET_SIZE / 8, FTDI_IO_TIMEOUT_MS);
-              uart_printf("Reading...\r\n");
-              if (read_count == RX_BIT_PACKET_SIZE / 8) {
-                for (uint32_t i = 0; i < RX_BIT_PACKET_SIZE / 8; i++) {
-                  for (int bit = 7; bit >= 0; bit--) {
-                    uart_printf("%d", (_rx_bit_buffer[i] >> bit) & 0x01u);
-                  }
-                }
-                uart_printf("\r\n");
-              } else {
-                uart_printf("Failed to read from FTDI\r\n");
-              }
-            }
-#endif
           }
         }
 #endif
@@ -173,11 +148,6 @@ void custom_transceiver_receive() {
         rx_mag2_sum = 0;
       }
 
-#if defined(RX_FTDI_SEND_IN_BATCH) && !defined(RX_FTDI_BLOCKING_IO)
-      // Yield to allow FTDI write to proceed in parallel with ongoing RX
-      // processing
-      tuh_task();
-#endif
 #ifdef BATCH_SAMPLE_LOOP
     }
 #endif

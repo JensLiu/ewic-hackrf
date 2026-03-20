@@ -185,9 +185,9 @@ int main(void) {
     if (ftdi_ready != ftdi_was_ready) {
       if (ftdi_ready) {
         // DEBUG: wait a little bit
-        for (int i = 0; i < 1000000; i++) {
-          tuh_task();
-        }
+        // for (int i = 0; i < 1000000; i++) {
+        tuh_task();
+        // }
         tusb_uart_printf("[MAIN] FTDI connected and ready!\r\n");
       } else {
         tusb_uart_printf("[MAIN] FTDI disconnected\r\n");
@@ -242,22 +242,24 @@ int main(void) {
     }
 #endif
 
-    //   /* Print status every 5 seconds */
-    //   const uint32_t now = board_millis();
-    //   if (now - last_status_print >= 5000) {
-    //     last_status_print = now;
-    //     const uint32_t isr_count = tinyusb_usb_isr_count_get_and_reset();
-    //     uart_printf("\r\n");
-    //     uart_printf("[USB] t=%lus ISRs=%lu PORTSC1=0x%08lx\r\n",
-    //                 (unsigned long)(now / 1000), (unsigned long)isr_count,
-    //                 (unsigned long)CI_HS_REG(0)->PORTSC1);
-    //     uart_printf(
-    //         "[M0] req=%lu act=%lu m0=%lu m4=%lu err=%lu\r\n",
-    //         (unsigned long)m0_state.requested_mode,
-    //         (unsigned long)m0_state.active_mode, (unsigned
-    //         long)m0_state.m0_count, (unsigned long)m0_state.m4_count,
-    //         (unsigned long)m0_state.error);
-    //   }
+    /* Print status every 5 seconds */
+    const uint32_t now = board_millis();
+    if (now - last_status_print >= 100) {
+      last_status_print = now;
+      const uint32_t isr_count = tinyusb_usb_isr_count_get_and_reset();
+      uart_printf("\r\n");
+      uart_printf("[USB] t=%lus ISRs=%lu PORTSC1=0x%08lx\r\n",
+                  (unsigned long)(now / 1000), (unsigned long)isr_count,
+                  (unsigned long)CI_HS_REG(0)->PORTSC1);
+      uart_printf("[M0] req=%lu act=%lu m0=%lu m4=%lu shortfalls=%lu longest_sf=%lu err=%lu\r\n",
+                  (unsigned long)m0_state.requested_mode,
+                  (unsigned long)m0_state.active_mode,
+                  (unsigned long)m0_state.m0_count,
+                  (unsigned long)m0_state.m4_count,
+                  (unsigned long)m0_state.num_shortfalls,
+                  (unsigned long)m0_state.longest_shortfall,
+                  (unsigned long)m0_state.error);
+    }
   }
 
   return 0;

@@ -7,6 +7,7 @@
  * - Debug printf -> UART
  */
 
+#include "custom_config.h"
 #include "tusb.h"
 #include "tinyusb_port_debug.h"
 #include "hackrf_core.h"
@@ -56,11 +57,13 @@ void tinyusb_hardware_init(void) {
 bool tinyusb_host_init(void) {
   tinyusb_hardware_init();
   
+// #ifdef ON_SYSTICK_INCREASE_COUNTER
   /* SysTick 1 ms for tusb_time_delay_ms and board_millis (assumes 204 MHz AHB) */
   systick_set_reload(204000 - 1);
   systick_set_clocksource(STK_CTRL_CLKSOURCE_AHB);
   systick_interrupt_enable();
   systick_counter_enable();
+// #endif
 
   tusb_rhport_init_t host_init = {
     .role = TUSB_ROLE_HOST,
@@ -105,7 +108,6 @@ void usb0_isr(void) {
 /*---------------------------------------------------------------------------*/
 /* SysTick: 1 ms tick for board_millis and tusb_time_delay_ms                */
 /*---------------------------------------------------------------------------*/
-
 static volatile uint32_t s_millis;
 
 void tinyusb_systick_handler(void) {
@@ -124,7 +126,6 @@ uint32_t tusb_time_millis_api(void) {
 void sys_tick_handler(void) {
   tinyusb_systick_handler();
 }
-
 /*---------------------------------------------------------------------------*/
 /* TinyUSB debug printf -> UART (CFG_TUSB_DEBUG_PRINTF) via uart_print path  */
 /* Uses same DISPLAY_BUFFER + uart_send_str as uart_print macro.             */

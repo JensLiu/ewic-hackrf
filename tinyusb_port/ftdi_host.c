@@ -28,9 +28,11 @@
 /* CDC interface index of the target channel, set in tuh_cdc_mount_cb(). */
 static int8_t s_cdc_idx = -1; /* -1 = not yet mounted */
 
+#ifdef FTDI_BLOCKING_IO_CHECK_TIMEOUTS
 static bool timeout_expired(uint32_t start_ms, uint32_t timeout_ms) {
   return (uint32_t)(board_millis() - start_ms) >= timeout_ms;
 }
+#endif
 
 //--------------------------------------------------------------------+
 // Public API – data transfer
@@ -90,7 +92,8 @@ uint32_t ftdi_host_write_blocking(const void *buffer, uint32_t len,
       break;
     }
 #endif
-    tusb_uart_printf("total=%lu, n=%lu\r\n", (unsigned long)total, (unsigned long)n);
+    tusb_uart_printf("total=%lu, n=%lu\r\n", (unsigned long)total,
+                     (unsigned long)n);
   }
 
   if (total > 0) {
@@ -139,7 +142,8 @@ uint32_t ftdi_host_read_blocking(void *buffer, uint32_t len,
       break;
     }
 #endif
-    // uart_printf("total=%lu, n=%lu\r\n", (unsigned long)total, (unsigned long)n);
+    // uart_printf("total=%lu, n=%lu\r\n", (unsigned long)total, (unsigned
+    // long)n);
   }
 
   return total;
@@ -243,16 +247,26 @@ void tuh_umount_cb(uint8_t daddr) {
 /* Invoked when new data is received on a CDC interface.
  * Read it and print the payload with hex dump for diagnostics. */
 void tuh_cdc_rx_cb(uint8_t idx) {
+  if ((int8_t)idx != s_cdc_idx)
+    return;
 
-  // if ((int8_t)idx != s_cdc_idx) return;
+#ifdef DEBUG_RX_FTDI_READ_AFTER_SEND
+  uint8_t buf[256];
+  uint32_t count = tuh_cdc_read(idx, buf, sizeof(buf));
+  if (count == 0)
+    return;
 
-  // uint8_t buf[256];
-  // uint32_t count = tuh_cdc_read(idx, buf, sizeof(buf));
-  // if (count == 0) return;
-
-  // /* Print header with byte count */
+  /* Print header with byte count */
   // tusb_uart_printf("[RX %lu] ", (unsigned long)count);
-
+  for (uint32_t i = 0; i < count; i++) {
+    for (int bit = 7; bit >= 0; bit--) {
+      tusb_uart_printf("%d", (buf[i] >> bit) & 0x01u);
+    }
+  }
+#else
+  // clear buffer so that we could receive more
+  tuh_cdc_read_clear(s_cdc_idx);
+#endif
   // /* Hex dump for diagnostic (limit to first 32 bytes) */
   // uint32_t hex_limit = (count < 32) ? count : 32;
   // for (uint32_t i = 0; i < hex_limit; i++) {
